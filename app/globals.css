@@ -84,3 +84,9 @@ body {
   animation: cardEntry 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+}
+
+
+.font-pixeboy {
+  font-family: var(--font-pixeboy);
+}
