@@ -1,9 +1,13 @@
+"use client";
+
+import PokedexJudge from "@/components/judges";
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
-      <div className="pt-10 text-center">
-        <h1>HackBattle Homepage</h1>
-      </div>
-    </main>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 dark:bg-black p-4">
+      <main className="flex flex-col items-center justify-center w-full">
+        <PokedexJudge />
+      </main>
+    </div>
   );
 }
