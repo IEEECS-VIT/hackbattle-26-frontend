@@ -1,13 +1,13 @@
 "use client";
 
 import PokedexJudge from "@/components/judges";
+import AboutPage from "@/app/components/about";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 dark:bg-black p-4">
-      <main className="flex flex-col items-center justify-center w-full">
-        <PokedexJudge />
-      </main>
-    </div>
+    <main className="w-full">
+    <AboutPage />
+    </main>
   );
 }
+
