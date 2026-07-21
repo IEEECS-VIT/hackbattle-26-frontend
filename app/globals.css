@@ -36,10 +36,10 @@ body {
 }
 
 .font-pixeboy {
-  font-family: 'Pixeboy', monospace !important;
+  font-family: var(--font-pixeboy), 'Pixeboy', monospace !important;
 }
 
-/* Custom Scanlines */
+
 .retro-scanlines {
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%,
@@ -48,7 +48,7 @@ body {
   background-size: 100% 4px;
 }
 
-/* LCD screen flash animation */
+
 @keyframes lcdFlash {
   0% {
     background-color: rgba(255, 255, 255, 1);
@@ -68,7 +68,6 @@ body {
   animation: lcdFlash 0.35s steps(4) forwards;
 }
 
-/* Card Load Entry animation */
 @keyframes cardEntry {
   0% {
     transform: translateY(80px) scale(0.92);
@@ -82,11 +81,4 @@ body {
 
 .animate-card-entry {
   animation: cardEntry 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-}
-
-
-.font-pixeboy {
-  font-family: var(--font-pixeboy);
 }
