@@ -1,12 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import FAQItem from "./FAQItem";
 import { faqData } from "./faqData";
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number>(-1);
+
+  useEffect(() => {
+    if (openIndex !== -1) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [openIndex]);
 
   return (
     <section className="relative w-full overflow-hidden">

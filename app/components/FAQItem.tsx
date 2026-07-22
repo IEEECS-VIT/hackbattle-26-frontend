@@ -23,18 +23,7 @@ export default function FAQItem({
   onClick,
 }: FAQItemProps) {
   return (
-    <div className="group relative mb-4 flex min-h-[6rem] w-full flex-col overflow-visible rounded-lg border border-[#FF0000] bg-[#FF0000]/15 shadow-md backdrop-blur-[2rem] transition-colors duration-300 hover:bg-white/[0.03] last:mb-0 sm:mb-5 sm:min-h-[7rem] md:min-h-[8rem] lg:min-h-[9.4375rem]">
-      {pokeballPositions.map((pos) => (
-        <Image
-          key={pos}
-          src="/faq/pokeball.png"
-          alt=""
-          width={18}
-          height={18}
-          className={`pointer-events-none absolute z-20 h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem] ${pos}`}
-        />
-      ))}
-
+    <div className="group relative mb-4 flex min-h-[6rem] w-full flex-col overflow-visible border border-[#FF0000] bg-[#FF0000]/15 shadow-md backdrop-blur-[2rem] transition-colors duration-300 hover:bg-white/[0.03] last:mb-0 sm:mb-5 sm:min-h-[7rem] md:min-h-[8rem] lg:min-h-[9.4375rem]">
       <button
         onClick={onClick}
         aria-expanded={isOpen}
@@ -56,7 +45,7 @@ export default function FAQItem({
           </svg>
         </div>
 
-        <span className="font-pixeboy text-[1.6rem] leading-none text-white sm:text-[2rem] md:text-[2.5rem] lg:text-[3rem] xl:text-[3.5rem]">
+        <span className="font-pixeboy text-[1.6rem] text-center pt-[2rem]leading-none text-white sm:text-[2rem] md:text-[2.5rem] lg:text-[3rem] xl:text-[3.5rem]">
           {question}
         </span>
       </button>

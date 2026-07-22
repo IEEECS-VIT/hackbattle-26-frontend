@@ -6,8 +6,7 @@ export default function Footer() {
       className="
         relative
         w-full
-        h-[220px]
-        md:h-[268px]
+        h-[clamp(100px,14vw,180px)]
         bg-cover
         bg-center
         bg-no-repeat
@@ -22,7 +21,7 @@ export default function Footer() {
             h-full
             items-end
             px-8
-            pb-8
+            pb-5
             md:px-12
             lg:px-8
         "
@@ -34,7 +33,7 @@ export default function Footer() {
                 width={61}
                 height={65}
                 priority
-                className="w-10 h-auto md:w-[61px]"
+                className="w-[clamp(36px,4vw,61px)] h-auto"
                 />
 
             <Image
@@ -43,7 +42,7 @@ export default function Footer() {
                 width={150}
                 height={65}
                 priority
-                className="w-24 h-auto md:w-[150px]"
+                className="w-[clamp(90px,10vw,150px)] h-auto"
                 />
       </div>
       </div>
