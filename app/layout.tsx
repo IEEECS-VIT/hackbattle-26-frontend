@@ -38,13 +38,13 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${pixeboy.variable} h-full antialiased`}
     >
       <body className="min-h-screen flex flex-col">
-        {/* <Navbar /> */}
+         <Navbar /> 
 
         <main className="flex-1">
           {children}
         </main>
 
-        {/* <Footer /> */}
+         <Footer /> 
       </body>
     </html>
   );
