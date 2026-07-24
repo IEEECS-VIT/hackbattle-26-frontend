@@ -2,6 +2,7 @@ import Hero from '@/components/home';
 import FAQ from '@/components/FAQ';
 import AboutPage from '@/components/about';
 import PokedexJudge from '@/components/judges';
+import Footer from "@/components/footer";
 
 export default function Home() {
   return (
@@ -10,17 +11,14 @@ export default function Home() {
         <Hero />
       </section>
 
-      <section className="h-screen w-full snap-start overflow-hidden">
-        <AboutPage />
-      </section>
+      <AboutPage />
 
-      <section className="h-screen w-full snap-start overflow-hidden">
-        <PokedexJudge />
-      </section>
+      <PokedexJudge />
 
       <section className="h-screen w-full snap-start overflow-hidden">
         <FAQ />
       </section>
+      <Footer />
     </main>
   );
 }

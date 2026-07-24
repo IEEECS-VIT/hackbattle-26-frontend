@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/footer";
+
 import Navbar from "@/components/navbar";
 import localFont from "next/font/local";
 
@@ -44,7 +44,7 @@ export default function RootLayout({
           {children}
         </main>
 
-         <Footer /> 
+      
       </body>
     </html>
   );
