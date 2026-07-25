@@ -76,19 +76,22 @@ export default function AboutPage() {
             md:border
             md:border-black
 
-            px-0
-            md:px-2
-
+            px-5
+            sm:px-6
+            md:px-7
+            lg:px-5
+            xl:px-4
+            
             py-0
             md:py-8
           "
         >
           <p
             className="
+              w-full
+              max-w-[720px]
+              xl:max-w-[759px]
               mx-auto
-              max-w-[337px]
-              md:max-w-[600px]
-              lg:max-w-[759px]
 
               font-pixeboy
               font-normal
