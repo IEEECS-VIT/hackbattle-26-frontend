@@ -3,23 +3,27 @@ export default function AboutPage() {
   return (
     <section
       id = "about"
-      className="relative min-h-screen w-full overflow-hidden"
+      className="relative min-h-[110vh] md:min-h-screen w-full overflow-hidden"
       style={{
         backgroundImage: "url('/AboutUs/about_us_bg.svg')",
         backgroundSize: "cover",
-        backgroundPosition: "center 80px",
+        backgroundPosition: "center 50px",
         backgroundRepeat: "no-repeat",
       }}
     >
 
-      {/* Gradient(overlaps background) */}
       <div
-        className="absolute left-0 top-[16px] z-10 h-[66px] w-full"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(80,153,230,0.82) 0%, rgba(145,151,90,0.82) 100%)",
-        }}
-      />
+      className="
+        absolute
+        top-0
+        left-0
+        w-full
+        h-50
+        -z-10
+        bg-[#4FB5E5]
+      "
+    />
+
 
       {/* Content */}
       <div
@@ -32,8 +36,9 @@ export default function AboutPage() {
           max-w-[1290px]
           flex-col
           items-center
-          pt-[clamp(90px,5vw,120px)]
-          px-[clamp(16px,2vw,24px)]
+          pt-2
+          md:pt-2
+          lg:pt-0          
           text-center
         "
       >
@@ -45,9 +50,12 @@ export default function AboutPage() {
 
             text-white
 
-            leading-none
-
-            text-[clamp(80px,12vw,220px)]
+            text-[96px]
+            leading-[100px]
+            md:text-[140px]
+            md:leading-none
+            lg:text-[180px]
+            xl:text-[220px]
           "
         >
           ABOUT US
@@ -56,31 +64,48 @@ export default function AboutPage() {
         {/* Description Box */}
         <div
           className="
-            mt-[clamp(8px,1vw,20px)]
+            mt-8
+            md:mt-6
+            lg:-mt-8
+            xl:-mt-10
 
             w-full
             max-w-[787px]
 
-            border
-            border-black
+            border-0
+            md:border
+            md:border-black
 
-            px-2
-            py-8
+            px-0
+            md:px-2
+
+            py-0
+            md:py-8
           "
         >
           <p
             className="
               mx-auto
-              max-w-[759px]
+              max-w-[337px]
+              md:max-w-[600px]
+              lg:max-w-[759px]
 
               font-pixeboy
               font-normal
 
               text-black
 
-              text-[clamp(20px,2.8vw,40px)]
+              text-[34px]
+              leading-[36px]
 
-              leading-[clamp(28px,2.5vw,35px)]
+              md:text-[28px]
+              md:leading-[32px]
+
+              lg:text-[35px]
+              lg:leading-[35px]
+
+              xl:text-[40px]
+              xl:leading-[40px]
 
               tracking-[-0.02em]
 

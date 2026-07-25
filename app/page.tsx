@@ -6,9 +6,9 @@ import Footer from "@/components/footer";
 
 export default function Home() {
   return (
-    <main className="h-screen w-full snap-y snap-mandatory overflow-y-scroll">
-      <section className="h-screen w-full snap-start overflow-hidden">
-        <Hero />
+    <main className="min-h-screen w-full overflow-x-hidden snap-y snap-proximity overflow-y-auto">
+<section className="min-h-screen w-full snap-start">
+      <Hero />
       </section>
 
       <AboutPage />

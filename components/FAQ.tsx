@@ -21,7 +21,7 @@ export default function FAQ() {
   }, [openIndex]);
 
   return (
-    <section className="relative w-full overflow-hidden">
+    <section id="faq" className="relative w-full overflow-hidden">
       <Image
         src="/faq-background/faq-bottom.svg"
         alt=""

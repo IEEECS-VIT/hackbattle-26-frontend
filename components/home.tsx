@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Hero = () => {
   return (
-    <div className="relative w-full h-screen overflow-hidden flex items-center justify-center font-['Pixeboy',_sans-serif]">
+    <div id="home" className="relative w-full h-screen overflow-hidden flex items-center justify-center font-['Pixeboy',_sans-serif]">
       <video
         autoPlay
         loop
