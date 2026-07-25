@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -98,24 +97,23 @@ export default function PokedexJudge() {
 
   return (
     <div
-      className="relative w-full min-h-screen flex flex-col items-center justify-start p-4 select-none overflow-y-auto overflow-x-hidden"
+      className="relative w-full min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 select-none overflow-y-auto overflow-x-hidden"
       style={{
-        width: "100dvw",
-        height: "100dvh",
         backgroundImage: `url('${BACKGROUND_IMAGE_URL}')`,
         backgroundSize: "cover",
-        backgroundPosition: "center center",
+        backgroundPosition: "center bottom",
         backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
       }}
     >
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pt-6 pb-4">
+      {/* Moved down using pt-12 md:pt-24 to fit inside background properly */}
+      <div className="relative z-10 flex flex-col items-center w-full max-w-5xl h-full pt-1 md:pt-2 pb-8">
+        
         {/* HEADER */}
-        <div className="-mt-8 md:-mt-14 mb-2 z-20">
+        <div className="mb-4 z-20">
           <h1
-            className="text-white text-7xl md:text-[150px] font-pixeboy leading-15 md:leading-25 tracking-normal drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)] filter transition-all duration-300 select-none text-center"
+            className="text-white text-[clamp(80px,12vw,220px)] font-pixeboy leading-none tracking-normal drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)] filter transition-all duration-300 select-none text-center"
             style={{ fontWeight: 400 }}
           >
             JUDGE
@@ -123,7 +121,7 @@ export default function PokedexJudge() {
         </div>
 
         {/* CONTAINER */}
-        <div className="my-auto max-w-full origin-center transition-transform duration-300 scale-90 sm:scale-95 md:scale-100 min-[768px]:max-[1100px]:scale-[0.85]">
+        <div className="w-full max-w-[95%] sm:max-w-xl md:max-w-none flex justify-center origin-center transition-transform duration-300">
           <div
             ref={cardRef}
             onMouseMove={handleMouseMove}
@@ -133,13 +131,13 @@ export default function PokedexJudge() {
               transition:
                 "transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             }}
-            className="flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-0 justify-center relative rounded-3xl"
+            className="flex flex-col md:flex-row items-center md:items-end justify-center w-full relative rounded-3xl gap-0"
           >
             {/* LEFT PANEL */}
-            <div className="w-87.5 md:w-95 h-122.5 md:h-127.5 bg-[#D30A40] border-4 border-black rounded-2xl md:rounded-l-2xl md:rounded-r-none p-5 flex flex-col justify-between relative z-10 shadow-[0_20px_45px_rgba(0,0,0,0.45)] overflow-hidden">
+            <div className="w-full max-w-[360px] md:max-w-[400px] min-h-[480px] sm:min-h-[510px] bg-[#D30A40] border-4 border-black rounded-2xl md:rounded-l-2xl md:rounded-r-none p-4 sm:p-5 flex flex-col justify-between relative z-10 shadow-[0_20px_45px_rgba(0,0,0,0.45)] overflow-hidden">
               <div className="flex items-center gap-3 z-10">
-                <div className="w-12 h-12 bg-linear-to-br from-[#85d7ff] via-[#31a5ee] to-[#005c9e] border-4 border-white rounded-full ring-2 ring-black shadow-inner relative flex items-center justify-center">
-                  <div className="w-3 h-3 bg-white/70 rounded-full absolute top-1 left-1.5 filter blur-[0.5px]"></div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-[#85d7ff] via-[#31a5ee] to-[#005c9e] border-4 border-white rounded-full ring-2 ring-black shadow-inner relative flex items-center justify-center shrink-0">
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white/70 rounded-full absolute top-1 left-1.5 filter blur-[0.5px]"></div>
                 </div>
 
                 <div className="flex gap-1.5 ml-1">
@@ -149,11 +147,12 @@ export default function PokedexJudge() {
                 </div>
               </div>
 
+              {/* Decorative Header Cutout */}
               <div
                 className="absolute top-0 left-0 right-0 h-20 border-b-4 border-black pointer-events-none bg-transparent"
                 style={{
                   clipPath:
-                    "polygon(0 0, 100% 0, 100% 70px, 240px 70px, 175px 44px, 0 44px)",
+                    "polygon(0 0, 100% 0, 100% 70px, 60% 70px, 45% 44px, 0 44px)",
                 }}
               />
 
@@ -162,28 +161,28 @@ export default function PokedexJudge() {
                 className="bg-black p-1 mt-6 mb-2 w-full flex flex-col items-center justify-center"
                 style={{
                   clipPath:
-                    "polygon(0% 0%, 100% 0%, 100% 100%, 45px 100%, 0% calc(100% - 45px))",
+                    "polygon(0% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 88%)",
                 }}
               >
                 <div
-                  className="bg-[#dedede] p-5 relative shadow-inner w-full h-full flex flex-col items-center justify-center"
+                  className="bg-[#dedede] p-3 sm:p-5 relative shadow-inner w-full h-full flex flex-col items-center justify-center"
                   style={{
                     clipPath:
-                      "polygon(0% 0%, 100% 0%, 100% 100%, 42px 100%, 0% calc(100% - 42px))",
+                      "polygon(0% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 88%)",
                   }}
                 >
                   <div
                     className="bg-black p-0.75 w-full"
                     style={{
                       clipPath:
-                        "polygon(0% 0%, 100% 0%, 100% 100%, 36px 100%, 0% calc(100% - 36px))",
+                        "polygon(0% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 88%)",
                     }}
                   >
                     <div
-                      className="bg-[#232323] h-45 w-full overflow-hidden relative flex items-center justify-center shadow-[inset_0_4px_10px_rgba(0,0,0,0.8)]"
+                      className="bg-[#232323] h-40 sm:h-45 w-full overflow-hidden relative flex items-center justify-center shadow-[inset_0_4px_10px_rgba(0,0,0,0.8)]"
                       style={{
                         clipPath:
-                          "polygon(0% 0%, 100% 0%, 100% 100%, 34px 100%, 0% calc(100% - 34px))",
+                          "polygon(0% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 88%)",
                         perspective: "600px",
                       }}
                     >
@@ -196,7 +195,7 @@ export default function PokedexJudge() {
                       ></div>
 
                       {showQuestionMark || !currentJudge ? (
-                        <div className="text-[#ffcc00] font-pixeboy text-9xl font-bold animate-spin-perpendicular select-none filter drop-shadow-[0_6px_10px_rgba(0,0,0,0.85)] will-change-transform">
+                        <div className="text-[#ffcc00] font-pixeboy text-8xl sm:text-9xl font-bold animate-spin-perpendicular select-none filter drop-shadow-[0_6px_10px_rgba(0,0,0,0.85)] will-change-transform">
                           ?
                         </div>
                       ) : (
@@ -214,74 +213,69 @@ export default function PokedexJudge() {
 
               {/* MID PADS PANEL */}
               <div className="flex justify-between items-center px-1 mt-3 mb-1">
-                <div className="w-11 h-11 bg-zinc-800 border-2 border-black rounded-full shadow-[0_3px_0_#000] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"></div>
+                <div className="w-10 h-10 sm:w-11 sm:h-11 bg-zinc-800 border-2 border-black rounded-full shadow-[0_3px_0_#000] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"></div>
 
                 <div className="flex gap-2">
-                  <span className="w-15 h-4 bg-[#ff3b30] border border-black rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]"></span>
-                  <span className="w-15 h-4 bg-[#31a5ee] border border-black rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]"></span>
+                  <span className="w-12 sm:w-15 h-3.5 sm:h-4 bg-[#ff3b30] border border-black rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]"></span>
+                  <span className="w-12 sm:w-15 h-3.5 sm:h-4 bg-[#31a5ee] border border-black rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]"></span>
                 </div>
 
-                <div className="w-12 h-4"></div>
+                <div className="w-8 sm:w-12 h-4"></div>
               </div>
 
               {/* LOWER HARDWARE HUB */}
-              <div className="flex items-end justify-between w-full relative px-0.5">
-                <div className="flex items-center bg-black rounded-md h-12 p-1 overflow-hidden w-[185px] md:w-[210px] flex-shrink-0 relative border border-zinc-700 transform -translate-y-6 -translate-x-2">
+              <div className="flex items-end justify-between w-full relative px-0.5 gap-2">
+                <div className="flex items-center bg-black rounded-md h-11 sm:h-12 p-1 overflow-hidden flex-1 relative border border-zinc-700 transform -translate-y-4 sm:-translate-y-6">
                   <button
                     onClick={fetchRandomPokemon}
-                    className="bg-[#ff9500] text-black border border-white rounded-full w-8 h-8 font-black text-lg flex items-center justify-center cursor-pointer hover:bg-[#ffb03a] hover:scale-105 active:scale-95 transition-all z-20 absolute left-1 shadow-inner"
+                    className="bg-[#ff9500] text-black border border-white rounded-full w-7 h-7 sm:w-8 sm:h-8 font-black text-base sm:text-lg flex items-center justify-center cursor-pointer hover:bg-[#ffb03a] hover:scale-105 active:scale-95 transition-all z-20 absolute left-1 shadow-inner"
                   >
                     &gt;
                   </button>
 
                   <button
                     onClick={fetchRandomPokemon}
-                    className="w-full bg-transparent text-white font-pixeboy text-xl tracking-widest text-center py-2 pl-6 outline-none cursor-pointer hover:text-[#ff9500] active:scale-[0.98] transition-all"
+                    className="w-full bg-transparent text-white font-pixeboy text-lg sm:text-xl tracking-widest text-center py-2 pl-6 outline-none cursor-pointer hover:text-[#ff9500] active:scale-[0.98] transition-all truncate"
                   >
                     Surprise me!
                   </button>
                 </div>
 
-                <div className="relative w-20 h-20 flex items-center justify-center flex-shrink-0 mb-[20px] mr-1">
-                  <div className="absolute w-7 h-20 bg-zinc-800 border-2 border-black rounded-sm shadow-md"></div>
-                  <div className="absolute w-20 h-7 bg-zinc-800 border-2 border-black rounded-sm shadow-md"></div>
-                  <div className="absolute w-7 h-7 bg-zinc-800 z-10"></div>
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0 mb-2 sm:mb-[20px]">
+                  <div className="absolute w-5 sm:w-7 h-16 sm:h-20 bg-zinc-800 border-2 border-black rounded-sm shadow-md"></div>
+                  <div className="absolute w-16 sm:w-20 h-5 sm:h-7 bg-zinc-800 border-2 border-black rounded-sm shadow-md"></div>
+                  <div className="absolute w-5 sm:w-7 h-5 sm:h-7 bg-zinc-800 z-10"></div>
                 </div>
               </div>
             </div>
 
-            {/* HINGES */}
-            <div className="hidden md:flex flex-col justify-around h-[260px] w-5 z-20 -mx-[9px] relative mb-12">
+            {/* HINGES (Desktop Only) */}
+            <div className="hidden md:flex flex-col justify-around h-[260px] w-5 z-20 -mx-[9px] relative mb-12 shrink-0">
               <div className="w-5 h-12 bg-linear-to-r from-zinc-800 via-zinc-600 to-zinc-900 border-2 border-black rounded-md shadow-lg z-20"></div>
               <div className="w-5 h-12 bg-linear-to-r from-zinc-800 via-zinc-600 to-zinc-900 border-2 border-black rounded-md shadow-lg z-20"></div>
             </div>
 
-            {/* RIGHT INFO PANEL */}
-            <div
-              className="w-80 md:w-75 h-85 md:h-100 bg-black p-1 md:border-l-0 rounded-b-2xl md:rounded-b-none md:rounded-r-2xl shadow-[0_20px_45px_rgba(0,0,0,0.45)] relative z-0"
-              style={{
-                clipPath: "polygon(30px 0, 100% 0, 100% 100%, 0 100%, 0 30px)",
-              }}
-            >
+            {/* RIGHT INFO PANEL (Cleaned up outer wrapper & fixed black gap) */}
+            <div className="w-full max-w-[360px] md:max-w-[340px] bg-transparent -mt-2 md:mt-0 relative z-0">
               <div
-                className="w-full h-full bg-[#D30A40] p-4 flex flex-col justify-between"
+                className="w-full bg-[#D30A40] border-4 border-black md:border-l-0 rounded-b-2xl md:rounded-b-none md:rounded-r-2xl p-3 sm:p-4 flex flex-col justify-between shadow-[0_20px_45px_rgba(0,0,0,0.45)]"
                 style={{
                   clipPath:
-                    "polygon(27px 0, 100% 0, 100% 100%, 0 100%, 0 27px)",
+                    "polygon(10% 0, 100% 0, 100% 100%, 0 100%, 0 8%)",
                 }}
               >
                 <div
                   className="bg-black p-0.75 flex-grow flex"
                   style={{
                     clipPath:
-                      "polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px)",
+                      "polygon(8% 0, 100% 0, 100% 100%, 0 100%, 0 6%)",
                   }}
                 >
                   <div
-                    className="bg-[#c2c2c2] w-full h-full p-4 flex flex-col justify-between font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] border border-black/10"
+                    className="bg-[#c2c2c2] w-full h-full p-3 sm:p-4 flex flex-col justify-between font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] border border-black/10 min-h-[260px] md:min-h-[340px]"
                     style={{
                       clipPath:
-                        "polygon(18px 0, 100% 0, 100% 100%, 0 100%, 0 18px)",
+                        "polygon(7% 0, 100% 0, 100% 100%, 0 100%, 0 5%)",
                     }}
                   >
                     <div className="absolute top-0 right-0 bg-[#D30A40] border-b-2 border-l-2 border-black px-2 py-1 flex items-center gap-1.5 rounded-bl-md">
@@ -295,20 +289,20 @@ export default function PokedexJudge() {
                         {/* Upper Group */}
                         <div
                           key={`info-${loadKey}`}
-                          className="flex flex-col items-end w-full mt-8 flex-grow justify-start pt-2"
+                          className="flex flex-col items-end w-full mt-6 sm:mt-8 flex-grow justify-start pt-2"
                         >
-                          <h2 className="text-4xl uppercase tracking-normal text-[#0c0c0c] mb-2 text-right w-full animate-text-slide font-pixeboy font-normal">
+                          <h2 className="text-3xl sm:text-4xl uppercase tracking-normal text-[#0c0c0c] mb-2 text-right w-full animate-text-slide font-pixeboy font-normal break-words">
                             {currentJudge.name}
                           </h2>
                           <p
                             style={{ animationDelay: "0.1s" }}
-                            className="text-2xl uppercase text-zinc-800 text-right w-full leading-tight animate-text-slide font-pixeboy"
+                            className="text-xl sm:text-2xl uppercase text-zinc-800 text-right w-full leading-tight animate-text-slide font-pixeboy break-words"
                           >
                             {currentJudge.label1}
                           </p>
                           <p
                             style={{ animationDelay: "0.2s" }}
-                            className="text-2xl uppercase text-zinc-800 text-right w-full leading-tight animate-text-slide font-pixeboy"
+                            className="text-xl sm:text-2xl uppercase text-zinc-800 text-right w-full leading-tight animate-text-slide font-pixeboy break-words"
                           >
                             {currentJudge.label2}
                           </p>
@@ -317,7 +311,7 @@ export default function PokedexJudge() {
                         {/* Lower Group */}
                         <div
                           key={`social-${loadKey}`}
-                          className="w-full flex flex-col items-end text-right mt-2 pb-1 text-zinc-900 font-pixeboy text-2xl tracking-wide gap-0.5"
+                          className="w-full flex flex-col items-end text-right mt-2 pb-1 text-zinc-900 font-pixeboy text-xl sm:text-2xl tracking-wide gap-0.5"
                         >
                           <p
                             style={{ animationDelay: "0.3s" }}
