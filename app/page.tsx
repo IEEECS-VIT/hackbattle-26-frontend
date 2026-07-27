@@ -15,7 +15,7 @@ export default function Home() {
 
       <PokedexJudge />
 
-      <section className="h-screen w-full snap-start overflow-hidden">
+      <section className="w-full snap-start">
         <FAQ />
       </section>
       <Footer />

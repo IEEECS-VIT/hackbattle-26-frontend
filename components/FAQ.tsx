@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import FAQItem from "./FAQItem";
 import { faqData } from "./faqData";
@@ -8,20 +8,8 @@ import { faqData } from "./faqData";
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number>(-1);
 
-  useEffect(() => {
-    if (openIndex !== -1) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [openIndex]);
-
   return (
-    <section id="faq" className="relative w-full overflow-hidden">
+    <section id="faq" className="relative w-full overflow-hidden flex flex-col">
       <Image
         src="/faq-background/faq-bottom.svg"
         alt=""
@@ -31,8 +19,8 @@ export default function FAQ() {
       />
       <div className="absolute inset-0 bg-black/15" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[130rem] flex-col justify-start gap-4 px-4 pt-6 pb-12 sm:px-6 sm:pt-8 sm:pb-14 md:px-8 lg:px-10 xl:px-12">
-        <h1 className="-mt-4 font-pixeboy text-center text-white text-[6.5rem] leading-none drop-shadow-[0_6px_8px_rgba(0,0,0,0.9)] sm:-mt-6 sm:text-[8.5rem] md:text-[10.5rem] lg:text-[12.5rem] xl:text-[15rem]">
+      <div className="relative z-10 mx-auto flex w-full max-w-[130rem] flex-col gap-[clamp(1rem,2vw,2rem)] px-[clamp(1rem,3vw,3rem)] pt-[clamp(1rem,2vw,2rem)] pb-[clamp(2rem,6vw,5rem)]">
+        <h1 className="font-pixeboy text-center text-white leading-none drop-shadow-[0_6px_8px_rgba(0,0,0,0.9)] text-[clamp(4rem,12vw,15rem)]">
           FAQ
         </h1>
 
