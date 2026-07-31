@@ -1,11 +1,9 @@
-import HeroSection from "../components/HeroSection";
-import ProblemStatement from "../components/ProblemStatement";
+import MapScene from "../components/MapScene";
 
 export default function Home() {
   return (
     <main>
-      <HeroSection />
-      <ProblemStatement />
+      <MapScene />
     </main>
   );
 }

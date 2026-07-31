@@ -9,13 +9,13 @@ export default function ProblemStatement() {
       image: "/evolution_images/Vaporeon.svg",
       color: "#67B5DA",
       reverse: false,
-      scale: 1.0,
+      scale: 0.90,
     },
     {
       image: "/evolution_images/Jolteon.svg",
       color: "#D8CB55",
       reverse: true,
-      scale: 1.45,
+      scale: 0.85,
     },
     {
       image: "/evolution_images/Flareon.svg",
@@ -47,16 +47,10 @@ export default function ProblemStatement() {
       reverse: false,
       scale: 1.3,
     },
-    {
-      image: "/evolution_images/Sylveon.svg",
-      color: "#D87DAE",
-      reverse: true,
-      scale: 1.15,
-    },
   ];
 
   return (
-    <section  className="pb-[120px]">
+    <section className="pb-[120px]">
       {cards.map((card, index) => (
         <ProblemCard
           key={index}

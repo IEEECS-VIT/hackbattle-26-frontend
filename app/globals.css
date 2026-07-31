@@ -1,30 +1,57 @@
 @import "tailwindcss";
 
-:root {
-  --font-pixeboy: var(--font-pixeboy);
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  /*
+    FIX for the double-scrollbar bug: setting `overflow-x: hidden` on an
+    element without also setting `overflow-y` makes the browser compute
+    overflow-y as `auto` for that same element (per the CSS overflow
+    spec — "if one axis is non-visible, the other becomes auto unless
+    stated"). The old rule applied `overflow-x: hidden` to BOTH html and
+    body, so both silently became independently scrollable boxes —
+    two scroll containers, two scrollbars. Only html should own page
+    scroll/clipping; body is left with no overflow declaration at all
+    below, so it stays a normal flowing box instead of a second
+    scroll container.
+  */
+  overflow-x: hidden;
 }
 
-html,
 body {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100%;
-  overflow-x: hidden;
-}
 
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+  /*
+    REMOVED: the dark navy gradient that used to live here. This was a
+    placeholder from way back when body's background pointed at a
+    missing /background/Rayquaza1.svg -- it's dead code now that
+    MapScene renders its own /background/map.svg directly, and it's ALSO
+    the actual source of the "blue bar": html's `min-height: 100%` above
+    silently resolves to 100vh (the root element is special-cased to
+    resolve percentage heights against the viewport), so body was ALWAYS
+    at least one full screen tall -- meaning any time MapScene's own
+    content rendered shorter than a screen, this gradient showed through
+    below it, no matter how MapScene itself was sized.
 
-  background-image: url("/background/Rayquaza1.svg");
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-  background-attachment: scroll;
+    Replaced with a solid color close to the map art's own grass tone, so
+    IF a sliver ever shows (e.g. on an unusually short/wide viewport),
+    it blends instead of reading as a distinct bar. Tune this hex to
+    match your actual art's bottom edge if you ever spot a visible seam --
+    it's a fallback for an edge case, not something that should be
+    visible in normal use.
+  */
+  background-color: #3f6b34;
 }
 
 .pixeboy {
+  /*
+    next/font/local injects the real --font-pixeboy variable via the
+    className applied to <body> in app/layout.tsx (pixeboy.variable).
+    The previous `:root { --font-pixeboy: var(--font-pixeboy); }` rule
+    just referenced itself and did nothing -- removed as dead code.
+  */
   font-family: var(--font-pixeboy);
 }
