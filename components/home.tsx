@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 
 const Hero = () => {
   return (
@@ -16,16 +15,6 @@ const Hero = () => {
       </video>
 
       <div className="absolute inset-0 bg-blue-900/10 z-10"></div>
-
-      <div className="absolute top-20 sm:top-22 md:top-24 right-4 sm:right-6 md:right-8 z-20">
-        <Image
-          src="/hackbattle-logo.svg"
-          alt="Hack Battle Logo"
-          width={200}
-          height={150}
-          className="object-contain w-[80px] sm:w-[120px] md:w-[160px] lg:w-[200px] h-auto"
-        />
-      </div>
 
       <div className="absolute bottom-[12%] sm:bottom-[15%] md:bottom-[18%] lg:bottom-[20%] left-3 sm:left-6 md:left-12 lg:left-16 z-30 flex flex-col items-start max-w-[92vw] sm:max-w-[90vw] md:max-w-none">
         <h2
