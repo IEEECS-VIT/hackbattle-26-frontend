@@ -14,7 +14,7 @@ export default function FAQItem({
   onClick,
 }: FAQItemProps) {
   return (
-    <div className="group relative mb-4 w-full overflow-hidden border border-[#FF0000] bg-[#FF0000]/15 shadow-md backdrop-blur-[2rem] transition-colors duration-300 hover:bg-white/[0.03] last:mb-0 " >
+    <div className="group relative mb-4 w-full overflow-hidden border border-[#FF0000] bg-[#FF0000]/2 shadow-md backdrop-blur-[2rem] transition-colors duration-300 hover:bg-white/[0.13] last:mb-0 " >
       <button
         onClick={onClick}
         aria-expanded={isOpen}
