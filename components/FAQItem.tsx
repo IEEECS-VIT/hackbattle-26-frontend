@@ -14,11 +14,12 @@ export default function FAQItem({
   onClick,
 }: FAQItemProps) {
   return (
-    <div className="group relative mb-4 w-full overflow-hidden border border-[#FF0000] bg-[#FF0000]/2 shadow-md backdrop-blur-[2rem] transition-colors duration-300 hover:bg-white/[0.13] last:mb-0 " >
+    <div className="group relative mb-4 w-full overflow-hidden border border-[#FF0000] bg-[#FF0000]/2 shadow-md  transition-colors duration-300 hover:bg-white/[0.13] last:mb-0 ">
       <button
         onClick={onClick}
         aria-expanded={isOpen}
-        className=" flex w-full items-center gap-4 px-[clamp(1rem,2vw,2rem)] py-[clamp(1rem,2vw,2rem)]" >
+        className=" flex w-full items-center gap-4 px-[clamp(1rem,2vw,2rem)] py-[clamp(1rem,2vw,2rem)]"
+      >
         <div
           className={`shrink-0 transition-transform duration-300 ${
             isOpen ? "rotate-90" : ""
@@ -34,9 +35,7 @@ export default function FAQItem({
           </svg>
         </div>
 
-        <span
-          className=" flex-1 text-left font-pixeboy  text-white leading-tight break-words  text-[clamp(1.15rem,2vw,3rem)]"
-        >
+        <span className=" flex-1 text-left font-pixeboy  text-white leading-tight break-words  text-[clamp(1.15rem,2vw,3rem)]">
           {question}
         </span>
       </button>
@@ -47,8 +46,7 @@ export default function FAQItem({
         }`}
       >
         <div className="overflow-hidden">
-          <div
-            className=" font-pixeboy text-white leading-relaxed px-[clamp(1rem,2vw,2rem)] pb-[clamp(1rem,2vw,2rem)] text-[clamp(1rem,1.5vw,2rem)]">
+          <div className=" font-pixeboy text-white leading-relaxed px-[clamp(1rem,2vw,2rem)] pb-[clamp(1rem,2vw,2rem)] text-[clamp(1rem,1.5vw,2rem)]">
             {answer}
           </div>
         </div>
