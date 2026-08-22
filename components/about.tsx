@@ -4,13 +4,35 @@ export default function AboutPage() {
     <section
       id = "about"
       className="relative min-h-[110vh] md:min-h-screen w-full overflow-hidden"
-      style={{
-        backgroundImage: "url('/AboutUs/about_us_bg.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center 50px",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+      >
+
+      {/* Background 
+      <div
+        className="
+          absolute
+          inset-0
+          z-0
+          bg-cover
+          bg-no-repeat
+          bg-center
+        "
+        style={{
+          backgroundImage: "url('/AboutUs/about_us_bg.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center 50px",
+          backgroundRepeat: "no-repeat",
+        }}
+    /> */}
+
+    {/*Animated Background */}
+  
+    <div className="absolute inset-0 z-0 overflow-hidden">
+      <img
+        src="/AboutUs/animated_bg.webp"
+        alt="About Us"
+        className="h-full w-full object-cover"
+      />
+    </div>
 
       <div
       className="
@@ -23,6 +45,235 @@ export default function AboutPage() {
         bg-[#4FB5E5]
       "
     />
+
+      {/* Pokémon-style Wind Swirl
+      <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+        <svg
+          className="
+            absolute
+            left-[-300px]
+            top-[5%]
+            w-[450px]
+            h-[180px]
+            animate-wind-swirl
+          "
+          viewBox="0 0 450 180"
+          fill="none"
+        >
+          <path
+            d="M30 145
+               C100 80, 170 70, 230 110
+               C280 145, 340 120, 400 55"
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            opacity="0.3"
+          />        Wavy wind 
+          
+        </svg> 
+
+        <svg
+          className="
+            absolute
+            left-[-300px]
+            top-[10%]
+            w-[450px]
+            h-[180px]
+            animate-loop-wind
+          "
+          viewBox="0 0 450 180"
+          fill="none"
+        > 
+        <path
+            d="
+              M0 35
+
+              C10 22, 20 48, 30 35
+              C40 22, 50 48, 60 35
+              C70 22, 80 48, 90 35
+
+              C100 22, 108 8, 120 12
+              C134 17, 138 38, 126 47
+              C116 55, 104 47, 108 35
+              C111 27, 120 26, 126 32
+
+              C136 45, 146 22, 156 35
+              C166 48, 176 22, 186 35
+              C196 48, 206 22, 216 35
+              C226 48, 236 22, 246 35
+            "
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+            opacity="0.4"
+        />         
+        </svg>
+
+        <svg
+          className="
+            absolute
+            left-[-300px]
+            top-[20%]
+            w-[450px]
+            h-[180px]
+            animate-small-wind-1          
+          "
+          viewBox="0 0 450 180"
+          fill="none"
+        >
+        <path
+            d="
+              M0 35
+              C10 22, 20 48, 30 35
+              C40 22, 50 48, 60 35
+              C70 22, 80 48, 90 35
+              C100 22, 110 48, 120 35
+              C130 22, 140 48, 150 35
+              C160 22, 170 48, 180 35
+            "
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+            opacity="0.4"
+          />        
+          </svg>
+
+           <svg
+          className="
+            absolute
+            left-[-300px]
+            top-[30%]
+            w-[450px]
+            h-[180px]
+            animate-small-wind-2          
+          "
+          viewBox="0 0 450 180"
+          fill="none"
+        >
+        <path
+            d="
+              M0 35
+              C10 22, 20 48, 30 35
+              C40 22, 50 48, 60 35
+              C70 22, 80 48, 90 35
+              C100 22, 110 48, 120 35
+              C130 22, 140 48, 150 35
+              C160 22, 170 48, 180 35
+            "
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+            opacity="0.4"
+          />       
+          </svg>
+
+          <svg
+          className="
+            absolute
+            left-[-300px]
+            top-[55%]
+            w-[450px]
+            h-[180px]
+            animate-small-wind-2          
+          "
+          viewBox="0 0 450 180"
+          fill="none"
+        >
+        <path
+            d="
+              M0 35
+              C10 22, 20 48, 30 35
+              C40 22, 50 48, 60 35
+              C70 22, 80 48, 90 35
+              C100 22, 110 48, 120 35
+              C130 22, 140 48, 150 35
+              C160 22, 170 48, 180 35
+            "
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+            opacity="0.4"
+          />        
+          </svg>
+
+
+           <svg
+          className="
+            absolute
+            left-[-300px]
+            top-[50%]
+            w-[450px]
+            h-[180px]
+            animate-small-wind-1          
+          "
+          viewBox="0 0 450 180"
+          fill="none"
+        >
+        <path
+            d="
+              M0 35
+              C10 22, 20 48, 30 35
+              C40 22, 50 48, 60 35
+              C70 22, 80 48, 90 35
+              C100 22, 110 48, 120 35
+              C130 22, 140 48, 150 35
+              C160 22, 170 48, 180 35
+            "
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+            opacity="0.4"
+          />        
+          </svg>
+
+          <svg
+          className="
+            absolute
+            left-[-300px]
+            top-[40%]
+            w-[450px]
+            h-[180px]
+            animate-main-wind-1
+          "
+          viewBox="0 0 450 180"
+          fill="none"
+          > 
+          <path
+            d="
+              M0 35
+
+              C10 22, 20 48, 30 35
+              C40 22, 50 48, 60 35
+              C70 22, 80 48, 90 35
+
+              C100 22, 108 8, 120 12
+              C134 17, 138 38, 126 47
+              C116 55, 104 47, 108 35
+              C111 27, 120 26, 126 32
+
+              C136 45, 146 22, 156 35
+              C166 48, 176 22, 186 35
+              C196 48, 206 22, 216 35
+              C226 48, 236 22, 246 35
+            "
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+            opacity="0.4"
+        />          
+        </svg>
+
+      </div>
+*/}
+
 
 
       {/* Content */}
