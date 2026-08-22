@@ -112,3 +112,12 @@ body {
     -webkit-text-stroke: 6px #1a4a60;
   }
 }
+
+/* Mobile FAQ - preserve desktop, match 299x651 artwork */
+@media (max-width: 768px) {
+  #faq {
+    aspect-ratio: 299 / 651;
+    height: auto;
+    min-height: 0;
+  }
+}

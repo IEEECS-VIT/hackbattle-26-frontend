@@ -11,7 +11,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="relative w-full overflow-hidden flex flex-col max-md:min-h-[860px] max-md:py-0"
+      className="relative w-full overflow-hidden flex flex-col max-md:min-h-0 max-md:h-auto max-md:py-0"
     >
       {/* Desktop background - unchanged */}
       <Image
@@ -32,8 +32,8 @@ export default function FAQ() {
         className="block md:hidden object-cover object-center"
       />
 
-      {/* Mobile top characters */}
-      <div className="absolute z-20 block md:hidden left-[16px] top-[78px] w-[52px] h-[52px]">
+      {/* Mobile top characters - spec % */}
+      <div className="absolute z-20 block md:hidden left-[7.0%] top-[29.6%] w-[13.7%] h-[6.9%]">
         <Image
           src="/faq-background/pikachu.png"
           alt="pikachu"
@@ -43,7 +43,7 @@ export default function FAQ() {
           style={{ imageRendering: "pixelated" } as React.CSSProperties}
         />
       </div>
-      <div className="absolute z-20 block md:hidden right-[16px] top-[78px] w-[54px] h-[54px]">
+      <div className="absolute z-20 block md:hidden left-[78.3%] top-[29.2%] w-[16.1%] h-[7.5%]">
         <Image
           src="/faq-background/eve.png"
           alt="eve"
@@ -54,8 +54,8 @@ export default function FAQ() {
         />
       </div>
 
-      {/* Mobile bottom characters */}
-      <div className="absolute z-20 block md:hidden left-[12px] bottom-[10px] w-[60px] h-[60px]">
+      {/* Mobile bottom characters - spec % */}
+      <div className="absolute z-20 block md:hidden left-[2.7%] top-[90.8%] w-[22.1%] h-[9.1%]">
         <Image
           src="/faq-background/bulbasaur.png"
           alt="bulbasaur"
@@ -65,7 +65,7 @@ export default function FAQ() {
           style={{ imageRendering: "pixelated" } as React.CSSProperties}
         />
       </div>
-      <div className="absolute z-20 block md:hidden left-1/2 -translate-x-1/2 bottom-[12px] w-[52px] h-[52px]">
+      <div className="absolute z-20 block md:hidden left-[40.5%] top-[90.8%] w-[19.7%] h-[9.1%]">
         <Image
           src="/faq-background/trainer.png"
           alt="trainer"
@@ -75,7 +75,7 @@ export default function FAQ() {
           style={{ imageRendering: "pixelated" } as React.CSSProperties}
         />
       </div>
-      <div className="absolute z-20 block md:hidden right-[12px] bottom-[12px] w-[60px] h-[60px]">
+      <div className="absolute z-20 block md:hidden left-[73.9%] top-[90.6%] w-[22.4%] h-[9.2%]">
         <Image
           src="/faq-background/pokeball.png"
           alt="pokeball"
@@ -86,12 +86,12 @@ export default function FAQ() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[130rem] flex-col gap-[clamp(1rem,2vw,2rem)] px-[clamp(1rem,3vw,3rem)] pt-[clamp(1rem,2vw,2rem)] pb-[clamp(2rem,6vw,5rem)] max-md:max-w-[420px] max-md:gap-3 max-md:px-4 max-md:pt-5 max-md:pb-[78px]">
-        <h1 className="font-pixeboy text-center text-white leading-none drop-shadow-[0_6px_8px_rgba(0,0,0,0.9)] text-[clamp(4rem,12vw,15rem)] max-md:text-[68px] max-md:tracking-[2px] max-md:drop-shadow-[0_4px_6px_rgba(0,0,0,0.85)] max-md:pt-1">
+      <div className="relative z-10 mx-auto flex w-full max-w-[130rem] flex-col gap-[clamp(1rem,2vw,2rem)] px-[clamp(1rem,3vw,3rem)] pt-[clamp(1rem,2vw,2rem)] pb-[clamp(2rem,6vw,5rem)] max-md:max-w-none max-md:w-full max-md:h-full max-md:px-0 max-md:pt-0 max-md:pb-0 max-md:gap-0">
+        <h1 className="font-pixeboy text-center text-white leading-none drop-shadow-[0_6px_8px_rgba(0,0,0,0.9)] text-[clamp(4rem,12vw,15rem)] max-md:absolute max-md:left-[27.4%] max-md:top-[4.9%] max-md:w-[41.8%] max-md:h-[9.2%] max-md:flex max-md:items-center max-md:justify-center max-md:text-[clamp(48px,18vw,72px)] max-md:tracking-[1px] max-md:drop-shadow-[0_4px_6px_rgba(0,0,0,0.85)] max-md:pt-0">
           FAQ
         </h1>
 
-        <div className="mx-auto flex w-full flex-col gap-4 max-md:gap-[14px] max-md:mt-[28px]">
+        <div className="mx-auto flex w-full flex-col gap-4 max-md:absolute max-md:left-[4.7%] max-md:top-[36.7%] max-md:w-[88.3%] max-md:mx-0 max-md:gap-[clamp(14px,7.36vw,42px)]">
           {faqData.map((faq, index) => (
             <FAQItem
               key={index}
