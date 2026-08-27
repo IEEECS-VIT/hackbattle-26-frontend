@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { label: "HOME", href: "/" },
@@ -10,150 +13,88 @@ const navItems = [
 ];
 
 export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, []);
+
   return (
-    <nav
-      className="
-        fixed
-        top-0
-        left-0
-        right-0
-        z-50
+    <>
+      {}
+      <nav aria-label="Mobile navigation" className="fixed inset-x-0 top-0 z-50 border-b border-white/30 bg-gradient-to-b from-[#167f91]/90 to-[#095d70]/85 shadow-[0_8px_30px_rgba(4,45,61,0.18)] backdrop-blur-xl md:hidden">
+        <div className="flex h-16 items-center justify-between px-4 sm:h-[72px] sm:px-6">
+          <Link href="/" aria-label="HackBattle home" className="flex shrink-0 items-center gap-1" onClick={() => setMenuOpen(false)}>
+            <Image src="/Navbar/ieee-cs_logo.svg" alt="" width={37} height={40} priority className="h-auto w-7" />
+            <Image src="/Navbar/ieee-cs_text.svg" alt="IEEE Computer Society" width={92} height={40} priority className="h-auto w-[72px]" />
+          </Link>
 
-        h-[84px]
-
-        border-b
-        border-white/40
-
-        backdrop-blur-[70px]
-
-        bg-gradient-to-b
-        from-[#1B7C8C]/70
-        to-[#0F6775]/70
-      "
->
-      <div className="flex h-full items-center justify-between px-3 sm:px-6 md:px-[26px] gap-3">
-
-      {/* Logo */}
-      <Link href="/" className="flex items-center shrink-0">
-          <Image
-            src="/Navbar/ieee-cs_logo.svg"
-            alt="IEEE Computer Society Logo"
-            width={37}
-            height={40}
-            priority
-            className="
-              w-7
-              lg:w-8
-              xl:w-9
-              2xl:w-[37px]
-              h-auto
-            "
-          />
-
-          <Image
-            src="/Navbar/ieee-cs_text.svg"
-            alt="IEEE Computer Society"
-            width={92}
-            height={40}
-            priority
-            className="
-              w-16
-              lg:w-20
-              xl:w-24
-              2xl:w-[92px]
-              h-auto
-            "
-          />
-        </Link>
-
-      {/* Navigation */}
-      <div className="
-                flex
-                items-center
-                gap-3
-                md:gap-4
-                lg:gap-6
-                xl:gap-8
-                2xl:gap-10
-                overflow-x-auto
-                [scrollbar-width: none]
-                [-ms-overflow-style:none]
-                [&::-webkit-scrollbar]:hidden
-              ">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="
-                font-pixeboy
-                text-[26px]
-                sm:text-[22px]
-                md:text-[26px]
-                lg:text-[30px]
-                xl:text-[36px]
-                2xl:text-[42px]
-                leading-none
-                uppercase
-                text-white
-                whitespace-nowrap
-                shrink-0
-                hover:opacity-90
-                transition-all
-                duration-300
-              "
-            >
-              {item.label}
-            </Link>
-          ))}
+          <button type="button" aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"} onClick={() => setMenuOpen((open) => !open)} className="relative grid h-11 w-11 place-items-center rounded-full transition-transform active:translate-y-0.5">
+            <Image src="/Navbar/pokeball.svg" alt="" width={40} height={40} className="h-10 w-10 drop-shadow-[0_3px_0_#173c50]" />
+          </button>
         </div>
 
-        {/* Login */}        
-       <Link
-          href="/login"
-          aria-label="Login"
-          className="
-            relative
-            h-[38px]
-            w-[90px]
-            lg:w-[100px]
-            xl:w-[110px]
-            2xl:w-[118px]
-            flex-shrink-0
-          "
-        >
-        <Image
-          src="/Navbar/profile_icon.svg"
-          alt="Profile"
-          width={118}
-          height={43}
-          className="
-            relative
-            2xl:w-[118px]
-            2xl:h-[43px]
-            inset-0
-            w-full
-            h-auto
-          "
-        />
+        <div id="mobile-navigation" className={`overflow-hidden border-t border-white/20 transition-[max-height,opacity] duration-300 ease-out ${menuOpen ? "max-h-[440px] opacity-100" : "pointer-events-none max-h-0 opacity-0"}`}>
+          <div className="grid gap-1 bg-[#075568]/95 px-4 py-4 shadow-2xl sm:px-6">
+            {navItems.map((item, index) => (
+              <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="font-pixeboy group flex items-center justify-between rounded-xl px-3 py-2.5 text-[30px] leading-none text-white hover:bg-white/10 hover:text-[#ffdf50]">
+                <span><span className="mr-3 text-[#77dce7]">0{index + 1}</span>{item.label}</span>
+                <span aria-hidden="true" className="text-[#ffdf50]">›</span>
+              </Link>
+            ))}
+            <Link href="/login" onClick={() => setMenuOpen(false)} className="font-pixeboy mt-2 flex h-12 items-center justify-center rounded-xl border-2 border-[#163e54] bg-[#ffdb37] text-[29px] leading-none text-[#153e53] shadow-[0_4px_0_#163e54]">
+              LOGIN
+            </Link>
+          </div>
+        </div>
+      </nav>
 
-        <Image
-          src="/Navbar/pokeball.svg"
-          alt=""
-          width={36}
-          height={36}
-          className="
-            absolute
-            right-[4px]
-            top-[3px]
-            w-6
-            lg:w-7
-            xl:w-[32px]
-            2xl:w-[34px]
-            h-auto
-          "
-        />
-      </Link>
-      </div>
-    </nav>
+      {/* Original desktop navigation — intentionally unchanged */}
+      <nav
+        className="
+          fixed
+          top-0
+          left-0
+          right-0
+          z-50
+
+          h-[84px]
+
+          border-b
+          border-white/40
+
+          backdrop-blur-[70px]
+
+          bg-gradient-to-b
+          from-[#1B7C8C]/70
+          to-[#0F6775]/70
+          hidden md:block
+        "
+      >
+        <div className="flex h-full items-center justify-between px-3 sm:px-6 md:px-[26px] gap-3">
+          <Link href="/" className="flex items-center shrink-0">
+            <Image src="/Navbar/ieee-cs_logo.svg" alt="IEEE Computer Society Logo" width={37} height={40} priority className="w-7 lg:w-8 xl:w-9 2xl:w-[37px] h-auto" />
+            <Image src="/Navbar/ieee-cs_text.svg" alt="IEEE Computer Society" width={92} height={40} priority className="w-16 lg:w-20 xl:w-24 2xl:w-[92px] h-auto" />
+          </Link>
+
+          <div className="flex items-center gap-3 md:gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href} className="font-pixeboy text-[26px] sm:text-[22px] md:text-[26px] lg:text-[30px] xl:text-[36px] 2xl:text-[42px] leading-none uppercase text-white whitespace-nowrap shrink-0 hover:opacity-90 transition-all duration-300">
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          <Link href="/login" aria-label="Login" className="relative block h-[38px] w-[90px] lg:w-[100px] xl:w-[110px] 2xl:w-[118px] flex-shrink-0">
+            <Image src="/Navbar/profile_icon.svg" alt="Profile" width={118} height={43} className="absolute inset-0 h-auto w-full 2xl:h-[43px] 2xl:w-[118px]" />
+            <Image src="/Navbar/pokeball.svg" alt="" width={36} height={36} className="absolute right-[4px] top-[3px] w-6 lg:w-7 xl:w-[32px] 2xl:w-[34px] h-auto" />
+          </Link>
+        </div>
+      </nav>
+    </>
   );
 }
