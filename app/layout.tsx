@@ -1,9 +1,28 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import Navbar from "@/components/navbar";
 import "./globals.css";
 
-const pixeboy = localFont({
-  src: "../public/fonts/pixeboy.ttf",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "HackBattle 2026",
+  description: "IEEE CS VIT HackBattle",
+};
+
+export const pixeboy = localFont({
+  src: "./fonts/Pixeboy.ttf",
   variable: "--font-pixeboy",
+  display: "swap",
 });
 
 export default function RootLayout({
@@ -12,8 +31,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={pixeboy.variable}>{children}</body>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${pixeboy.variable} h-full antialiased`}
+    >
+      <body className="min-h-screen flex flex-col">
+        <Navbar />
+
+        <main className="flex-1">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
