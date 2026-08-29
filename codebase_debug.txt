@@ -1,0 +1,1647 @@
+
+
+==================== app\globals.css ====================
+
+@import "tailwindcss";
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  /*
+    FIX for the double-scrollbar bug: setting `overflow-x: hidden` on an
+    element without also setting `overflow-y` makes the browser compute
+    overflow-y as `auto` for that same element (per the CSS overflow
+    spec — "if one axis is non-visible, the other becomes auto unless
+    stated"). The old rule applied `overflow-x: hidden` to BOTH html and
+    body, so both silently became independently scrollable boxes —
+    two scroll containers, two scrollbars. Only html should own page
+    scroll/clipping; body is left with no overflow declaration at all
+    below, so it stays a normal flowing box instead of a second
+    scroll container.
+  */
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+
+  /*
+    REMOVED: the dark navy gradient that used to live here. This was a
+    placeholder from way back when body's background pointed at a
+    missing /background/Rayquaza1.svg -- it's dead code now that
+    MapScene renders its own /background/map.svg directly, and it's ALSO
+    the actual source of the "blue bar": html's `min-height: 100%` above
+    silently resolves to 100vh (the root element is special-cased to
+    resolve percentage heights against the viewport), so body was ALWAYS
+    at least one full screen tall -- meaning any time MapScene's own
+    content rendered shorter than a screen, this gradient showed through
+    below it, no matter how MapScene itself was sized.
+
+    Replaced with a solid color close to the map art's own grass tone, so
+    IF a sliver ever shows (e.g. on an unusually short/wide viewport),
+    it blends instead of reading as a distinct bar. Tune this hex to
+    match your actual art's bottom edge if you ever spot a visible seam --
+    it's a fallback for an edge case, not something that should be
+    visible in normal use.
+  */
+  background-color: #3f6b34;
+}
+
+.pixeboy {
+  /*
+    next/font/local injects the real --font-pixeboy variable via the
+    className applied to <body> in app/layout.tsx (pixeboy.variable).
+    The previous `:root { --font-pixeboy: var(--font-pixeboy); }` rule
+    just referenced itself and did nothing -- removed as dead code.
+  */
+  font-family: var(--font-pixeboy);
+}
+
+
+==================== app\layout.tsx ====================
+
+import localFont from "next/font/local";
+import "./globals.css";
+
+const pixeboy = localFont({
+  src: "../public/fonts/pixeboy.ttf",
+  variable: "--font-pixeboy",
+});
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body className={pixeboy.variable}>{children}</body>
+    </html>
+  );
+}
+
+
+==================== app\page.tsx ====================
+
+import MapScene from "../components/MapScene";
+
+export default function Home() {
+  return (
+    <main>
+      <MapScene />
+    </main>
+  );
+}
+
+
+==================== components\MapScene.tsx ====================
+
+"use client";
+
+import { useState } from "react";
+import { problems } from "../data/problems";
+import { Problem } from "../types/problem";
+import PokeballIsland from "./PokeballIsland";
+import RevealPanel from "./RevealPanel";
+
+export default function MapScene() {
+  const [selected, setSelected] = useState<Problem | null>(
+    problems[0] ?? null
+  );
+
+  function handleBallClick(problem: Problem) {
+    setSelected((prev) =>
+      prev?.id === problem.id ? null : problem
+    );
+  }
+
+  return (
+    <section className="relative w-full overflow-hidden bg-[#3f6b34]">
+
+      {/* ================= DESKTOP ================= */}
+      <div className="hidden md:block relative w-full aspect-[850/567]">
+
+        {/* Background */}
+        <img
+          src="/background/map.svg"
+          alt=""
+          aria-hidden
+          draggable={false}
+          className="
+            absolute inset-0
+            w-full h-full
+            object-fill
+            select-none
+            pointer-events-none
+          "
+        />
+
+        {/* Title */}
+        <h1
+          className="
+            absolute
+            top-[2%]
+            left-0 right-0
+            z-20
+            pixeboy
+            text-white
+            text-center
+            whitespace-nowrap
+            text-[28px]
+            sm:text-[44px]
+            lg:text-[56px]
+            drop-shadow-[0_4px_6px_rgba(0,0,0,0.9)]
+            pointer-events-none
+          "
+        >
+          PROBLEM STATEMENTS
+        </h1>
+
+        {/* Interactive layer */}
+        <div className="absolute inset-0 z-10">
+          {problems.map((problem) => (
+            <PokeballIsland
+              key={problem.id}
+              problem={problem}
+              onSelect={handleBallClick}
+              isActive={selected?.id === problem.id}
+            />
+          ))}
+
+          <RevealPanel
+            problem={selected}
+            onClose={() => setSelected(null)}
+          />
+        </div>
+      </div>
+
+
+      {/* ================= MOBILE ================= */}
+      <div
+  className="
+    md:hidden
+    relative
+    w-full
+    h-[850px]
+    overflow-hidden
+  "
+>
+  {/* Mobile background */}
+  <img
+  src="/background/map.svg"
+  alt=""
+  aria-hidden
+  draggable={false}
+  className="
+    absolute
+    inset-0
+    w-full
+    h-full
+    object-fill
+    select-none
+    pointer-events-none
+  "
+/>
+
+  {/* Mobile title */}
+  <h1
+    className="
+      absolute
+      top-[28px]
+      left-0
+      right-0
+      z-20
+      pixeboy
+      text-white
+      text-center
+      text-[28px]
+      leading-none
+      drop-shadow-[0_3px_5px_rgba(0,0,0,0.9)]
+      pointer-events-none
+    "
+  >
+    PROBLEM STATEMENTS
+  </h1>
+
+  {/* Mobile islands */}
+  <div className="absolute inset-0 z-10">
+    {problems.map((problem) => (
+      <PokeballIsland
+        key={problem.id}
+        problem={problem}
+        onSelect={handleBallClick}
+        isActive={selected?.id === problem.id}
+      />
+    ))}
+
+    <RevealPanel
+      problem={selected}
+      onClose={() => setSelected(null)}
+    />
+  </div>
+</div>
+
+    </section>
+  );
+}
+
+
+==================== components\PokeballIsland.tsx ====================
+
+"use client";
+
+import { motion } from "framer-motion";
+import { BallColor, Problem } from "../types/problem";
+import useIsMobile from "./useIsMobile";
+
+interface Props {
+  problem: Problem;
+  onSelect: (problem: Problem) => void;
+  isActive: boolean;
+}
+
+const BALL_SCALE: Record<BallColor, number> = {
+  black_ball: 0.98,
+  blue_red: 1.01,
+  green_ball: 1.000000001,
+  purple_ball: 1.07,
+  red_ball: 0.999,
+  white_ball: 1.064,
+  white_black_ball: 0.99,
+};
+
+const DEFAULT_BALL_SIZE = 62;
+const DEFAULT_STAGE_SIZE = 150;
+
+export default function PokeballIsland({
+  problem,
+  onSelect,
+  isActive,
+}: Props) {
+  const isMobile = useIsMobile();
+
+  const ballSize = isMobile
+    ? problem.mobileBallSize ?? 55
+    : problem.ballSize ?? DEFAULT_BALL_SIZE;
+
+  const stageSize = isMobile
+    ? problem.mobileStageSize ?? 110
+    : problem.stageSize ?? DEFAULT_STAGE_SIZE;
+
+  const ballOffsetTop = problem.ballOffsetTop ?? "40%";
+  const ballOffsetLeft = problem.ballOffsetLeft ?? "60%";
+
+  const numberX = problem.numberX ?? -4;
+  const numberY = problem.numberY ?? -4;
+
+  const position = isMobile
+    ? problem.mobilePosition ?? problem.position
+    : problem.position;
+
+  return (
+    <div
+      className="absolute"
+      style={{
+        top: position.top,
+        left: position.left,
+      }}
+    >
+      <div
+        className="relative"
+        style={{
+          width: stageSize,
+          height: stageSize,
+        }}
+      >
+        {/* Island */}
+        <img
+          src={problem.island}
+          alt=""
+          aria-hidden
+          className="
+            absolute
+            inset-0
+            w-full
+            h-full
+            object-contain
+            select-none
+            pointer-events-none
+          "
+          draggable={false}
+        />
+
+        {/* Problem number */}
+        <span
+          className="
+            absolute
+            z-10
+            pixeboy
+            text-white
+            text-[22px]
+            drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]
+            pointer-events-none
+          "
+          style={{
+            top: numberY,
+            left: numberX,
+          }}
+        >
+          {String(problem.index).padStart(2, "0")}
+        </span>
+
+        {/* Pokéball */}
+        <motion.button
+          type="button"
+          aria-label={`Open problem statement ${problem.index}`}
+          onClick={() => onSelect(problem)}
+          className="
+            absolute
+            z-20
+            rounded-full
+            cursor-pointer
+            focus-visible:outline
+            focus-visible:outline-2
+            focus-visible:outline-white
+          "
+          style={{
+            top: ballOffsetTop,
+            left: ballOffsetLeft,
+            width: ballSize,
+            height: ballSize,
+            marginTop: -ballSize / 2,
+            marginLeft: -ballSize / 2,
+            backgroundImage: `url(/pokeballs/${problem.ballColor}.svg)`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+          animate={{
+            y: 0,
+            scale: BALL_SCALE[problem.ballColor],
+          }}
+          transition={{
+            duration: 0.2,
+          }}
+          whileHover={{
+            scale: BALL_SCALE[problem.ballColor] * 1.12,
+          }}
+          whileTap={{
+            scale: BALL_SCALE[problem.ballColor] * 0.94,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+
+==================== components\RevealPanel.tsx ====================
+
+"use client";
+
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Problem } from "../types/problem";
+import SmokeEffect from "./SmokeEffect";
+import useIsMobile from "./useIsMobile";
+
+const REVEAL_SMOKE_CONFIG = {
+  black_ball: {
+    x: 0,
+    y: -250,
+    size: 0.55,
+  },
+
+  blue_red: {
+    x: 0,
+    y: -200,
+    size: 0.55,
+  },
+
+  green_ball: {
+    x: 0,
+    y: 300,
+    size: 0.895,
+  },
+
+  purple_ball: {
+    x: 0,
+    y: -50,
+    size: 0.75,
+  },
+
+  red_ball: {
+    x: 0,
+    y: -459,
+    size: 0.35,
+  },
+
+  white_ball: {
+    x: 40,
+    y: 0,
+    size: 0.65,
+  },
+
+  white_black_ball: {
+    x: 0,
+    y: 0,
+    size: 0.65,
+  },
+};
+
+type Phase = "drop" | "shake" | "burst" | "reveal";
+
+interface Props {
+  problem: Problem | null;
+  onClose: () => void;
+}
+
+const PARTICLE_ANGLES = [
+  0,
+  30,
+  60,
+  90,
+  120,
+  150,
+  180,
+  210,
+  240,
+  270,
+  300,
+  330,
+];
+
+const PARTICLE_RADIUS = 170;
+
+const SMOKE_PUFFS = [
+  { x: -46, y: -120, size: 22, delay: 0 },
+  { x: -22, y: -150, size: 30, delay: 0.05 },
+  { x: 4, y: -170, size: 26, delay: 0.02 },
+  { x: 28, y: -145, size: 32, delay: 0.09 },
+  { x: -34, y: -95, size: 18, delay: 0.14 },
+  { x: 20, y: -100, size: 20, delay: 0.11 },
+];
+
+const REVEAL_SMOKE_COLORS: Record<string, string> = {
+  black_ball: "#8B6CFF",
+  blue_red: "#4FC3FF",
+  green_ball: "#7DFF8A",
+  purple_ball: "#D66BFF",
+  red_ball: "#FF6B55",
+  white_ball: "#D9F6FF",
+  white_black_ball: "#FFD76B",
+};
+
+export default function RevealPanel({
+  problem,
+  onClose,
+}: Props) {
+  const isMobile = useIsMobile();
+
+  const [phase, setPhase] = useState<Phase>("drop");
+
+  useEffect(() => {
+    if (problem) {
+      setPhase("drop");
+    }
+  }, [problem?.id]);
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose]);
+
+  /*
+   * ---------------------------------------------------------
+   * Desktop reveal values
+   * ---------------------------------------------------------
+   */
+  const desktopClosedBallSize =
+    problem?.revealClosedBallSize ?? 300;
+
+  const desktopOpenBallSize =
+    problem?.revealOpenBallSize ?? 340;
+
+  const desktopRevealTop =
+    problem?.revealTop ?? "50%";
+
+  const desktopRevealLeft =
+    problem?.revealLeft ?? "66%";
+
+  const desktopStageSize =
+    problem?.revealStageSize ?? 360;
+
+  /*
+   * ---------------------------------------------------------
+   * Mobile reveal values
+   * ---------------------------------------------------------
+   *
+   * Mobile intentionally ignores the large desktop values
+   * from problems.ts so the opened Pokéball stays inside the
+   * phone viewport.
+   */
+  const closedBallSize = isMobile
+  ? 210
+  : desktopClosedBallSize;
+
+const openBallSize = isMobile
+  ? 230
+  : desktopOpenBallSize;
+
+const revealTop = isMobile
+  ? "46%"
+  : desktopRevealTop;
+
+const revealLeft = isMobile
+  ? "68%"
+  : desktopRevealLeft;
+
+const stageSize = isMobile
+  ? 270
+  : desktopStageSize;
+
+  /*
+   * ---------------------------------------------------------
+   * Shared ball positioning
+   * ---------------------------------------------------------
+   */
+  const ballX = problem?.revealBallX ?? 0;
+  const ballY = problem?.revealBallY ?? 0;
+
+  const flipStyle = {
+    scaleX: problem?.reverseOpen ? -1 : 1,
+  };
+
+  const ballSizeNow =
+    phase === "reveal" || phase === "burst"
+      ? openBallSize
+      : closedBallSize;
+
+  return (
+    <AnimatePresence>
+      {problem && (
+        <motion.div
+          className="absolute z-50"
+          style={{
+            top: revealTop,
+            left: revealLeft,
+            transform: "translateY(-50%)",
+          }}
+          initial={{
+            opacity: 0,
+            scale: 0.85,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
+          exit={{
+            opacity: 0,
+            scale: 0.85,
+          }}
+        >
+          <div
+            className="
+              relative
+              flex
+              items-center
+              justify-center
+            "
+            style={{
+              width: stageSize,
+              height: stageSize,
+            }}
+          >
+            {/* =================================================
+                BURST FLASH
+               ================================================= */}
+            {phase === "burst" && (
+              <motion.div
+                className="
+                  absolute
+                  rounded-full
+                  bg-white
+                "
+                style={{
+                  width: 60,
+                  height: 60,
+                }}
+                initial={{
+                  scale: 0,
+                  opacity: 0.9,
+                }}
+                animate={{
+                  scale: 7,
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.45,
+                  ease: "easeOut",
+                }}
+              />
+            )}
+
+            {/* =================================================
+                BURST PARTICLES
+                ================================================= */}
+            {phase === "burst" &&
+              PARTICLE_ANGLES.map((angle) => {
+                const rad = (angle * Math.PI) / 180;
+
+                const dx =
+                  Math.cos(rad) * PARTICLE_RADIUS;
+
+                const dy =
+                  Math.sin(rad) * PARTICLE_RADIUS;
+
+                return (
+                  <motion.span
+                    key={angle}
+                    className="
+                      absolute
+                      w-2
+                      h-2
+                      rounded-full
+                      bg-yellow-200
+                    "
+                    initial={{
+                      x: 0,
+                      y: 0,
+                      opacity: 1,
+                      scale: 1,
+                    }}
+                    animate={{
+                      x: dx,
+                      y: dy,
+                      opacity: 0,
+                      scale: 0.3,
+                    }}
+                    transition={{
+                      duration: 0.55,
+                      ease: "easeOut",
+                    }}
+                  />
+                );
+              })}
+
+            {/* =================================================
+                BURST SMOKE
+                Desktop only
+               ================================================= */}
+            {phase === "burst" &&
+              !isMobile &&
+              SMOKE_PUFFS.map((puff, i) => (
+                <motion.span
+                  key={`smoke-${i}`}
+                  className="
+                    absolute
+                    rounded-full
+                    bg-gray-200/70
+                  "
+                  style={{
+                    width: puff.size,
+                    height: puff.size,
+                  }}
+                  initial={{
+                    x: 0,
+                    y: 0,
+                    opacity: 0.6,
+                    scale: 0.5,
+                  }}
+                  animate={{
+                    x: puff.x,
+                    y: puff.y,
+                    opacity: 0,
+                    scale: 1.5,
+                  }}
+                  transition={{
+                    duration: 0.9,
+                    ease: "easeOut",
+                    delay: puff.delay,
+                  }}
+                />
+              ))}
+
+            {/* =================================================
+                POKÉBALL
+               ================================================= */}
+            <motion.img
+              key={
+                phase === "reveal" || phase === "burst"
+                  ? "open"
+                  : "closed"
+              }
+              src={
+                phase === "reveal" || phase === "burst"
+                  ? `/reveal_open/${problem.ballColor}.svg`
+                  : `/pokeballs/${problem.ballColor}.svg`
+              }
+              alt=""
+              aria-hidden
+              className="
+                object-contain
+                drop-shadow-[0_14px_26px_rgba(0,0,0,0.6)]
+              "
+              style={{
+                width: ballSizeNow,
+                height: ballSizeNow,
+                marginLeft: ballX,
+                marginTop: ballY,
+                ...flipStyle,
+              }}
+              initial={
+                phase === "drop"
+                  ? {
+                      y: -300,
+                      opacity: 0,
+                    }
+                  : false
+              }
+              animate={
+                phase === "drop"
+                  ? {
+                      y: 0,
+                      opacity: 1,
+                    }
+                  : phase === "shake"
+                  ? {
+                      rotate: [
+                        0,
+                        -14,
+                        14,
+                        -10,
+                        10,
+                        -5,
+                        5,
+                        0,
+                      ],
+                    }
+                  : {
+                      y: 0,
+                      opacity: 1,
+                    }
+              }
+              transition={
+                phase === "drop"
+                  ? {
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 14,
+                    }
+                  : phase === "shake"
+                  ? {
+                      duration: 0.7,
+                      ease: "easeInOut",
+                    }
+                  : {
+                      duration: 0.2,
+                    }
+              }
+              onAnimationComplete={() => {
+                if (phase === "drop") {
+                  setPhase("shake");
+                } else if (phase === "shake") {
+                  setPhase("burst");
+                }
+              }}
+            />
+
+            {/* =================================================
+                MAIN COLORED SMOKE
+                Desktop only
+               ================================================= */}
+            {phase === "reveal" && !isMobile && (
+              <div
+                className="
+                  absolute
+                  pointer-events-none
+                  z-10
+                "
+                style={{
+                  top:
+                    openBallSize * 0.62 +
+                    REVEAL_SMOKE_CONFIG[
+                      problem.ballColor
+                    ].y,
+
+                  left: `calc(
+                    50% +
+                    ${REVEAL_SMOKE_CONFIG[
+                      problem.ballColor
+                    ].x}px
+                  )`,
+
+                  width: openBallSize * 0.9,
+                  height: openBallSize * 0.75,
+
+                  transform: "translateX(-50%)",
+
+                  overflow: "visible",
+                }}
+              >
+                <SmokeEffect
+                  color={
+                    REVEAL_SMOKE_COLORS[
+                      problem.ballColor
+                    ]
+                  }
+                  size={
+                    openBallSize *
+                    0.55 *
+                    REVEAL_SMOKE_CONFIG[
+                      problem.ballColor
+                    ].size
+                  }
+                  startOffset={0}
+                />
+              </div>
+            )}
+
+            {/* =================================================
+                TRANSITION TIMER
+               ================================================= */}
+            {phase === "burst" && (
+              <BurstTimer
+                onDone={() => setPhase("reveal")}
+              />
+            )}
+
+            {/* =================================================
+                PROBLEM DESCRIPTION
+               ================================================= */}
+            <AnimatePresence>
+              {phase === "reveal" && (
+                <motion.p
+                  className="
+                    absolute
+                    inset-0
+                    flex
+                    items-center
+                    justify-center
+                    text-center
+                    px-8
+                    sm:px-16
+                    pixeboy
+                    text-white
+                    text-[14px]
+                    sm:text-[20px]
+                    leading-[1.35]
+                    sm:leading-[1.45]
+                    drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]
+                  "
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  transition={{
+                    delay: 0.2,
+                    duration: 0.35,
+                  }}
+                >
+                  {problem.description}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function BurstTimer({
+  onDone,
+}: {
+  onDone: () => void;
+}) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 550);
+
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  return null;
+}
+
+
+==================== components\SmokeEffect.tsx ====================
+
+"use client";
+
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+
+interface SmokeEffectProps {
+  color: string;
+  size: number;
+  startOffset?: number;
+}
+
+const PUFFS = [
+  // x, y, width, height, delay
+  { x: -0.85, y: 0.10, w: 0.85, h: 0.55, delay: 0.00 },
+  { x: -0.55, y: 0.02, w: 0.95, h: 0.62, delay: 0.05 },
+  { x: -0.20, y: 0.00, w: 1.10, h: 0.70, delay: 0.10 },
+  { x: 0.20, y: 0.00, w: 1.05, h: 0.68, delay: 0.15 },
+  { x: 0.55, y: 0.05, w: 0.95, h: 0.60, delay: 0.20 },
+  { x: 0.85, y: 0.12, w: 0.80, h: 0.52, delay: 0.25 },
+
+  { x: -0.95, y: 0.30, w: 0.80, h: 0.60, delay: 0.15 },
+  { x: -0.62, y: 0.28, w: 1.00, h: 0.72, delay: 0.20 },
+  { x: -0.25, y: 0.25, w: 1.15, h: 0.78, delay: 0.25 },
+  { x: 0.20, y: 0.25, w: 1.15, h: 0.78, delay: 0.30 },
+  { x: 0.60, y: 0.28, w: 1.00, h: 0.70, delay: 0.35 },
+  { x: 0.92, y: 0.34, w: 0.78, h: 0.58, delay: 0.40 },
+
+  { x: -0.75, y: 0.55, w: 0.90, h: 0.62, delay: 0.35 },
+  { x: -0.38, y: 0.52, w: 1.10, h: 0.72, delay: 0.40 },
+  { x: 0.00, y: 0.50, w: 1.25, h: 0.80, delay: 0.45 },
+  { x: 0.40, y: 0.54, w: 1.05, h: 0.72, delay: 0.50 },
+  { x: 0.76, y: 0.58, w: 0.90, h: 0.62, delay: 0.55 },
+
+  { x: -0.55, y: 0.78, w: 0.90, h: 0.52, delay: 0.55 },
+  { x: -0.18, y: 0.76, w: 1.10, h: 0.58, delay: 0.60 },
+  { x: 0.22, y: 0.78, w: 1.05, h: 0.58, delay: 0.65 },
+  { x: 0.58, y: 0.80, w: 0.85, h: 0.50, delay: 0.70 },
+];
+
+export default function SmokeEffect({
+  color,
+  size,
+  startOffset = 0,
+}: SmokeEffectProps) {
+  const [visible, setVisible] = useState(true);
+
+  /*
+   * Smoke exists for one burst only.
+   * After 4.2 seconds it is removed from the DOM.
+   */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(false);
+    }, 7000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!visible) {
+    return null;
+  }
+
+  const cloudWidth = size * 2.8;
+  const cloudHeight = size * 1.65;
+
+  return (
+    <div
+      className="absolute pointer-events-none"
+      style={{
+        width: cloudWidth,
+        height: cloudHeight,
+        left: "50%",
+        top: startOffset,
+        transform: "translateX(-50%)",
+        overflow: "visible",
+      }}
+    >
+      {/* Individual overlapping smoke puffs */}
+      {PUFFS.map((puff, index) => {
+        const width = size * puff.w;
+        const height = size * puff.h;
+
+        return (
+          <motion.div
+            key={index}
+            className="absolute"
+            style={{
+              width,
+              height,
+
+              left: `calc(50% + ${puff.x * size}px)`,
+              top: puff.y * size,
+
+              marginLeft: -width / 2,
+
+              /*
+               * Irregular rounded shape instead of a perfect circle.
+               */
+              borderRadius:
+                index % 3 === 0
+                  ? "55% 45% 60% 40%"
+                  : index % 3 === 1
+                    ? "45% 55% 40% 60%"
+                    : "50% 45% 55% 48%",
+
+              background: `
+                radial-gradient(
+                  ellipse at 50% 50%,
+                  ${color}E8 0%,
+                  ${color}C8 38%,
+                  ${color}8C 62%,
+                  ${color}35 78%,
+                  transparent 100%
+                )
+              `,
+
+              filter: "blur(9px)",
+            }}
+            initial={{
+              opacity: 0,
+              scale: 0.65,
+              y: -size * 0.15,
+            }}
+            animate={{
+              opacity: [0, 0.85, 0.78, 0],
+              scale: [0.65, 1.0, 1.12, 1.25],
+              y: [
+                -size * 0.15,
+                0,
+                size * 0.12,
+                size * 0.25,
+              ],
+              x: [
+                0,
+                puff.x < 0 ? -size * 0.08 : size * 0.08,
+                puff.x < 0 ? -size * 0.14 : size * 0.14,
+                puff.x < 0 ? -size * 0.20 : size * 0.20,
+              ],
+            }}
+            transition={{
+              duration: 3.5,
+              delay: puff.delay,
+              ease: "easeOut",
+            }}
+          />
+        );
+      })}
+
+      {/* Dense central core */}
+      <motion.div
+        className="absolute"
+        style={{
+          width: size * 1.5,
+          height: size * 0.85,
+
+          left: "50%",
+          top: size * 0.20,
+
+          marginLeft: -(size * 1.5) / 2,
+
+          borderRadius: "48% 52% 45% 55%",
+
+          background: `
+            radial-gradient(
+              ellipse,
+              ${color}DD 0%,
+              ${color}C2 38%,
+              ${color}80 62%,
+              transparent 88%
+            )
+          `,
+
+          filter: "blur(14px)",
+        }}
+        initial={{
+          opacity: 0,
+          scale: 0.7,
+        }}
+        animate={{
+          opacity: [0, 0.75, 0.7, 0],
+          scale: [0.7, 1, 1.12, 1.3],
+          y: [
+            0,
+            size * 0.05,
+            size * 0.15,
+            size * 0.28,
+          ],
+        }}
+        transition={{
+          duration: 3.8,
+          ease: "easeOut",
+        }}
+      />
+
+      {/* Very soft outer haze */}
+      <motion.div
+        className="absolute"
+        style={{
+          width: size * 2.5,
+          height: size * 1.15,
+
+          left: "50%",
+          top: size * 0.35,
+
+          marginLeft: -(size * 2.5) / 2,
+
+          borderRadius: "50%",
+
+          background: `
+            radial-gradient(
+              ellipse,
+              ${color}55 0%,
+              ${color}30 45%,
+              transparent 78%
+            )
+          `,
+
+          filter: "blur(20px)",
+        }}
+        initial={{
+          opacity: 0,
+          scale: 0.7,
+        }}
+        animate={{
+          opacity: [0, 0.45, 0.3, 0],
+          scale: [0.7, 1, 1.15, 1.3],
+          y: [0, size * 0.1, size * 0.2, size * 0.35],
+        }}
+        transition={{
+          duration: 4.0,
+          ease: "easeOut",
+        }}
+      />
+    </div>
+  );
+}
+
+
+==================== components\useIsMobile.ts ====================
+
+"use client";
+
+import { useEffect, useState } from "react";
+
+export default function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+
+    const update = () => {
+      setIsMobile(mediaQuery.matches);
+    };
+
+    update();
+
+    mediaQuery.addEventListener("change", update);
+
+    return () => {
+      mediaQuery.removeEventListener("change", update);
+    };
+  }, []);
+
+  return isMobile;
+}
+
+
+==================== components\ProblemCard.tsx ====================
+
+interface Props {
+  image: string;
+  text: string;
+  color: string;
+  reverse?: boolean;
+  scale: number;
+}
+
+export default function ProblemCard({
+  image,
+  text,
+  color,
+  reverse = false,
+  scale,
+}: Props) {
+  return (
+    <div
+      className={`
+        w-full
+        min-h-[270px]
+        flex
+        items-center
+        overflow-hidden
+        ${reverse ? "flex-row-reverse" : ""}
+      `}
+      style={{
+        backgroundColor: `${color}AA`,
+        backdropFilter: "blur(3px)",
+      }}
+    >
+      <div
+        className={`
+          w-[26%]
+          h-[270px]
+          flex
+          items-center
+          shrink-0
+          ${reverse ? "justify-end pr-6" : "justify-start pl-6"}
+        `}
+      >
+        <img
+          src={image}
+          alt="eeveelution"
+          className="object-contain"
+          style={{
+            width: "220px",
+            height: "220px",
+            transform: `scale(${scale})`,
+            transformOrigin: "center",
+          }}
+        />
+      </div>
+
+      <div
+        className="
+          flex-1
+          px-10
+          text-white
+          pixeboy
+          text-[31px]
+          leading-[1.35]
+          tracking-wide
+        "
+      >
+        {text}
+      </div>
+    </div>
+  );
+}
+
+
+==================== components\ProblemStatement.tsx ====================
+
+import ProblemCard from "./ProblemCard";
+
+const description =
+  "Build a secure offline communication platform capable of functioning without internet connectivity while maintaining encrypted peer-to-peer messaging and file transfer capabilities.";
+
+export default function ProblemStatement() {
+  const cards = [
+    {
+      image: "/evolution_images/Vaporeon.svg",
+      color: "#67B5DA",
+      reverse: false,
+      scale: 0.90,
+    },
+    {
+      image: "/evolution_images/Jolteon.svg",
+      color: "#D8CB55",
+      reverse: true,
+      scale: 0.85,
+    },
+    {
+      image: "/evolution_images/Flareon.svg",
+      color: "#D88D5E",
+      reverse: false,
+      scale: 1.45,
+    },
+    {
+      image: "/evolution_images/Espeon.svg",
+      color: "#C57AC8",
+      reverse: true,
+      scale: 1.55,
+    },
+    {
+      image: "/evolution_images/Umbreon.svg",
+      color: "#606060",
+      reverse: false,
+      scale: 1.25,
+    },
+    {
+      image: "/evolution_images/Leafeon.svg",
+      color: "#67B97B",
+      reverse: true,
+      scale: 1.2,
+    },
+    {
+      image: "/evolution_images/Glaceon.svg",
+      color: "#67B8D9",
+      reverse: false,
+      scale: 1.3,
+    },
+  ];
+
+  return (
+    <section className="pb-[120px]">
+      {cards.map((card, index) => (
+        <ProblemCard
+          key={index}
+          image={card.image}
+          text={description}
+          color={card.color}
+          reverse={card.reverse}
+          scale={card.scale}
+        />
+      ))}
+    </section>
+  );
+}
+
+
+==================== data\problems.ts ====================
+
+import { Problem } from "../types/problem";
+
+export const problems: Problem[] = [
+  {
+    id: "offline-mesh-chat",
+    index: 1,
+    title: "OFFLINE MESH CHAT",
+    description: "TODO: replace with real problem statement #1.",
+    ballColor: "white_ball",
+    island: "/stages/stone_palace.svg",
+    position: { top: "26.46%", left: "4.2648%" },
+    ballSize: 132.23,
+    stageSize: 200,
+    reverseOpen: true,
+
+
+    ballOffsetTop: "48%",
+    ballOffsetLeft: "60%",
+    numberX: 10,
+    numberY: 16,
+
+    revealTop: "-2%",
+    revealLeft: "30%",
+    revealStageSize: 1000,
+    revealClosedBallSize: 900,
+    revealOpenBallSize: 900,
+    mobilePosition: {
+  top: "15%",
+  left: "18%",
+},
+mobileStageSize: 105,
+mobileBallSize: 77,
+  },
+  {
+    id: "todo-problem-2",
+    index: 2,
+    title: "TODO",
+    description:
+      "TODO: replace with real problem statement #2. (Placeholder Lorem Ipsum removed -- this was a copy-paste leftover, not a real description; don't ship it as-is.)",
+    ballColor: "red_ball",
+    island: "/stages/drylands.svg",
+    position: { top: "33.548%", left: "20.02%" },
+    ballSize: 134.36,
+    stageSize: 198.45,
+    reverseOpen: true,
+    ballOffsetTop: "48%",
+    ballOffsetLeft: "60%",
+    numberX: 20,
+    numberY: 16,
+
+    // DEMO: noticeably bigger reveal ball than #1, sitting more central.
+    revealTop: "5%",
+    revealLeft: "30%",
+    revealStageSize: 1000,
+    revealClosedBallSize: 900,
+    revealOpenBallSize: 1580,
+    mobilePosition: {
+  top: "27%",
+  left: "42%",
+},
+mobileStageSize: 115,
+mobileBallSize: 75  ,
+  },
+  {
+    id: "todo-problem-3",
+    index: 3,
+    title: "TODO",
+    description: "TODO: replace with real problem statement #3.",
+    ballColor: "green_ball",
+    island: "/stages/plain_lands.svg",
+    position: { top: "42.241%", left: "7.02%" },
+    ballSize: 194.27,
+    stageSize: 190,
+    reverseOpen: true,
+    ballOffsetTop: "45%",
+    ballOffsetLeft: "60%",
+    numberX: 1,
+    numberY: 10,
+
+    // DEMO: pushed further right than #1/#2, smallest reveal ball of the
+    // seven.
+    revealTop: "-25%",
+    revealLeft: "20%",
+    revealStageSize: 1500,
+    revealClosedBallSize: 1060,
+    revealOpenBallSize: 700,
+    mobilePosition: {
+  top: "39%",
+  left: "12%",
+},
+mobileStageSize: 120,
+mobileBallSize: 128,
+  },
+  {
+    id: "todo-problem-4",
+    index: 4,
+    title: "TODO",
+    description: "TODO: replace with real problem statement #4.",
+    ballColor: "purple_ball",
+    island: "/stages/volcano.svg",
+    position: { top: "52%", left: "19.08%" },
+    ballSize: 79.25,
+    stageSize: 200,
+    reverseOpen: true,
+    ballOffsetTop: "48%",
+    ballOffsetLeft: "55%",
+    numberX: 24,
+    numberY: 13,
+
+    revealTop: "5%",
+    revealLeft: "36%",
+    revealStageSize: 900,
+    revealClosedBallSize: 600,
+    revealOpenBallSize: 800,
+    mobilePosition: {
+  top: "51%",
+  left: "40%",
+},
+mobileStageSize: 115,
+mobileBallSize: 54,
+  },
+  {
+    id: "todo-problem-5",
+    index: 5,
+    title: "TODO",
+    description: "TODO: replace with real problem statement #5.",
+    ballColor: "white_black_ball",
+    island: "/stages/tropic.svg",
+    position: { top: "60.568%", left: "5.04%" },
+    ballSize: 78.64,
+    stageSize: 225,
+    reverseOpen: true,
+    ballOffsetTop: "48%",
+    ballOffsetLeft: "60%",
+    numberX: 1,
+    numberY: 10,
+
+    // DEMO: the biggest reveal ball of the seven, both closed and open.
+    revealTop: "0.586%",
+    revealLeft: "38%",
+    revealStageSize: 900,
+    revealClosedBallSize: 560,
+    revealOpenBallSize: 750,
+    mobilePosition: {
+  top: "63%",
+  left: "12%",
+},
+mobileStageSize: 120,
+mobileBallSize: 54,
+  },
+  {
+    id: "todo-problem-6",
+    index: 6,
+    title: "TODO",
+    description: "TODO: replace with real problem statement #6.",
+    ballColor: "blue_red",
+    island: "/stages/glacier.svg",
+    position: { top: "71.67%", left: "22.547%" },
+    ballSize: 78.89,
+    stageSize: 220,
+    reverseOpen: true,
+    ballOffsetTop: "46%",
+    ballOffsetLeft: "58%",
+    numberX: 32,
+    numberY: 30,
+
+    revealTop: "10%",
+    revealLeft: "42%",
+    revealStageSize: 900,
+    revealClosedBallSize: 650,
+    revealOpenBallSize: 1050,
+    mobilePosition: {
+  top: "75%",
+  left: "43%",
+},
+mobileStageSize: 120,
+mobileBallSize: 54,
+  },
+  {
+    id: "todo-problem-7",
+    index: 7,
+    title: "TODO",
+    description: "TODO: replace with real problem statement #7.",
+    ballColor: "black_ball",
+    island: "/stages/stone_land.svg",
+    position: { top: "80.3268%", left: "3.69%" },
+    ballSize: 78.89,
+    stageSize: 237,
+    reverseOpen: true,
+    ballOffsetTop: "48%",
+    ballOffsetLeft: "60%",
+    numberX: 25,
+    numberY: 10,
+
+    revealTop: "5%",
+    revealLeft: "39%",
+    revealStageSize: 840,
+    revealClosedBallSize: 500,
+    revealOpenBallSize: 1050,
+    mobilePosition: {
+  top: "87%",
+  left: "12%",
+},
+mobileStageSize: 120,
+mobileBallSize: 54,
+  },
+];
+
+
+==================== types\problem.ts ====================
+
+export type BallColor =
+  | "black_ball"
+  | "blue_red"
+  | "green_ball"
+  | "purple_ball"
+  | "red_ball"
+  | "white_ball"
+  | "white_black_ball";
+
+export interface Problem {
+  id: string;              // stable key, e.g. "offline-mesh-chat"
+  index: number;           // 1-based display number (matches "01".."07" in art)
+  title: string;           // short heading shown after reveal
+  description: string;     // full problem statement
+  ballColor: BallColor;
+  island: string;          // e.g. "/stages/glacier.svg"
+  position: {
+  top: string;
+  left: string;
+};
+
+mobilePosition?: {
+  top: string;
+  left: string;
+};
+
+ballSize?: number;
+stageSize?: number;
+
+mobileBallSize?: number;
+mobileStageSize?: number;
+
+  ballOffsetTop?: string;
+  ballOffsetLeft?: string;
+
+  numberX?: number;
+  numberY?: number;
+
+  reverseOpen?: boolean;
+
+
+  revealClosedBallSize?: number;
+  revealOpenBallSize?: number;
+
+  revealBallX?: number;
+  revealBallY?: number;
+
+  revealTop?: string;
+  revealLeft?: string;
+  revealStageSize?: number;
+}
+
+
+==================== package.json ====================
+
+{
+  "name": "hackbattle-26",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "framer-motion": "^12.42.2",
+    "next": "16.2.10",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

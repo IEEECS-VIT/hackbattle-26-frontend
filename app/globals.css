@@ -55,3 +55,10 @@ body {
   */
   font-family: var(--font-pixeboy);
 }
+@media (max-width: 767px) {
+  html,
+  body {
+    overflow: hidden;
+    height: 100%;
+  }
+}
