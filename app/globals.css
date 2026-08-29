@@ -1,13 +1,51 @@
-@import url('https://fonts.cdnfonts.com/css/pixeboy');
 @import "tailwindcss";
 
+/* =========================================================
+   GLOBAL BASE
+   ========================================================= */
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: #3f6b34;
+}
+
+/* =========================================================
+   PIXEBOY
+   ========================================================= */
+
+/* Upstream webfont */
 @font-face {
-  font-family: 'Pixeboy';
-  src: url('/fonts/pixeboy.woff2') format('woff2');
+  font-family: "Pixeboy";
+  src: url("/fonts/pixeboy.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
+
+/*
+  next/font/local in app/layout.tsx provides:
+  --font-pixeboy
+*/
+.pixeboy {
+  font-family: var(--font-pixeboy), "Pixeboy", monospace;
+}
+
+.font-pixeboy {
+  font-family: var(--font-pixeboy), "Pixeboy", monospace !important;
+}
+
+/* =========================================================
+   TAILWIND THEME
+   ========================================================= */
 
 :root {
   --background: #ffffff;
@@ -19,7 +57,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-pixeboy: 'Pixeboy', monospace;
+  --font-pixeboy: "Pixeboy", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,24 +67,17 @@
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
-}
-
-.font-pixeboy {
-  font-family: var(--font-pixeboy), 'Pixeboy', monospace !important;
-}
-
+/* =========================================================
+   UPSTREAM / SITE EFFECTS
+   ========================================================= */
 
 .retro-scanlines {
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.15) 50%);
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.15) 50%
+  );
   background-size: 100% 4px;
 }
-
 
 @keyframes lcdFlash {
   0% {
@@ -82,7 +113,8 @@ body {
 }
 
 .animate-card-entry {
-  animation: cardEntry 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: cardEntry 0.85s cubic-bezier(0.34, 1.56, 0.64, 1)
+    forwards;
 }
 
 /* Responsive text stroke for HACKBATTLE title */
@@ -114,11 +146,26 @@ body {
   }
 }
 
-/* Mobile FAQ - preserve desktop, match 299x651 artwork */
+/* =========================================================
+   MOBILE FAQ
+   ========================================================= */
+
 @media (max-width: 768px) {
   #faq {
     aspect-ratio: 299 / 651;
     height: auto;
     min-height: 0;
+  }
+}
+
+/* =========================================================
+   MOBILE STATIC VIEW
+   ========================================================= */
+
+@media (max-width: 767px) {
+  html,
+  body {
+    overflow: hidden;
+    height: 100%;
   }
 }

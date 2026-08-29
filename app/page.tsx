@@ -1,23 +1,27 @@
-import Hero from '@/components/home';
-import FAQ from '@/components/FAQ';
-import AboutPage from '@/components/about';
-import PokedexJudge from '@/components/judges';
+import Hero from "@/components/home";
+import MapScene from "@/components/MapScene";
+import FAQ from "@/components/FAQ";
+import AboutPage from "@/components/about";
+import PokedexJudge from "@/components/judges";
 import Footer from "@/components/footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full overflow-x-hidden snap-y snap-proximity overflow-y-auto">
-<section className="min-h-screen w-full snap-start">
-      <Hero />
+    <main className="min-h-screen w-full overflow-x-hidden">
+      <section className="min-h-screen w-full">
+        <Hero />
       </section>
+
+      <MapScene />
 
       <AboutPage />
 
       <PokedexJudge />
 
-      <section className="w-full snap-start">
+      <section className="w-full">
         <FAQ />
       </section>
+
       <Footer />
     </main>
   );

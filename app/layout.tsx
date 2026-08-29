@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-import Navbar from "@/components/navbar";
 import localFont from "next/font/local";
+import Navbar from "@/components/navbar";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +18,6 @@ export const metadata: Metadata = {
   title: "HackBattle 2026",
   description: "IEEE CS VIT HackBattle",
 };
-
 
 export const pixeboy = localFont({
   src: "./fonts/Pixeboy.ttf",
@@ -38,13 +36,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${pixeboy.variable} h-full antialiased`}
     >
       <body className="min-h-screen flex flex-col">
-         <Navbar /> 
+        <Navbar />
 
         <main className="flex-1">
           {children}
         </main>
-
-      
       </body>
     </html>
   );
