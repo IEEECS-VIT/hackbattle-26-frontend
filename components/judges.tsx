@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import PokedexJudgeMobile from "./PokedexJudgeMobile";
 
 interface JudgeInfo {
   name: string;
@@ -13,6 +14,7 @@ interface JudgeInfo {
 }
 
 export default function PokedexJudge() {
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [currentJudge, setCurrentJudge] = useState<JudgeInfo | null>(null);
   const [isFlashing, setIsFlashing] = useState<boolean>(false);
   const [showQuestionMark, setShowQuestionMark] = useState<boolean>(false);
@@ -23,6 +25,17 @@ export default function PokedexJudge() {
     "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)"
   );
   const cardRef = useRef<HTMLDivElement>(null);
+
+  // 1. Screen size detector: true ONLY for small mobile devices (<640px)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const fetchRandomPokemon = useCallback(async () => {
     setIsFlashing(true);
@@ -94,6 +107,12 @@ export default function PokedexJudge() {
     );
   };
 
+  // 2. Render mobile view if under 640px viewport width
+  if (isMobile) {
+    return <PokedexJudgeMobile />;
+  }
+
+  // 3. Render desktop and iPad/Tablet layout for screen sizes >= 640px
   return (
     <div
       className="relative w-full min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 select-none overflow-y-auto overflow-x-hidden portrait-section-container"
@@ -378,17 +397,17 @@ export default function PokedexJudge() {
           }
 
           .portrait-card-scaler {
-  transform: scale(
-    min(
-      calc(85vw / 740px),
-      calc(55vh / 510px),
-      1.05
-    )
-  ) !important;
-  transform-origin: center center !important;
-  margin-top: auto !important;
-  margin-bottom: auto !important;
-}
+            transform: scale(
+              min(
+                calc(85vw / 740px),
+                calc(55vh / 510px),
+                1.05
+              )
+            ) !important;
+            transform-origin: center center !important;
+            margin-top: auto !important;
+            margin-bottom: auto !important;
+          }
 
           .portrait-card-scaler > div {
             flex-direction: row !important;
