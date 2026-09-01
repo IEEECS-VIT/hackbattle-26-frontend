@@ -4,35 +4,13 @@ export default function AboutPage() {
     <section
       id = "about"
       className="relative min-h-[110vh] md:min-h-screen w-full overflow-hidden"
-      >
-
-      {/* Background 
-      <div
-        className="
-          absolute
-          inset-0
-          z-0
-          bg-cover
-          bg-no-repeat
-          bg-center
-        "
-        style={{
-          backgroundImage: "url('/AboutUs/about_us_bg.svg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center 50px",
-          backgroundRepeat: "no-repeat",
-        }}
-    /> */}
-
-    {/*Animated Background */}
-  
-    <div className="absolute inset-0 z-0 overflow-hidden">
-      <img
-        src="/AboutUs/animated_bg.webp"
-        alt="About Us"
-        className="h-full w-full object-cover"
-      />
-    </div>
+      style={{
+        backgroundImage: "url('/grass.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center 50px",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
 
       <div
       className="

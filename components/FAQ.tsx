@@ -15,7 +15,7 @@ export default function FAQ() {
     >
       {/* Desktop background - unchanged */}
       <Image
-        src="/faq-background/faq-bottom.svg"
+        src="/faq-background/faq.png"
         alt=""
         fill
         priority

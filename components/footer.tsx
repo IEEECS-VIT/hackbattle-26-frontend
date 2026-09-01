@@ -6,7 +6,7 @@ export default function Footer() {
       className="
         relative
         w-full
-        h-[clamp(100px,14vw,180px)]
+        h-[clamp(100px,8vw,180px)]
         bg-cover
         bg-center
         bg-no-repeat

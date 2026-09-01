@@ -5,6 +5,7 @@ import AboutPage from "@/components/about";
 import PokedexJudge from "@/components/judges";
 import Footer from "@/components/footer";
 
+
 export default function Home() {
   return (
     <main className="min-h-screen w-full overflow-x-hidden">
@@ -12,9 +13,11 @@ export default function Home() {
         <Hero />
       </section>
 
-      <MapScene />
-
+    
       <AboutPage />
+   
+    
+  
 
       <PokedexJudge />
 

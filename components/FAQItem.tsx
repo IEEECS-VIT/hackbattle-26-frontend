@@ -14,11 +14,49 @@ export default function FAQItem({
   onClick,
 }: FAQItemProps) {
   return (
-    <div className="group relative mb-4 w-full overflow-hidden border border-[#FF0000] bg-[#FF0000]/2 shadow-md transition-colors duration-300 hover:bg-white/[0.13] last:mb-0 max-md:mb-0 max-md:w-full max-md:mx-0 max-md:border max-md:border-[#d8c99a]/35 max-md:bg-transparent max-md:bg-gradient-to-r max-md:from-[#aabf8e]/55 max-md:via-[#c4d0a8]/38 max-md:to-[#d7c46e]/52 max-md:backdrop-blur-[6px] max-md:shadow-[0_1px_2px_rgba(0,0,0,0.18)] max-md:hover:bg-white/[0.06] max-md:min-h-[clamp(36px,15.4vw,62px)] max-md:rounded-[2px]">
+    <div
+      className="
+    group relative mb-4 w-full overflow-hidden
+    border border-[#B8E8E8]/70
+    bg-[#0B5960]/35
+    backdrop-blur-[2px]
+    shadow-[0_4px_20px_rgba(0,40,50,0.25)]
+    transition-all duration-300
+    hover:border-[#D8FFFF]
+    hover:bg-[#0B5960]/50
+    hover:shadow-[0_0_20px_rgba(120,230,230,0.25)]
+    last:mb-0
+  "
+    >
+      {/* Overlay */}
+      {/* Hover overlay */}
+      <div
+        className="
+    pointer-events-none
+    absolute inset-0
+    bg-gradient-to-r
+    from-[#7DE2E2]/15
+    via-[#B6A5E8]/10
+    to-transparent
+    opacity-0
+    transition-opacity duration-300
+    group-hover:opacity-100
+  "
+      />
+
+      {/* Content */}
       <button
         onClick={onClick}
         aria-expanded={isOpen}
-        className="flex w-full items-center gap-4 px-[clamp(1rem,2vw,2rem)] py-[clamp(1rem,2vw,2rem)] max-md:px-[clamp(8px,4vw,16px)] max-md:py-[clamp(8px,4.68vw,18px)] max-md:gap-[clamp(6px,3vw,12px)]"
+        className="
+      relative z-10
+      flex w-full items-center gap-4
+      px-[clamp(1rem,2vw,2rem)]
+      py-[clamp(1rem,2vw,2rem)]
+      max-md:px-[clamp(8px,4vw,16px)]
+      max-md:py-[clamp(8px,4.68vw,18px)]
+      max-md:gap-[clamp(6px,3vw,12px)]
+    "
       >
         <div
           className={`shrink-0 transition-transform duration-300 ${
