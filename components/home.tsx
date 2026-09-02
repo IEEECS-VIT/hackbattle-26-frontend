@@ -39,12 +39,12 @@ const Hero = () => {
 
         <div className="relative z-30 mx-auto flex w-full flex-col items-center px-4 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:pb-12">
           <div className="flex w-fit max-w-full flex-col items-start gap-0">
-            <p className="text-[1.55rem] leading-none tracking-normal text-white sm:text-4xl" style={{ textShadow: "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60" }}>PRESENTS</p>
+            <p className="text-[1.7rem] leading-none tracking-normal text-white sm:text-4xl" style={{ textShadow: "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60" }}>PRESENTS</p>
             <div className="relative">
-              <h1 className="hackbattle-title text-[clamp(3.15rem,15.5vw,5.6rem)] font-bold leading-[0.8] tracking-[0.015em] sm:text-[6.5rem]" style={{ ...titleGradient, filter: "drop-shadow(3px 5px 0 rgba(26,74,96,.9))" }}>HACKBATTLE</h1>
-              <span aria-hidden="true" className="absolute left-0 top-0 w-full text-[clamp(3.15rem,15.5vw,5.6rem)] font-bold leading-[0.8] tracking-[0.015em] sm:text-[6.5rem]" style={{ background: "radial-gradient(circle at 70% 50%, #fff 0%, #fff 16%, #f8c61c 34%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>HACKBATTLE</span>
+              <h1 className="hackbattle-title text-[clamp(3.3rem,16.2vw,5.8rem)] font-bold leading-[0.8] tracking-[0.015em] sm:text-[6.5rem]" style={{ ...titleGradient, filter: "drop-shadow(3px 5px 0 rgba(26,74,96,.9))" }}>HACKBATTLE</h1>
+              <span aria-hidden="true" className="absolute left-0 top-0 w-full text-[clamp(3.3rem,16.2vw,5.8rem)] font-bold leading-[0.8] tracking-[0.015em] sm:text-[6.5rem]" style={{ background: "radial-gradient(circle at 70% 50%, #fff 0%, #fff 16%, #f8c61c 34%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>HACKBATTLE</span>
             </div>
-            <h2 className="max-w-[22rem] text-left text-[1.55rem] leading-[0.95] tracking-wide text-white sm:max-w-none sm:text-4xl" style={{ textShadow: "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60, 0 3px 0 #1a4a60" }}>THE ULTIMATE 36-HOUR HACKATHON</h2>
+            <h2 className="max-w-[23rem] text-left text-[1.7rem] leading-[0.95] tracking-wide text-white sm:max-w-none sm:text-4xl" style={{ textShadow: "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60, 0 3px 0 #1a4a60" }}>THE ULTIMATE 36-HOUR HACKATHON</h2>
           </div>
         </div>
       </section>
