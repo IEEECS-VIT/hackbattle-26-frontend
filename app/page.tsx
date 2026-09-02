@@ -14,7 +14,7 @@ export default function Home() {
       </section>
 
       <AboutPage />
-      <MapScene/>
+    
    
       <PokedexJudge />
 
