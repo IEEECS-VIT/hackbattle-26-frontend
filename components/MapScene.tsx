@@ -18,7 +18,10 @@ export default function MapScene() {
   }
 
   return (
-    <section className="relative w-full overflow-hidden">
+    <section
+  id="problems"
+  className="relative w-full overflow-hidden"
+>
 
       {/* ================= DESKTOP ================= */}
       <div className="hidden md:block relative w-full aspect-[850/567]">
