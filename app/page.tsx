@@ -13,12 +13,9 @@ export default function Home() {
         <Hero />
       </section>
 
-    
       <AboutPage />
+      <MapScene/>
    
-    
-  
-
       <PokedexJudge />
 
       <section className="w-full">
