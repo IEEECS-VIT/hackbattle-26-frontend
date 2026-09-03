@@ -5,6 +5,7 @@ import { Geist, Geist_Mono, Jersey_20 } from "next/font/google";
 import "./globals.css";
 
 import Navbar from "@/components/navbar";
+import { AuthProvider } from "@/components/AuthProvider";
 import localFont from "next/font/local";
 
 
@@ -49,11 +50,13 @@ export default function RootLayout({
     >
       
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
-        <Navbar />
+        <AuthProvider>
+          <Navbar />
 
-        <main className="flex-1">
-          {children}
-        </main>
+          <main className="flex-1">
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
