@@ -103,14 +103,17 @@ function SlotButton({
 
 type TeamScreenProps = {
   // "build" => BUILD YOUR TEAM (used by /team)
-  // "join"  => JOIN TEAM (used by /join-team)
+  // "join" => JOIN TEAM (used by /join-team)
   mode?: "build" | "join";
-  // Optional team invite code (6-char) provided by the backend.
-  // When null/undefined, the token UI renders an empty/"no data" state.
+
+  // Optional team invite code
   teamCode?: string | null;
 };
 
-export default function TeamScreen({ mode = "build", teamCode = null }: TeamScreenProps) {
+export default function TeamScreen({
+  mode = "build",
+  teamCode = null,
+}: TeamScreenProps) {
   const [players, setPlayers] = useState<Player[]>(INITIAL_PLAYERS);
 
   const [editing, setEditing] = useState(false);
@@ -124,12 +127,14 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
 
   const handleCopyTeamCode = async () => {
     if (!teamCode) return;
+
     try {
       await navigator.clipboard.writeText(teamCode);
       setCopied(true);
+
       window.setTimeout(() => setCopied(false), 1500);
     } catch {
-      // clipboard unavailable - do nothing
+      // Clipboard unavailable - do nothing
     }
   };
 
@@ -175,14 +180,11 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
     setEditing(false);
   };
 
-  const displayHeading = mode === "join" ? "JOIN TEAM" : "BUILD YOUR TEAM";
+  const displayHeading =
+    mode === "join" ? "JOIN TEAM" : "BUILD YOUR TEAM";
 
   return (
     <div className="team-page-outer w-full overflow-hidden bg-[#0a0d1c]">
-      {/* =====================================================
-          FULL VIEWPORT
-          ===================================================== */}
-
       <div
         className="
           flex
@@ -202,10 +204,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
           md:pt-[96px]
         "
       >
-        {/* =====================================================
-            NAVIGATION BUTTON ROW
-            (sits below the fixed Navbar, above the game area)
-            ===================================================== */}
+        {/* NAVIGATION */}
 
         <div
           className="
@@ -219,7 +218,6 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
           "
         >
           <div className="flex items-center">
-            {/* BACK button - navigates to login */}
             <Link
               href="/login"
               className="
@@ -276,9 +274,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
           </div>
         </div>
 
-        {/* =====================================================
-            MAIN GAME AREA
-            ===================================================== */}
+        {/* MAIN GAME AREA */}
 
         <div
           className="
@@ -294,9 +290,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
             bg-black
           "
         >
-          {/* =================================================
-              BACKGROUND
-              ================================================= */}
+          {/* BACKGROUND */}
 
           <div className="absolute inset-0 z-0">
             <Image
@@ -312,14 +306,9 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
             />
           </div>
 
-          {/* Dark overlay */}
-
           <div className="pointer-events-none absolute inset-0 z-[1] bg-black/30" />
 
-          {/* =================================================
-              TEAM INVITE CODE (top-right)
-              - only on the BUILD YOUR TEAM (/team) page
-              ================================================= */}
+          {/* TEAM CODE */}
 
           {mode === "build" && (
             <div
@@ -396,7 +385,14 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <rect
+                      x="9"
+                      y="9"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                    />
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                   </svg>
                 </button>
@@ -417,9 +413,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
             </div>
           )}
 
-          {/* =================================================
-              HEADING
-              ================================================= */}
+          {/* HEADING */}
 
           <div
             className="
@@ -454,9 +448,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
             </h1>
           </div>
 
-          {/* =================================================
-              MAIN STAGE
-              ================================================= */}
+          {/* MAIN STAGE */}
 
           <div
             className="
@@ -476,9 +468,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
               md:mb-4
             "
           >
-            {/* =================================================
-                CHARACTER IMAGE
-                ================================================= */}
+            {/* CHARACTERS */}
 
             <div
               className="
@@ -506,9 +496,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
               />
             </div>
 
-            {/* =================================================
-                PLAYER 1
-                ================================================= */}
+            {/* PLAYER 1 */}
 
             <div className="team-slot team-slot-1 absolute z-20">
               {player1Filled ? (
@@ -667,9 +655,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
               )}
             </div>
 
-            {/* =================================================
-                PLAYER 2
-                ================================================= */}
+            {/* PLAYER 2 */}
 
             <div className="team-slot team-slot-2 absolute z-20">
               <SlotButton
@@ -678,9 +664,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
               />
             </div>
 
-            {/* =================================================
-                PLAYER 3
-                ================================================= */}
+            {/* PLAYER 3 */}
 
             <div className="team-slot team-slot-3 absolute z-20">
               <SlotButton
@@ -689,9 +673,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
               />
             </div>
 
-            {/* =================================================
-                PLAYER 4
-                ================================================= */}
+            {/* PLAYER 4 */}
 
             <div className="team-slot team-slot-4 absolute z-20">
               <SlotButton
@@ -700,9 +682,7 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
               />
             </div>
 
-            {/* =================================================
-                PLAYER 5
-                ================================================= */}
+            {/* PLAYER 5 */}
 
             <div className="team-slot team-slot-5 absolute z-20">
               <SlotButton
@@ -714,29 +694,17 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
         </div>
       </div>
 
-      {/* =====================================================
-          RESPONSIVE CSS
-          ===================================================== */}
+      {/* RESPONSIVE CSS */}
 
       <style>{`
-        /* ================================================
-           PAGE
-           ================================================ */
-
         .team-page-outer {
           height: 100dvh;
           overflow: hidden;
         }
 
-        /* No blue/cyan border */
-
         .team-game-container {
           border: none;
         }
-
-        /* ================================================
-           NAVIGATION BUTTONS
-           ================================================ */
 
         .team-nav-row {
           height: auto;
@@ -747,17 +715,9 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
           white-space: nowrap;
         }
 
-        /* ================================================
-           STAGE
-           ================================================ */
-
         .team-stage {
           min-height: 0;
         }
-
-        /* ================================================
-           PLAYER SLOTS
-           ================================================ */
 
         .team-slot {
           width: min(26%, 220px);
@@ -769,10 +729,6 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
         .team-slot-filled span {
           font-size: clamp(12px, 1.5vw, 17px);
         }
-
-        /* ================================================
-           CHARACTER IMAGE
-           ================================================ */
 
         .team-characters {
           width: 72%;
@@ -788,10 +744,6 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
           max-width: 780px;
           object-fit: contain;
         }
-
-        /* ================================================
-           DESKTOP PLAYER POSITIONS
-           ================================================ */
 
         .team-slot-1 {
           left: 5%;
@@ -818,10 +770,6 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
           right: 5%;
           top: 31%;
         }
-
-        /* ================================================
-           LARGE DESKTOP
-           ================================================ */
 
         @media (min-width: 1024px) {
           .team-characters {
@@ -855,10 +803,6 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
             top: 32%;
           }
         }
-
-        /* ================================================
-           VERY LARGE DESKTOP
-           ================================================ */
 
         @media (min-width: 1280px) {
           .team-characters {
@@ -897,10 +841,6 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
           }
         }
 
-        /* ================================================
-           EXTRA LARGE SCREENS
-           ================================================ */
-
         @media (min-width: 1600px) {
           .team-characters {
             width: 80%;
@@ -908,10 +848,6 @@ export default function TeamScreen({ mode = "build", teamCode = null }: TeamScre
             bottom: 1%;
           }
         }
-
-        /* ================================================
-           MOBILE
-           ================================================ */
 
         @media (max-width: 640px) {
           .team-characters {
