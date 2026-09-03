@@ -17,8 +17,10 @@ const ActionBubble: React.FC<ActionBubbleProps> = ({
       onClick={onClick}
       className="
         relative
-        /* Preserved original size */
-        w-[30vw]
+        /* Responsive sizing */
+        w-[45vw]
+        sm:w-[40vw]
+        md:w-[30vw]
         aspect-[1.45]
 
         transition-transform
@@ -59,8 +61,9 @@ const ActionBubble: React.FC<ActionBubbleProps> = ({
 
           font-['Jersey_20']
           font-normal
-          /* Preserved original font scaling */
-          text-[3.1vw]
+          text-[4.5vw]
+          sm:text-[3.8vw]
+          md:text-[3.1vw]
           leading-none
           tracking-[-0.02em]
 
@@ -90,10 +93,11 @@ export const HackathonSelectionScreen: React.FC<{
         overflow-hidden
         select-none
         bg-black
+        md:block
       "
     >
       {/* ================================================= */}
-      {/* SIMPLE BACK TO HOME LINK */}
+      {/* BACK TO LOGIN LINK */}
       {/* ================================================= */}
       <Link
         href="/login"
@@ -106,7 +110,8 @@ export const HackathonSelectionScreen: React.FC<{
           inline-flex 
           items-center 
           gap-2 
-          text-2xl 
+          text-xl
+          sm:text-2xl 
           text-black/80 
           transition 
           hover:text-[#ffdf50]
@@ -114,85 +119,41 @@ export const HackathonSelectionScreen: React.FC<{
       >
         <span aria-hidden="true">←</span> BACK TO LOGIN
       </Link>
+
       {/* ================================================= */}
       {/* BACKGROUND */}
       {/* ================================================= */}
-      <img
-        src="/bg-landscape.svg"
-        alt=""
-        aria-hidden="true"
-        className="
-          absolute
-          inset-0
-          w-full
-          h-full
-          object-cover
-          object-center
-          z-0
-          pointer-events-none
-          select-none
-        "
-      />
-
-      {/* ================================================= */}
-      {/* BLUE LAPTOP + BUILD TEAM BUBBLE GROUP */}
-      {/* ================================================= */}
-      <div
-        className="
-          absolute
-          z-10
-          /* Preserved exact laptop positioning and width constraints */
-          w-[50vw]
-          max-w-[650px]
-          min-w-[360px]
-          left-[0.5vw]
-          bottom-[-5vh]
-        "
-      >
+      <picture className="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
+        <source media="(min-width: 768px)" srcSet="/bg-landscape.svg" />
         <img
-          src="/gba-blue.svg"
+          src="/HackathonSelectScreenbg.svg"
           alt=""
           aria-hidden="true"
-          className="
-            w-full
-            h-auto
-            object-contain
-            pointer-events-none
-            select-none
-          "
+          className="w-full h-full object-cover object-center"
         />
-
-        {/* Anchored relative to the Blue Laptop wrapper */}
-        <div
-          className="
-            absolute
-            left-[45%]
-            top-[5%]
-            z-20
-            pointer-events-auto
-          "
-        >
-          <ActionBubble
-            label="BUILD TEAM"
-            onClick={onBuildTeam}
-            frameSrc="/speech-bubble-frame-right.svg"
-          />
-        </div>
-      </div>
+      </picture>
 
       {/* ================================================= */}
-      {/* RED LAPTOP + JOIN TEAM BUBBLE GROUP */}
+      {/* RED GBA (Top Right on Mobile / Bottom Right on Desktop) */}
       {/* ================================================= */}
       <div
         className="
           absolute
           z-10
-          /* Preserved exact laptop positioning and width constraints */
-          w-[50vw]
-          max-w-[650px]
-          min-w-[360px]
-          right-[0.5vw]
-          bottom-[-5vh]
+          /* Mobile: Top-Right position */
+          w-[100vw]
+          max-w-[500px]
+          right-[-5%]
+          top-[28%]
+
+          /* Desktop: Bottom-Right position */
+          md:w-[50vw]
+          md:max-w-[650px]
+          md:min-w-[360px]
+          md:left-auto
+          md:right-[0.5vw]
+          md:top-auto
+          md:bottom-[-5vh]
         "
       >
         <img
@@ -208,20 +169,80 @@ export const HackathonSelectionScreen: React.FC<{
           "
         />
 
-        {/* Anchored relative to the Red Laptop wrapper */}
+        {/* Action Bubble positioning */}
         <div
-          className="
-            absolute
-            right-[45%]
-            top-[5%]
-            z-20
-            pointer-events-auto
-          "
+          /* AFTER */
+className="
+  hidden md:block
+  absolute
+  md:left-auto
+  md:right-[45%]
+  md:top-[5%]
+  z-20
+  pointer-events-auto
+"
         >
           <ActionBubble
             label="JOIN TEAM"
             onClick={onJoinTeam}
             frameSrc="/speech-bubble-frame.svg"
+          />
+        </div>
+      </div>
+
+      {/* ================================================= */}
+      {/* BLUE GBA (Bottom Left on Mobile / Bottom Left on Desktop) */}
+      {/* ================================================= */}
+      <div
+        className="
+          absolute
+          z-10
+          /* Mobile: Bottom-Left position */
+          w-[110vw]
+          max-w-[800px]
+          left-[-5%]
+          bottom-[0%]
+
+          /* Desktop: Bottom-Left position */
+          md:w-[50vw]
+          md:max-w-[650px]
+          md:min-w-[360px]
+          md:left-[0.5vw]
+          md:right-auto
+          md:top-auto
+          md:bottom-[-5vh]
+        "
+      >
+        <img
+          src="/gba-blue.svg"
+          alt=""
+          aria-hidden="true"
+          className="
+            w-full
+            h-auto
+            object-contain
+            pointer-events-none
+            select-none
+          "
+        />
+
+        {/* Action Bubble positioning */}
+        <div
+          /* AFTER */
+className="
+  hidden md:block
+  absolute
+  md:right-auto
+  md:left-[45%]
+  md:top-[5%]
+  z-20
+  pointer-events-auto
+"
+        >
+          <ActionBubble
+            label="BUILD TEAM"
+            onClick={onBuildTeam}
+            frameSrc="/speech-bubble-frame-right.svg"
           />
         </div>
       </div>
