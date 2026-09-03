@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
-
-
 import { Geist, Geist_Mono, Jersey_20 } from "next/font/google";
 import "./globals.css";
 
-import Navbar from "@/components/navbar";
 import { AuthProvider } from "@/components/AuthProvider";
 import localFont from "next/font/local";
-
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,14 +43,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${pixeboy.variable} ${jersey20.variable} antialiased`}
     >
-      
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <AuthProvider>
-          <Navbar />
-
-          <main className="flex-1">
-            {children}
-          </main>
+          {/* REMOVED <Navbar /> FROM HERE */}
+          {children}
         </AuthProvider>
       </body>
     </html>
