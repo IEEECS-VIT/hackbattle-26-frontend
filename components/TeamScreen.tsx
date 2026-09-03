@@ -105,9 +105,12 @@ type TeamScreenProps = {
   // "build" => BUILD YOUR TEAM (used by /team)
   // "join"  => JOIN TEAM (used by /join-team)
   mode?: "build" | "join";
+  // Optional team invite code (6-char) provided by the backend.
+  // When null/undefined, the token UI renders an empty/"no data" state.
+  teamCode?: string | null;
 };
 
-export default function TeamScreen({ mode = "build" }: TeamScreenProps) {
+export default function TeamScreen({ mode = "build", teamCode = null }: TeamScreenProps) {
   const [players, setPlayers] = useState<Player[]>(INITIAL_PLAYERS);
 
   const [editing, setEditing] = useState(false);
@@ -115,7 +118,20 @@ export default function TeamScreen({ mode = "build" }: TeamScreenProps) {
   const [editName, setEditName] = useState("John Doe");
   const [editTeam, setEditTeam] = useState("team name");
 
+  const [copied, setCopied] = useState(false);
+
   const player1Filled = players[0]?.filled;
+
+  const handleCopyTeamCode = async () => {
+    if (!teamCode) return;
+    try {
+      await navigator.clipboard.writeText(teamCode);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // clipboard unavailable - do nothing
+    }
+  };
 
   const handleSlotClick = (id: number) => {
     if (id === 1 && !player1Filled) {
@@ -203,13 +219,12 @@ export default function TeamScreen({ mode = "build" }: TeamScreenProps) {
           "
         >
           <div className="flex items-center">
-            {/* BACK button - left side, both pages, no navigation yet */}
-            <button
-              type="button"
+            {/* BACK button - navigates to login */}
+            <Link
+              href="/login"
               className="
                 team-nav-btn
                 inline-flex
-                cursor-pointer
                 items-center
                 rounded-[5px]
                 border-2
@@ -228,38 +243,12 @@ export default function TeamScreen({ mode = "build" }: TeamScreenProps) {
               "
             >
               BACK
-            </button>
+            </Link>
 
-            {mode === "build" ? (
-              <Link
-                href="/join-team"
-                className="
-                  team-nav-btn
-                  ml-3
-                  inline-flex
-                  items-center
-                  rounded-[5px]
-                  border-2
-                  border-black
-                  bg-white
-                  px-4
-                  py-1.5
-                  font-pixeboy
-                  leading-none
-                  text-black
-                  shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                  transition-all
-                  hover:brightness-95
-                  active:translate-y-[1px]
-                  active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
-                "
-              >
-                JOIN TEAM
-              </Link>
-            ) : (
+            {mode === "join" && (
               <div className="ml-auto">
-                <Link
-                  href="/team"
+                <button
+                  type="button"
                   className="
                     team-nav-btn
                     inline-flex
@@ -280,8 +269,8 @@ export default function TeamScreen({ mode = "build" }: TeamScreenProps) {
                     active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
                   "
                 >
-                  BUILD YOUR TEAM
-                </Link>
+                  LEAVE TEAM
+                </button>
               </div>
             )}
           </div>
@@ -326,6 +315,107 @@ export default function TeamScreen({ mode = "build" }: TeamScreenProps) {
           {/* Dark overlay */}
 
           <div className="pointer-events-none absolute inset-0 z-[1] bg-black/30" />
+
+          {/* =================================================
+              TEAM INVITE CODE (top-right)
+              - only on the BUILD YOUR TEAM (/team) page
+              ================================================= */}
+
+          {mode === "build" && (
+            <div
+              className="
+                team-token
+                absolute
+                right-2
+                top-2
+                z-30
+                sm:right-4
+                sm:top-3
+                md:right-5
+                md:top-4
+              "
+            >
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-2.5
+                  rounded-[5px]
+                  border-2
+                  border-black
+                  bg-white/95
+                  px-4
+                  py-2
+                  shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                "
+              >
+                <span
+                  className="
+                    font-pixeboy
+                    leading-none
+                    tracking-wider
+                    text-black
+                  "
+                  style={{ fontSize: "clamp(14px, 1.6vw, 22px)" }}
+                >
+                  {teamCode ? (
+                    teamCode
+                  ) : (
+                    <span className="opacity-50">----</span>
+                  )}
+                </span>
+
+                <button
+                  type="button"
+                  aria-label="Copy team code"
+                  onClick={handleCopyTeamCode}
+                  disabled={!teamCode}
+                  className="
+                    grid
+                    h-7
+                    w-7
+                    shrink-0
+                    cursor-pointer
+                    place-items-center
+                    rounded
+                    bg-black
+                    text-white
+                    transition-colors
+                    hover:bg-black/80
+                    disabled:cursor-not-allowed
+                    disabled:opacity-40
+                  "
+                >
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+
+                {copied && (
+                  <span
+                    className="
+                      font-pixeboy
+                      leading-none
+                      text-[#2e7d32]
+                    "
+                    style={{ fontSize: "clamp(10px, 1vw, 14px)" }}
+                  >
+                    COPIED!
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* =================================================
               HEADING
