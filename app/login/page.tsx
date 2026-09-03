@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 
 import { FirebaseError } from "firebase/app";
 import Image from "next/image";
@@ -62,6 +63,7 @@ function GoogleIcon() {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
   const {
     configured,
     loading,
@@ -80,6 +82,7 @@ export default function LoginPage() {
     setError("");
     try {
       await signInWithGoogle(selectedType);
+      router.push("/dashboard"); // <-- ADD THIS LINE (replace /test-ui with your target route)
     } catch (signInError) {
       setError(authErrorMessage(signInError));
     } finally {
@@ -155,14 +158,26 @@ export default function LoginPage() {
                   <p className="mt-1 truncate font-sans text-sm text-white/65">{user.email}</p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                disabled={pending}
-                className="font-pixeboy mt-7 w-full rounded-xl border-2 border-[#173c50] bg-[#ef5350] px-5 py-3 text-3xl text-white shadow-[0_5px_0_#173c50] transition hover:-translate-y-0.5 hover:brightness-105 active:translate-y-1 active:shadow-none disabled:cursor-wait disabled:opacity-60"
-              >
-                {pending ? "SIGNING OUT..." : "SIGN OUT"}
-              </button>
+              <div className="mt-7 flex flex-col gap-3">
+  {/* GO TO TEAM PAGE BUTTON */}
+  <button
+    type="button"
+    onClick={() => router.push("/dashboard")} // Update route path to your team page path
+    className="font-pixeboy w-full rounded-xl border-2 border-[#173c50] bg-[#ffdf50] px-5 py-3 text-3xl text-[#153e53] shadow-[0_5px_0_#173c50] transition hover:-translate-y-0.5 hover:bg-[#ffe873] active:translate-y-1 active:shadow-none"
+  >
+    GO TO TEAM PAGE
+  </button>
+
+  {/* SIGN OUT BUTTON */}
+  <button
+    type="button"
+    onClick={handleSignOut}
+    disabled={pending}
+    className="font-pixeboy w-full rounded-xl border-2 border-[#173c50] bg-[#ef5350] px-5 py-3 text-3xl text-white shadow-[0_5px_0_#173c50] transition hover:-translate-y-0.5 hover:brightness-105 active:translate-y-1 active:shadow-none disabled:cursor-wait disabled:opacity-60"
+  >
+    {pending ? "SIGNING OUT..." : "SIGN OUT"}
+  </button>
+</div>
             </div>
           ) : (
             <>
