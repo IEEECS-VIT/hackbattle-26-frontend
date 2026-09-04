@@ -112,7 +112,7 @@ export const HackathonSelectionScreen: React.FC<{
           gap-2 
           text-xl
           sm:text-2xl 
-          text-black/80 
+          text-white/80 
           transition 
           hover:text-[#ffdf50]
         "
