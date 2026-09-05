@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 
 type Player = {
   id: number;
@@ -114,6 +116,11 @@ export default function TeamScreen({
   mode = "build",
   teamCode = null,
 }: TeamScreenProps) {
+
+
+  const [isLeader, setIsLeader] = useState(false);
+  const router = useRouter();
+
   const [players, setPlayers] = useState<Player[]>(INITIAL_PLAYERS);
 
   const [editing, setEditing] = useState(false);
@@ -125,6 +132,19 @@ export default function TeamScreen({
 
   const player1Filled = players[0]?.filled;
 
+  useEffect(() => {
+    const fetchTeam = async () => {
+      const { data, status } = await api.getTeam();
+
+      if (status === 200 && data) {
+        setIsLeader(data.isLeader === true);
+      }
+    };
+
+    fetchTeam();
+  }, []);
+
+
   const handleCopyTeamCode = async () => {
     if (!teamCode) return;
 
@@ -135,6 +155,25 @@ export default function TeamScreen({
       window.setTimeout(() => setCopied(false), 1500);
     } catch {
       // Clipboard unavailable - do nothing
+    }
+  };
+
+  const handleLeaveTeam = async () => {
+    const { data, status } = await api.leaveTeam();
+
+    if (status === 200) {
+      router.push("/join-team");
+      return;
+    }
+
+    if (status === 401) {
+      alert("PLEASE LOG IN FIRST");
+    } else if (status === 403) {
+      alert("YOU ARE NOT IN A TEAM");
+    } else if (status === 404) {
+      alert("TEAM NOT FOUND");
+    } else {
+      alert(data?.message || "UNABLE TO LEAVE TEAM");
     }
   };
 
@@ -243,10 +282,38 @@ export default function TeamScreen({
               BACK
             </Link>
 
+          {isLeader && (
+            <Link
+              href="/submission"
+              className="
+                team-nav-btn
+                inline-flex
+                items-center
+                rounded-[5px]
+                border-2
+                border-black
+                bg-yellow-400
+                px-4
+                py-1.5
+                font-pixeboy
+                leading-none
+                text-black
+                shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                transition-all
+                hover:brightness-95
+                active:translate-y-[1px]
+                active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
+              "
+            >
+              SUBMIT PROJECT
+            </Link>
+          )}
+
             {mode === "join" && (
               <div className="ml-auto">
                 <button
                   type="button"
+                  onClick={handleLeaveTeam}
                   className="
                     team-nav-btn
                     inline-flex
