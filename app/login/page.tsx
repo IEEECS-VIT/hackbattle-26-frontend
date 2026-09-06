@@ -106,7 +106,7 @@ export default function LoginPage() {
   return (
     <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[#082f3d] px-4 pb-4 pt-20 text-white sm:px-6 md:pb-10 md:pt-28">
       <Image
-        src="/grass_wind_animation.webp"
+        src="/sleep.webp"
         alt=""
         fill
         priority
