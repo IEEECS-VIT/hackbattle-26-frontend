@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { api, GetTeamResponse } from "@/lib/api";
 
 type Player = {
   id: number;
@@ -11,45 +13,12 @@ type Player = {
   teamName: string;
 };
 
-const INITIAL_PLAYERS: Player[] = [
-  {
-    id: 1,
-    filled: false,
-    name: "John Doe",
-    teamName: "team name",
-  },
-  {
-    id: 2,
-    filled: false,
-    name: "",
-    teamName: "",
-  },
-  {
-    id: 3,
-    filled: false,
-    name: "",
-    teamName: "",
-  },
-  {
-    id: 4,
-    filled: false,
-    name: "",
-    teamName: "",
-  },
-  {
-    id: 5,
-    filled: false,
-    name: "",
-    teamName: "",
-  },
-];
-
 function SlotButton({
   label,
   onClick,
 }: {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
 }) {
   return (
     <button
@@ -102,86 +71,74 @@ function SlotButton({
 }
 
 type TeamScreenProps = {
-  // "build" => BUILD YOUR TEAM (used by /team)
-  // "join" => JOIN TEAM (used by /join-team)
   mode?: "build" | "join";
-
-  // Optional team invite code
   teamCode?: string | null;
+  teamData?: GetTeamResponse | null;
 };
 
 export default function TeamScreen({
   mode = "build",
   teamCode = null,
+  teamData = null,
 }: TeamScreenProps) {
-  const [players, setPlayers] = useState<Player[]>(INITIAL_PLAYERS);
-
-  const [editing, setEditing] = useState(false);
-
-  const [editName, setEditName] = useState("John Doe");
-  const [editTeam, setEditTeam] = useState("team name");
-
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
 
-  const player1Filled = players[0]?.filled;
+  const members = teamData?.members || [];
+  const isLeader = teamData?.isLeader ?? false;
+  const activeTeamCode = teamData?.code || teamCode;
+
+  // Fill up 5 slots using dynamic backend data
+  const players: Player[] = Array.from({ length: 5 }, (_, idx) => {
+    const member = members[idx];
+    return {
+      id: idx + 1,
+      filled: Boolean(member),
+      name: member?.name || "",
+      teamName: teamData?.name || "TEAM",
+    };
+  });
 
   const handleCopyTeamCode = async () => {
-    if (!teamCode) return;
+    if (!activeTeamCode) return;
 
     try {
-      await navigator.clipboard.writeText(teamCode);
+      await navigator.clipboard.writeText(activeTeamCode);
       setCopied(true);
-
       window.setTimeout(() => setCopied(false), 1500);
     } catch {
-      // Clipboard unavailable - do nothing
+      // Clipboard unavailable
     }
   };
 
-  const handleSlotClick = (id: number) => {
-    if (id === 1 && !player1Filled) {
-      setPlayers((prev) =>
-        prev.map((player) =>
-          player.id === 1
-            ? {
-                ...player,
-                filled: true,
-                name: editName || "John Doe",
-                teamName: editTeam || "team name",
-              }
-            : player
-        )
-      );
+  const handleLeaveTeam = async () => {
+    const { data, status } = await api.leaveTeam();
+
+    if (status === 200) {
+      router.push("/join-team");
+      return;
+    }
+
+    if (status === 401) {
+      alert("PLEASE LOG IN FIRST");
+    } else if (status === 403) {
+      alert("YOU ARE NOT IN A TEAM");
+    } else if (status === 404) {
+      alert("TEAM NOT FOUND");
+    } else {
+      alert(data?.message || "UNABLE TO LEAVE TEAM");
     }
   };
 
-  const handleEditSave = () => {
-    setPlayers((prev) =>
-      prev.map((player) =>
-        player.id === 1
-          ? {
-              ...player,
-              name: editName.trim() || "John Doe",
-              teamName: editTeam.trim() || "team name",
-            }
-          : player
-      )
-    );
-
-    setEditing(false);
+  const handleSubmissionClick = (e: React.MouseEvent) => {
+    const size = members.length;
+    if (size < 2 || size > 5) {
+      e.preventDefault();
+      alert("TEAM MUST HAVE 2 TO 5 MEMBERS TO SUBMIT A PROJECT");
+    }
   };
 
-  const handleEditCancel = () => {
-    const player1 = players.find((player) => player.id === 1);
-
-    setEditName(player1?.name || "John Doe");
-    setEditTeam(player1?.teamName || "team name");
-
-    setEditing(false);
-  };
-
-  const displayHeading =
-    mode === "join" ? "JOIN TEAM" : "BUILD YOUR TEAM";
+  const displayHeading = mode === "join" ? "JOIN TEAM" : "BUILD YOUR TEAM";
 
   return (
     <div className="team-page-outer w-full overflow-hidden bg-[#0a0d1c]">
@@ -217,7 +174,7 @@ export default function TeamScreen({
             md:pb-3
           "
         >
-          <div className="flex items-center">
+          <div className="flex items-center gap-3">
             <Link
               href="/login"
               className="
@@ -243,34 +200,61 @@ export default function TeamScreen({
               BACK
             </Link>
 
-            {mode === "join" && (
-              <div className="ml-auto">
-                <button
-                  type="button"
-                  className="
-                    team-nav-btn
-                    inline-flex
-                    items-center
-                    rounded-[5px]
-                    border-2
-                    border-black
-                    bg-white
-                    px-4
-                    py-1.5
-                    font-pixeboy
-                    leading-none
-                    text-black
-                    shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                    transition-all
-                    hover:brightness-95
-                    active:translate-y-[1px]
-                    active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
-                  "
-                >
-                  LEAVE TEAM
-                </button>
-              </div>
+            {isLeader && (
+              <Link
+                href="/submission"
+                onClick={handleSubmissionClick}
+                className="
+                  team-nav-btn
+                  inline-flex
+                  items-center
+                  rounded-[5px]
+                  border-2
+                  border-black
+                  bg-yellow-400
+                  px-4
+                  py-1.5
+                  font-pixeboy
+                  leading-none
+                  text-black
+                  shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                  transition-all
+                  hover:brightness-95
+                  active:translate-y-[1px]
+                  active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
+                "
+              >
+                SUBMIT PROJECT
+              </Link>
             )}
+
+            <div className="ml-auto">
+              <button
+                type="button"
+                onClick={handleLeaveTeam}
+                className="
+                  team-nav-btn
+                  inline-flex
+                  items-center
+                  rounded-[5px]
+                  border-2
+                  border-black
+                  bg-white
+                  px-4
+                  py-1.5
+                  font-pixeboy
+                  leading-none
+                  text-black
+                  shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                  transition-all
+                  hover:brightness-95
+                  active:translate-y-[1px]
+                  active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
+                "
+              >
+                LEAVE TEAM
+              </button>
+            </div>
           </div>
         </div>
 
@@ -347,8 +331,8 @@ export default function TeamScreen({
                   "
                   style={{ fontSize: "clamp(14px, 1.6vw, 22px)" }}
                 >
-                  {teamCode ? (
-                    teamCode
+                  {activeTeamCode ? (
+                    activeTeamCode
                   ) : (
                     <span className="opacity-50">----</span>
                   )}
@@ -358,7 +342,7 @@ export default function TeamScreen({
                   type="button"
                   aria-label="Copy team code"
                   onClick={handleCopyTeamCode}
-                  disabled={!teamCode}
+                  disabled={!activeTeamCode}
                   className="
                     grid
                     h-7
@@ -385,14 +369,7 @@ export default function TeamScreen({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <rect
-                      x="9"
-                      y="9"
-                      width="13"
-                      height="13"
-                      rx="2"
-                      ry="2"
-                    />
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                   </svg>
                 </button>
@@ -496,200 +473,48 @@ export default function TeamScreen({
               />
             </div>
 
-            {/* PLAYER 1 */}
+            {/* PLAYER SLOTS 1 TO 5 */}
 
-            <div className="team-slot team-slot-1 absolute z-20">
-              {player1Filled ? (
-                <div
-                  className="
-                    team-slot-filled
-                    flex
-                    h-full
-                    w-full
-                    flex-col
-                    justify-center
-                    rounded-[5px]
-                    border-[2px]
-                    border-black
-                    bg-white
-                    px-2.5
-                    py-1.5
-                    shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                  "
-                >
-                  {!editing ? (
-                    <>
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="truncate pr-1 font-pixeboy leading-none text-black">
-                          {players[0].name}
-                        </span>
-
-                        <button
-                          type="button"
-                          aria-label="Edit player 1"
-                          onClick={() => {
-                            setEditName(players[0].name);
-                            setEditTeam(players[0].teamName);
-                            setEditing(true);
-                          }}
-                          className="
-                            grid
-                            h-6
-                            w-6
-                            shrink-0
-                            place-items-center
-                            rounded
-                            transition-colors
-                            hover:bg-black/10
-                          "
-                        >
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="text-black"
-                          >
-                            <path d="M17 3a2.85 2.85 0 0 1 4 4L7.5 20.5 1 22l1.5-6.5L17 3z" />
-                          </svg>
-                        </button>
-                      </div>
-
-                      <span className="mt-0.5 truncate font-pixeboy leading-none text-[#c0392b]">
-                        {players[0].teamName}
+            {players.map((player) => (
+              <div
+                key={player.id}
+                className={`team-slot team-slot-${player.id} absolute z-20`}
+              >
+                {player.filled ? (
+                  <div
+                    className="
+                      team-slot-filled
+                      flex
+                      h-full
+                      w-full
+                      flex-col
+                      justify-center
+                      rounded-[5px]
+                      border-[2px]
+                      border-black
+                      bg-white
+                      px-2.5
+                      py-1.5
+                      shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                    "
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="truncate pr-1 font-pixeboy leading-none text-black">
+                        {player.name}
                       </span>
-                    </>
-                  ) : (
-                    <div className="flex w-full flex-col gap-1">
-                      <input
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        placeholder="Player name"
-                        className="
-                          w-full
-                          rounded
-                          border
-                          border-black/30
-                          bg-white
-                          px-1.5
-                          py-0.5
-                          font-pixeboy
-                          text-[12px]
-                          text-black
-                          outline-none
-                          focus:border-black
-                        "
-                      />
-
-                      <input
-                        value={editTeam}
-                        onChange={(e) => setEditTeam(e.target.value)}
-                        placeholder="Team name"
-                        className="
-                          w-full
-                          rounded
-                          border
-                          border-black/30
-                          bg-white
-                          px-1.5
-                          py-0.5
-                          font-pixeboy
-                          text-[12px]
-                          text-black
-                          outline-none
-                          focus:border-black
-                        "
-                      />
-
-                      <div className="mt-0.5 flex gap-1">
-                        <button
-                          type="button"
-                          onClick={handleEditSave}
-                          className="
-                            flex-1
-                            rounded
-                            border
-                            border-black
-                            bg-[#00bfff]
-                            py-0.5
-                            font-pixeboy
-                            text-[10px]
-                            text-white
-                            hover:bg-[#009ad9]
-                          "
-                        >
-                          SAVE
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={handleEditCancel}
-                          className="
-                            flex-1
-                            rounded
-                            border
-                            border-black
-                            bg-white
-                            py-0.5
-                            font-pixeboy
-                            text-[10px]
-                            text-black
-                            hover:bg-black/5
-                          "
-                        >
-                          CANCEL
-                        </button>
-                      </div>
                     </div>
-                  )}
-                </div>
-              ) : (
-                <SlotButton
-                  label="1"
-                  onClick={() => handleSlotClick(1)}
-                />
-              )}
-            </div>
 
-            {/* PLAYER 2 */}
-
-            <div className="team-slot team-slot-2 absolute z-20">
-              <SlotButton
-                label="2"
-                onClick={() => handleSlotClick(2)}
-              />
-            </div>
-
-            {/* PLAYER 3 */}
-
-            <div className="team-slot team-slot-3 absolute z-20">
-              <SlotButton
-                label="3"
-                onClick={() => handleSlotClick(3)}
-              />
-            </div>
-
-            {/* PLAYER 4 */}
-
-            <div className="team-slot team-slot-4 absolute z-20">
-              <SlotButton
-                label="4"
-                onClick={() => handleSlotClick(4)}
-              />
-            </div>
-
-            {/* PLAYER 5 */}
-
-            <div className="team-slot team-slot-5 absolute z-20">
-              <SlotButton
-                label="5"
-                onClick={() => handleSlotClick(5)}
-              />
-            </div>
+                    <span className="mt-0.5 truncate font-pixeboy leading-none text-[#c0392b]">
+                      {player.id === 1
+                        ? `${player.teamName} (LEADER)`
+                        : player.teamName}
+                    </span>
+                  </div>
+                ) : (
+                  <SlotButton label={String(player.id)} />
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
