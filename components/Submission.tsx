@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-
+import { useAuth } from "@/components/AuthProvider";
 export default function Submission() {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
@@ -10,17 +10,68 @@ export default function Submission() {
   const [figma, setFigma] = useState("");
   const [otherLinks, setOtherLinks] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { getIdToken } = useAuth();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
 
-    if (!projectName.trim() || !description.trim() || !track.trim()) {
-      alert("Please fill in Project Name, Project Description and Track.");
+  if (!description.trim() || !github.trim()) {
+    alert("Project Description and GitHub Link are required.");
+    return;
+  }
+
+  try {
+    setSubmitted(false);
+
+    const token = await getIdToken();
+
+    if (!token) {
+      alert("Please log in before submitting.");
       return;
     }
 
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/teams/project/submit`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          problem_stmt: description.trim(),
+          github_link: github.trim(),
+          figma_link: figma.trim(),
+          other_files: otherLinks.trim(),
+        }),
+      }
+    );
+
+    let data: { message?: string } = {};
+
+    try {
+      data = await response.json();
+    } catch {
+      // Some error responses may not contain JSON.
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || `Submission failed (${response.status})`
+      );
+    }
+
     setSubmitted(true);
+  } catch (error) {
+    console.error("Submission error:", error);
+
+    alert(
+      error instanceof Error
+        ? error.message
+        : "Unable to submit project. Please try again."
+    );
   }
+}
 
   return (
     <main className="w-full min-h-screen bg-black p-0">
