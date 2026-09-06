@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import TeamScreen from "@/components/TeamScreen";
 import { api, GetTeamResponse } from "@/lib/api";
@@ -10,14 +10,12 @@ export default function TeamPage() {
   const [teamData, setTeamData] = useState<GetTeamResponse | null>(null);
   const [teamName, setTeamName] = useState("");
   const [teamCode, setTeamCode] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
-  const fetchTeam = async () => {
+  const fetchTeam = useCallback(async () => {
     try {
-      setLoading(true);
       const { data, status } = await api.getTeam();
 
       if (status === 200 && data) {
@@ -31,14 +29,16 @@ export default function TeamPage() {
       }
     } catch (err) {
       console.error("Failed to fetch team:", err);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
-    fetchTeam();
-  }, []);
+    const timer = window.setTimeout(() => {
+      void fetchTeam();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [fetchTeam]);
 
 const handleCreateTeam = async () => {
   const name = teamName.trim();

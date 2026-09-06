@@ -17,7 +17,9 @@ export default function Home() {
       <MapScene/>
     
    
-      <PokedexJudge />
+      <section id="judge" className="w-full scroll-mt-16 md:scroll-mt-[84px]">
+        <PokedexJudge />
+      </section>
 
       <section className="w-full">
         <FAQ />

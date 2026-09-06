@@ -95,7 +95,11 @@ export default function Navbar() {
 
           <div className="flex items-center gap-3 md:gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href} className="font-pixeboy text-[26px] sm:text-[22px] md:text-[26px] lg:text-[30px] xl:text-[36px] 2xl:text-[42px] leading-none uppercase text-white whitespace-nowrap shrink-0 hover:opacity-90 transition-all duration-300">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="font-pixeboy shrink-0 whitespace-nowrap rounded-xl border border-transparent px-3 py-2 text-[26px] leading-none uppercase text-white transition-all duration-300 hover:border-white/25 hover:bg-white/10 hover:shadow-[0_6px_20px_rgba(3,35,46,0.18),inset_0_1px_0_rgba(255,255,255,0.16)] hover:backdrop-blur-sm sm:text-[22px] md:text-[26px] lg:text-[30px] xl:text-[36px] 2xl:text-[42px]"
+              >
                 {item.label}
               </Link>
             ))}
