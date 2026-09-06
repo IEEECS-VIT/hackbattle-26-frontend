@@ -113,29 +113,20 @@ export default function LoginPage() {
         sizes="100vw"
         className="-z-30 object-cover object-center"
       />
-      <div className="absolute inset-0 -z-20 bg-[linear-gradient(180deg,rgba(4,36,51,.82)_0%,rgba(5,89,104,.62)_52%,rgba(4,42,48,.78)_100%)]" />
-      <div className="retro-scanlines pointer-events-none absolute inset-0 -z-10 opacity-20" />
-      <div className="pointer-events-none absolute left-[-5rem] top-[18%] h-64 w-64 rounded-full bg-[#5ed7df]/15 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-[-8rem] right-[-4rem] h-80 w-80 rounded-full bg-[#ffdb37]/15 blur-3xl" />
+     
+     
+     
+      <div className="pointer-events-none absolute bottom-[-8rem] right-[-4rem] h-80 w-80 rounded-full blur-5xl" />
 
       <section className="w-full max-w-4xl text-center">
-        <h1 className="mx-auto w-full max-w-[9rem] sm:max-w-[17rem]">
-          <Image
-            src="/hackbattle-logo.png"
-            alt="HackBattle"
-            width={567}
-            height={440}
-            priority
-            className="h-auto w-full drop-shadow-[0_12px_18px_rgba(0,22,31,.45)]"
-          />
-        </h1>
+        
         {!user && (
           <p className="mt-2 font-sans text-sm text-white/75 sm:mt-4 sm:text-base">
             Choose your participant type to enter the arena.
           </p>
         )}
 
-        <div className="mx-auto mt-4 rounded-[1.75rem] border border-white/30 bg-[#073f50]/70 p-4 shadow-[0_24px_70px_rgba(0,22,31,.45)] backdrop-blur-xl sm:mt-7 sm:p-6">
+        <div className="mx-auto mt-4 rounded-[1.75rem] border border-white/30  p-4 shadow-[0_24px_70px_rgba(0,22,31,.45)]  sm:mt-7 sm:p-6">
           {loading ? (
             <div className="grid min-h-56 place-items-center" role="status">
               <p className="font-pixeboy animate-pulse text-4xl text-[#ffdf50]">
@@ -146,16 +137,16 @@ export default function LoginPage() {
             <div className="mx-auto max-w-xl py-4 sm:py-7">
               <div className="text-center">
                 <div className="min-w-0">
-                  <p className="font-sans text-xs font-bold tracking-[0.22em] text-[#8ee9ee]">
+                  <p className="font-sans text-xs font-bold tracking-[0.22em] text-black">
                     {participantType === "vit" ? "VIT STUDENT" : "EXTERNAL PARTICIPANT"}
                   </p>
                   <h2
-                    className="mt-2 break-words text-4xl leading-[0.95] text-white sm:text-5xl"
+                    className="mt-2 break-words text-4xl leading-[0.95] text-black sm:text-5xl"
                     style={{ fontFamily: 'var(--font-pixeboy), "Pixeboy", monospace' }}
                   >
                     WELCOME, {user.displayName?.split(" ")[0]?.toUpperCase() || "TRAINER"}
                   </h2>
-                  <p className="mt-1 truncate font-sans text-sm text-white/65">{user.email}</p>
+                  <p className="mt-1 truncate font-sans text-sm text-black">{user.email}</p>
                 </div>
               </div>
               <div className="mt-7 flex flex-col gap-3">
@@ -246,7 +237,7 @@ export default function LoginPage() {
 
         <Link
           href="/"
-          className="font-pixeboy mt-4 inline-flex items-center gap-2 text-2xl text-white/75 transition hover:text-[#ffdf50] sm:mt-6"
+          className="font-pixeboy mt-4 inline-flex items-center gap-2 text-2xl text-black transition hover:text-[#ffdf50] sm:mt-6"
         >
           <span aria-hidden="true">←</span> BACK TO HOME
         </Link>
