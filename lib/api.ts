@@ -1,7 +1,19 @@
+import { onAuthStateChanged, type Auth } from "firebase/auth";
+
 import { getFirebaseAuth } from "@/lib/firebase";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8081";
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8081";
+
+function waitForAuthUser(
+  auth: Auth
+): Promise<import("firebase/auth").User | null> {
+  return new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      resolve(user);
+    });
+  });
+}
 
 async function fetchWithAuth<T>(
   endpoint: string,
@@ -9,16 +21,26 @@ async function fetchWithAuth<T>(
 ): Promise<{ data: T | null; status: number }> {
   const auth = getFirebaseAuth();
 
-  const user = auth?.currentUser;
+  if (!auth) {
+    console.error("Firebase Auth is not initialized.");
+    return {
+      data: null,
+      status: 500,
+    };
+  }
+
+  // Wait until Firebase finishes restoring the authentication state
+  const user = auth.currentUser ?? (await waitForAuthUser(auth));
 
   if (!user) {
     console.error("No authenticated Firebase user found.");
-
     return {
       data: null,
       status: 401,
     };
   }
+
+  console.log("Authenticated Firebase user:", user.email);
 
   const token = await user.getIdToken();
 
@@ -100,15 +122,13 @@ export const api = {
       }),
     }),
 
-    leaveTeam: () =>
-        fetchWithAuth<{ message: string }>("/teams/leave-team", {
-            method: "DELETE",
-        }),
+  leaveTeam: () =>
+    fetchWithAuth<{ message: string }>("/teams/leave-team", {
+      method: "DELETE",
+    }),
 
-    getTeam: () =>
-        fetchWithAuth<GetTeamResponse>("/teams/get", {
-            method: "GET",
-        }),
-
-
+  getTeam: () =>
+    fetchWithAuth<GetTeamResponse>("/teams/get", {
+      method: "GET",
+    }),
 };
