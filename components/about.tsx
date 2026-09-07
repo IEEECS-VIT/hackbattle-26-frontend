@@ -3,7 +3,7 @@ export default function AboutPage() {
   return (
     <section
       id = "about"
-      className="relative min-h-[110vh] md:min-h-screen w-full overflow-hidden"
+      className="relative min-h-[110vh] md:min-h-screen w-full overflow-hidden pb-24"
       style={{
         backgroundImage: "url('/grass.webp')",
         backgroundSize: "cover",
