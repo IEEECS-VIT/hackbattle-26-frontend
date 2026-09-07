@@ -3,7 +3,7 @@
 import { FormEvent, useState, useMemo } from "react";
 import { useAuth } from "@/components/AuthProvider";
 
-// Define your tracks and their corresponding subtracks
+
 const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
   "AI / ML": [
     "Computer Vision & Pattern Recognition",
