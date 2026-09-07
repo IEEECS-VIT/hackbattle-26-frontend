@@ -46,7 +46,7 @@ float density(vec3 p) {
   float base = 1.0-smoothstep(0.19,0.48,ring + (billow-0.48)*0.65);
   float left = 1.0-smoothstep(0.30,0.64,length((warp-vec3(-0.82,0.10,0.0))*vec3(1.8,1.25,1.9)));
   float right = 1.0-smoothstep(0.30,0.64,length((warp-vec3(0.83,0.05,0.0))*vec3(1.8,1.25,1.9)));
-  float shape = max(base, max(left,right)*0.82);
+  float shape = max(base, max(left,right)*0.9);
   float detail = fbm(flow*2.0 + billow*1.7);
   float d = max(0.0, shape - 0.52 + (detail-0.42)*2.4) * smoothstep(0.0,0.3,shape);
   // Soft edge extinction, with a clear upper area for the lid and copy.
@@ -68,7 +68,7 @@ void main() {
       float folds = fbm(vec3(p.xy*6.0 + vec2(0.0,-uTime*0.13), p.z*0.7));
       float light = clamp(0.22 + (d-towardLight)*2.8 + folds*0.30,0.06,1.0);
       vec3 shaded = mix(uColor*0.12, mix(uColor,vec3(0.92,0.90,1.0),0.06),light);
-      float alpha = 1.0-exp(-d*0.72);
+      float alpha = 1.0-exp(-d*0.86);
       sum.rgb += (1.0-sum.a)*shaded*alpha;
       sum.a += (1.0-sum.a)*alpha;
       if(sum.a>0.97) break;
