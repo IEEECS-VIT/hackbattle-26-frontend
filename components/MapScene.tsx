@@ -59,7 +59,7 @@ export default function MapScene() {
             pointer-events-none
           "
         >
-          PROBLEM STATEMENTS
+          TRACKS
         </h1>
 
         {/* Interactive layer */}

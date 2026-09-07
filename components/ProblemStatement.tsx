@@ -30,12 +30,6 @@ export default function ProblemStatement() {
       scale: 1.55,
     },
     {
-      image: "/evolution_images/Umbreon.svg",
-      color: "#606060",
-      reverse: false,
-      scale: 1.25,
-    },
-    {
       image: "/evolution_images/Leafeon.svg",
       color: "#67B97B",
       reverse: true,
