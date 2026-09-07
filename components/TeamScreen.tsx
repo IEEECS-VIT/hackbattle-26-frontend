@@ -141,35 +141,51 @@ export default function TeamScreen({
   const displayHeading = mode === "join" ? "JOIN TEAM" : "BUILD YOUR TEAM";
 
   return (
-    <div className="team-page-outer w-full overflow-hidden bg-[#0a0d1c]">
-      <div
-        className="
-          flex
-          h-[100dvh]
-          w-full
-          flex-col
-          items-center
-          overflow-hidden
-          px-2
-          pb-2
-          pt-[76px]
-          sm:px-4
-          sm:pb-3
-          sm:pt-[84px]
-          md:px-6
-          md:pb-4
-          md:pt-[96px]
-        "
-      >
-        {/* NAVIGATION */}
+    <div className="team-page-outer relative w-full overflow-hidden">
+      {/* FULL PAGE BACKGROUND */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/team/team.svg"
+          alt="Team background"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+          style={{
+            objectPosition: "center center",
+          }}
+        />
+      </div>
 
+      {/* BACKGROUND OVERLAY */}
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-black/75" />
+      <div
+  className="
+    flex relative 
+    z-10
+    h-[100dvh]
+    w-full
+    flex-col
+    items-center
+    px-2
+    pb-0
+    pt-2
+    sm:px-4
+    sm:pb-0
+    sm:pt-2
+    md:px-6
+    md:pb-0
+    md:pt-3
+  "
+>
+        {/* NAVIGATION */}
         <div
           className="
             team-nav-row
             w-full
             max-w-[1400px]
             shrink-0
-            pb-2
+            pb-0
             sm:pb-3
             md:pb-3
           "
@@ -259,7 +275,6 @@ export default function TeamScreen({
         </div>
 
         {/* MAIN GAME AREA */}
-
         <div
           className="
             team-game-container
@@ -270,37 +285,16 @@ export default function TeamScreen({
             flex-1
             flex-col
             overflow-hidden
-            rounded-xl
-            bg-black
           "
         >
-          {/* BACKGROUND */}
-
-          <div className="absolute inset-0 z-0">
-            <Image
-              src="/team/team-background.png"
-              alt="Team background"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-              style={{
-                objectPosition: "center center",
-              }}
-            />
-          </div>
-
-          <div className="pointer-events-none absolute inset-0 z-[1] bg-black/30" />
-
           {/* TEAM CODE */}
-
           {mode === "build" && (
             <div
               className="
                 team-token
                 absolute
                 right-2
-                top-2
+                top-10
                 z-30
                 sm:right-4
                 sm:top-3
@@ -390,79 +384,75 @@ export default function TeamScreen({
             </div>
           )}
 
-          {/* HEADING */}
+          {/* HEADING*/} 
+{/* HEADING */}
+<div
+  className="
+    relative
+    z-30
+    flex
+    shrink-0
+    justify-center
+    px-2
+    pt-0
+  "
+>
+  <h1
+    className="
+      font-pixeboy
+      select-none
+      text-center
+      tracking-wider
+      text-white
+      pt-1
+    "
+    style={{
+      fontSize: "clamp(55px, 12vh, 140px)",
+      lineHeight: "0.9", /* Prevents vertical clipping on custom pixel fonts */
+      textShadow:
+        "4px 4px 0 #0a2a3a, -2px -2px 0 #0a2a3a, 2px -2px 0 #0a2a3a, -2px 2px 0 #0a2a3a, 0 5px 0 rgba(0,0,0,0.6)",
+      letterSpacing: "0.05em",
+    }}
+  >
+    {displayHeading}
+  </h1>
+</div> 
 
-          <div
-            className="
-              relative
-              z-20
-              flex
-              shrink-0
-              justify-center
-              px-2
-              pt-2
-              sm:pt-3
-              md:pt-4
-            "
-          >
-            <h1
-              className="
-                font-pixeboy
-                select-none
-                text-center
-                leading-none
-                tracking-wider
-                text-white
-              "
-              style={{
-                fontSize: "clamp(30px, 6vh, 78px)",
-                textShadow:
-                  "3px 3px 0 #0a2a3a, -1px -1px 0 #0a2a3a, 1px -1px 0 #0a2a3a, -1px 1px 0 #0a2a3a, 0 4px 0 rgba(0,0,0,0.6)",
-                letterSpacing: "0.05em",
-              }}
-            >
-              {displayHeading}
-            </h1>
-          </div>
-
-          {/* MAIN STAGE */}
-
-          <div
-            className="
-              team-stage
-              relative
-              z-10
-              mx-2
-              mt-1
-              mb-2
-              flex-1
-              overflow-hidden
-              sm:mx-4
-              sm:mt-2
-              sm:mb-3
-              md:mx-6
-              md:mt-2
-              md:mb-4
-            "
-          >
-            {/* CHARACTERS */}
-
+         {/* MAIN STAGE */}
+<div
+  className="
+    team-stage
+    relative
+    z-10
+    mx-2
+    mt-1
+    mb-0
+    pb-0
+    flex-1
+    overflow-hidden
+    sm:mx-4
+    sm:mt-2
+    md:mx-6
+  "
+>
+            {/* CHARACTERS  */}
             <div
               className="
                 team-characters
                 pointer-events-none
                 absolute
                 left-1/2
+                bottom-0
                 z-10
                 -translate-x-1/2
                 select-none
               "
             >
               <Image
-                src="/team/team-characters.png"
+                src="/team/team-characters.svg"
                 alt="Team characters"
-                width={1200}
-                height={600}
+                width={1700}
+                height={900}
                 priority
                 className="
                   h-auto
@@ -474,7 +464,6 @@ export default function TeamScreen({
             </div>
 
             {/* PLAYER SLOTS 1 TO 5 */}
-
             {players.map((player) => (
               <div
                 key={player.id}
@@ -520,7 +509,6 @@ export default function TeamScreen({
       </div>
 
       {/* RESPONSIVE CSS */}
-
       <style>{`
         .team-page-outer {
           height: 100dvh;
@@ -545,9 +533,9 @@ export default function TeamScreen({
         }
 
         .team-slot {
-          width: min(26%, 220px);
+          width: min(24%, 230px);
           height: clamp(38px, 6.5vh, 56px);
-          max-width: 220px;
+          max-width: 230px;
         }
 
         .team-slot-btn span:first-child,
@@ -555,164 +543,181 @@ export default function TeamScreen({
           font-size: clamp(12px, 1.5vw, 17px);
         }
 
-        .team-characters {
-          width: 72%;
-          max-width: 780px;
-          bottom: 1%;
-          display: flex;
-          justify-content: center;
-        }
+        /* CENTERED BOTTOM CHARACTERS - INCREASED SIZE */
+       /* CENTERED BOTTOM CHARACTERS - FIT TO BOTTOM WITHOUT CROPPING */
+.team-characters {
+  width: 82%;
+  max-width: 900px;
+  max-height: 75vh; /* Prevents overflow/cropping on short viewports */
+  bottom: 0 !important;
+  margin-bottom: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
 
-        .team-characters img {
-          width: 100%;
-          height: auto;
-          max-width: 780px;
-          object-fit: contain;
-        }
+.team-characters img {
+  width: 100%;
+  height: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  object-position: bottom center; /* Ensures base aligns flat with bottom */
+  display: block;
+}
 
+@media (min-width: 1024px) {
+  .team-characters {
+    width: 84%;
+    max-width: 950px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .team-characters {
+    width: 85%;
+    max-width: 1000px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .team-characters {
+    width: 88%;
+    max-width: 1080px;
+  }
+}
+
+@media (max-width: 640px) {
+  .team-characters {
+    width: 90%;
+    max-width: none;
+    max-height: 65vh;
+  }
+}
+
+        /* BASE / TABLET SLOT POSITIONS */
         .team-slot-1 {
-          left: 5%;
-          top: 31%;
+          left: 3%;
+          top: 25%;
         }
 
         .team-slot-2 {
-          left: 6%;
-          bottom: 5%;
+          left: 4%;
+          bottom: 8%;
         }
 
-        .team-slot-3 {
-          right: 23%;
-          top: 8%;
+       .team-slot-3 {
+  left: 62%; /* Shifted right so its left edge sits beyond the former center point */
+  transform: none; /* Removed center offset */
+  top: 2%;
+}
+        .team-slot-4 {
+          right: 4%;
+          bottom: 8%;
           left: auto;
         }
 
-        .team-slot-4 {
-          left: 44%;
-          bottom: 5%;
-        }
-
         .team-slot-5 {
-          right: 5%;
-          top: 31%;
+          right: 3%;
+          top: 25%;
+          left: auto;
         }
 
         @media (min-width: 1024px) {
-          .team-characters {
-            width: 74%;
-            max-width: 800px;
-            bottom: 1%;
-          }
 
           .team-slot-1 {
-            left: 7%;
-            top: 32%;
+            left: 4%;
+            top: 28%;
           }
 
           .team-slot-2 {
-            left: 8%;
-            bottom: 5%;
+            left: 5%;
+            bottom: 6%;
           }
 
           .team-slot-3 {
-            right: 24%;
-            top: 9%;
-          }
+    left: 54%;
+    top: 3%;
+  }
 
           .team-slot-4 {
-            left: 43%;
-            bottom: 5%;
+            right: 5%;
+            bottom: 6%;
           }
 
           .team-slot-5 {
-            right: 7%;
-            top: 32%;
+            right: 4%;
+            top: 28%;
           }
         }
 
         @media (min-width: 1280px) {
-          .team-characters {
-            width: 78%;
-            max-width: 860px;
-            bottom: 1%;
-          }
-
+        
           .team-slot {
-            width: min(24%, 230px);
+            width: min(22%, 240px);
           }
 
           .team-slot-1 {
-            left: 8%;
-            top: 33%;
+            left: 5%;
+            top: 30%;
           }
 
           .team-slot-2 {
-            left: 10%;
+            left: 6%;
             bottom: 5%;
           }
 
-          .team-slot-3 {
-            right: 25%;
-            top: 10%;
-          }
+         .team-slot-3 {
+    left: 55%;
+    top: 4%;
+  }
 
           .team-slot-4 {
-            left: 42%;
+            right: 6%;
             bottom: 5%;
           }
 
           .team-slot-5 {
-            right: 8%;
-            top: 33%;
+            right: 5%;
+            top: 30%;
           }
         }
 
-        @media (min-width: 1600px) {
-          .team-characters {
-            width: 80%;
-            max-width: 890px;
-            bottom: 1%;
-          }
-        }
 
         @media (max-width: 640px) {
-          .team-characters {
-            width: 72%;
-            max-width: none;
-            bottom: 2%;
-          }
 
-          .team-characters img {
-            max-width: none;
-          }
 
           .team-slot {
-            width: 35%;
+            width: 42%;
             height: clamp(34px, 6vh, 46px);
           }
 
           .team-slot-1 {
             left: 2%;
-            top: 23%;
+            top: 20%;
           }
 
           .team-slot-2 {
             left: 2%;
-            bottom: 19%;
+            bottom: 12%;
           }
 
-          .team-slot-3 {
-            right: 20%;
-            top: 7%;
+          .team-slot-3 {}
+    left: 46%;
+    top: 2%;
+
+            transform: translateX(-50%);
           }
 
           .team-slot-4 {
-            left: 39%;
-            bottom: 15%;
+            right: 2%;
+            bottom: 12%;
+            left: auto;
           }
 
           .team-slot-5 {
             right: 2%;
-            top: 27%;
+            top: 20%;
+            left: auto;
           }
         }
       `}</style>

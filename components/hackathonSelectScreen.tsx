@@ -102,20 +102,35 @@ export const HackathonSelectionScreen: React.FC<{
       <Link
         href="/login"
         className="
-          absolute 
-          top-6 
-          left-6 
-          z-50 
-          font-pixeboy 
-          inline-flex 
-          items-center 
-          gap-2 
-          text-xl
-          sm:text-2xl 
-          text-cyan-100
-          transition 
-          hover:text-[#ffdf50]
-        "
+        absolute
+        top-6
+        left-6
+        z-50
+
+        inline-flex
+        items-center
+        gap-2
+
+        px-5
+        py-2
+
+        bg-white
+        rounded-[6px]
+        border-4
+        border-black
+        shadow-[4px_4px_0px_#000]
+
+        font-pixeboy
+        text-xl
+        sm:text-2xl
+        text-black
+
+        transition
+        hover:bg-[#ffdf50]
+        hover:shadow-[2px_2px_0px_#000]
+        active:translate-x-[2px]
+        active:translate-y-[2px]
+      "
       >
         <span aria-hidden="true">←</span> BACK TO LOGIN
       </Link>
@@ -172,15 +187,17 @@ export const HackathonSelectionScreen: React.FC<{
         {/* Action Bubble positioning */}
         <div
           /* AFTER */
-className="
-  hidden md:block
-  absolute
-  md:left-auto
-  md:right-[45%]
-  md:top-[5%]
-  z-20
-  pointer-events-auto
-"
+          className="
+            hidden md:block
+            absolute
+            md:left-auto
+            md:right-[45%]
+            md:top-[5%]
+            z-20
+            pointer-events-auto
+
+            
+          "
         >
           <ActionBubble
             label="JOIN TEAM"
