@@ -1,16 +1,62 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+
+interface TypewriterTextProps {
+  text: string;
+  speed?: number; // Delay in ms between each character
+  delay?: number; // Delay before typing starts
+}
+
+// ----------------------------------------------------------------------
+// Typewriter Text Component for Video Game Retro Effect
+// ----------------------------------------------------------------------
+const TypewriterText: React.FC<TypewriterTextProps> = ({
+  text,
+  speed = 80,
+  delay = 200,
+}) => {
+  const [displayedText, setDisplayedText] = useState("");
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let currentIndex = 0;
+
+    // Optional delay before typing begins
+    const startTimeout = setTimeout(() => {
+      const intervalId = setInterval(() => {
+        if (currentIndex < text.length) {
+          setDisplayedText(text.slice(0, currentIndex + 1));
+          currentIndex++;
+        } else {
+          clearInterval(intervalId);
+        }
+      }, speed);
+
+      // Store interval reference on timeoutId for cleanup
+      timeoutId = intervalId as unknown as NodeJS.Timeout;
+    }, delay);
+
+    return () => {
+      clearTimeout(startTimeout);
+      if (timeoutId) clearInterval(timeoutId);
+    };
+  }, [text, speed, delay]);
+
+  return <span>{displayedText}</span>;
+};
 
 interface ActionBubbleProps {
   label: string;
   onClick?: () => void;
   frameSrc: string;
+  typingDelay?: number; // Custom delay option per bubble
 }
 
 const ActionBubble: React.FC<ActionBubbleProps> = ({
   label,
   onClick,
   frameSrc,
+  typingDelay = 200,
 }) => {
   return (
     <button
@@ -49,7 +95,7 @@ const ActionBubble: React.FC<ActionBubbleProps> = ({
         "
       />
 
-      {/* TEXT */}
+      {/* TEXT WITH GRADUAL TYPEWRITER EFFECT */}
       <span
         className="
           absolute
@@ -59,11 +105,11 @@ const ActionBubble: React.FC<ActionBubbleProps> = ({
           items-center
           justify-center
 
-          font-['Jersey_20']
+          font-pixieboy
           font-normal
-          text-[4.5vw]
-          sm:text-[3.8vw]
-          md:text-[3.1vw]
+          text-[5.5vw]
+          sm:text-[4.5vw]
+          md:text-[3.8vw]
           leading-none
           tracking-[-0.02em]
 
@@ -73,7 +119,7 @@ const ActionBubble: React.FC<ActionBubbleProps> = ({
           pb-[3%]
         "
       >
-        {label}
+        <TypewriterText text={label} speed={70} delay={typingDelay} />
       </span>
     </button>
   );
@@ -191,11 +237,11 @@ export const HackathonSelectionScreen: React.FC<{
             z-20
             pointer-events-auto
 
-            /* MOBILE POSITION (Adjust left/top here to slide bubble on mobile) */
+            /* MOBILE POSITION */
             left-[10%]
             top-[0%]
 
-            /* DESKTOP POSITION (Untouched from your snippet) */
+            /* DESKTOP POSITION */
             md:left-auto
             md:right-[45%]
             md:top-[5%]
@@ -205,6 +251,7 @@ export const HackathonSelectionScreen: React.FC<{
             label="JOIN TEAM"
             onClick={onJoinTeam}
             frameSrc="/speech-bubble-frame.svg"
+            typingDelay={300} // Starts typing 300ms after load
           />
         </div>
       </div>
@@ -252,11 +299,11 @@ export const HackathonSelectionScreen: React.FC<{
             z-20
             pointer-events-auto
 
-            /* MOBILE POSITION (Adjust left/top here to slide bubble on mobile) */
+            /* MOBILE POSITION */
             left-[55%]
             top-[40%]
 
-            /* DESKTOP POSITION (Untouched from your snippet) */
+            /* DESKTOP POSITION */
             md:right-auto
             md:left-[45%]
             md:top-[5%]
@@ -266,6 +313,7 @@ export const HackathonSelectionScreen: React.FC<{
             label="BUILD TEAM"
             onClick={onBuildTeam}
             frameSrc="/speech-bubble-frame-right.svg"
+            typingDelay={300} // Staggered delay to start typing after the first bubble
           />
         </div>
       </div>
