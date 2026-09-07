@@ -1,25 +1,124 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useMemo } from "react";
+import { useAuth } from "@/components/AuthProvider";
+
+
+const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
+  "AI / ML": [
+    "Computer Vision & Pattern Recognition",
+    "Natural Language Processing (NLP)",
+    "Generative AI & LLM Applications",
+    "Predictive Analytics & Forecasting",
+  ],
+  Web3: [
+    "DeFi (Decentralized Finance)",
+    "NFTs & Gaming",
+    "DAO & Governance",
+    "Smart Contract Infrastructure",
+  ],
+  Healthcare: [
+    "Remote Patient Monitoring",
+    "AI Diagnostics",
+    "Mental Health & Wellness",
+    "Medical Records & Privacy",
+  ],
+  FinTech: [
+    "Micro-investing & Wealthtech",
+    "Fraud Detection",
+    "Payment Gateway Innovations",
+    "Personal Finance Management",
+  ],
+  OpenInnovation: [
+    "General Problem Solving",
+    "Social Good & Sustainability",
+    "EduTech & E-learning",
+  ],
+};
 
 export default function Submission() {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [track, setTrack] = useState("");
+  const [subtrack, setSubtrack] = useState("");
   const [github, setGithub] = useState("");
   const [figma, setFigma] = useState("");
   const [otherLinks, setOtherLinks] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { getIdToken } = useAuth();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  // Get dynamic subtrack options according to selected track
+  const availableSubtracks = useMemo(() => {
+    return TRACK_SUBTRACKS_MAP[track] || [];
+  }, [track]);
+
+  const handleTrackChange = (selectedTrack: string) => {
+    setTrack(selectedTrack);
+    setSubtrack(""); // Reset subtrack when main track changes
+    setSubmitted(false);
+  };
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!projectName.trim() || !description.trim() || !track.trim()) {
-      alert("Please fill in Project Name, Project Description and Track.");
+    if (!description.trim() || !github.trim()) {
+      alert("Project Description and GitHub Link are required.");
       return;
     }
 
-    setSubmitted(true);
+    try {
+      setSubmitted(false);
+
+      const token = await getIdToken();
+
+      if (!token) {
+        alert("Please log in before submitting.");
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/teams/project/submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            problem_stmt: description.trim(),
+            track: track.trim(),
+            subtrack: subtrack.trim(),
+            github_link: github.trim(),
+            figma_link: figma.trim(),
+            other_files: otherLinks.trim(),
+          }),
+        }
+      );
+
+      let data: { message?: string } = {};
+
+      try {
+        data = await response.json();
+      } catch {
+        // Some error responses may not contain JSON.
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || `Submission failed (${response.status})`
+        );
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Submission error:", error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit project. Please try again."
+      );
+    }
   }
 
   return (
@@ -37,10 +136,7 @@ export default function Submission() {
           md:min-h-0
         "
       >
-        {/* =====================================================
-            BACKGROUND VIDEO
-        ====================================================== */}
-
+        {/* BACKGROUND VIDEO */}
         <video
           autoPlay
           loop
@@ -66,10 +162,7 @@ export default function Submission() {
 
         <div className="absolute inset-0 z-[1] bg-white/[0.06]" />
 
-        {/* =====================================================
-            LOGOS
-        ====================================================== */}
-
+        {/* LOGOS */}
         <img
           src="/submission/HTML UI/IEEE_CS_logo.svg"
           alt="IEEE Computer Society"
@@ -108,26 +201,17 @@ export default function Submission() {
           "
         />
 
-        {/* =====================================================
-            FORM
-        ====================================================== */}
-
-        <form
-          onSubmit={handleSubmit}
-          className="absolute inset-0 z-10"
-        >
-          {/* ===================================================
-              TITLE
-          ==================================================== */}
-
+        {/* FORM */}
+        <form onSubmit={handleSubmit} className="absolute inset-0 z-10">
+          {/* TITLE */}
           <h1
             className="
               absolute
               left-[7%]
-              top-[7%]
+              top-[5%]
               whitespace-nowrap
               font-pixeboy
-              text-[clamp(3.8rem,15vw,5.2rem)]
+              text-[clamp(3.5rem,14vw,5rem)]
               leading-none
               tracking-wide
               text-[#f4c51e]
@@ -135,8 +219,8 @@ export default function Submission() {
               drop-shadow-[4px_4px_0_#111]
 
               md:left-[5%]
-              md:top-[9%]
-              md:text-[clamp(4rem,8vw,8rem)]
+              md:top-[8%]
+              md:text-[clamp(4rem,7vw,7.5rem)]
               md:[-webkit-text-stroke:4px_#111]
               md:drop-shadow-[5px_5px_0_#111]
             "
@@ -144,17 +228,14 @@ export default function Submission() {
             SUBMISSION
           </h1>
 
-          {/* ===================================================
-              DESKTOP DIVIDER
-          ==================================================== */}
-
+          {/* DESKTOP DIVIDER */}
           <div
             className="
               absolute
               left-[52%]
               top-[17%]
               hidden
-              h-[66%]
+              h-[76%]
               w-[3px]
               -translate-x-1/2
               bg-black
@@ -163,19 +244,16 @@ export default function Submission() {
             "
           />
 
-          {/* ===================================================
-              PROJECT NAME
-          ==================================================== */}
-
+          {/* PROJECT NAME */}
           <div
             className="
               absolute
               left-[8%]
-              top-[17%]
+              top-[15%]
               w-[84%]
 
               md:left-[7%]
-              md:top-[25%]
+              md:top-[22%]
               md:w-[44%]
             "
           >
@@ -184,11 +262,11 @@ export default function Submission() {
               className="
                 block
                 font-pixeboy
-                text-[clamp(1.05rem,4vw,1.35rem)]
+                text-[clamp(1rem,3.8vw,1.3rem)]
                 leading-none
                 text-black
 
-                md:text-[clamp(1.6rem,2.4vw,2.8rem)]
+                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
               "
             >
               PROJECT NAME
@@ -202,8 +280,8 @@ export default function Submission() {
                 setSubmitted(false);
               }}
               className="
-                mt-[1.5%]
-                h-[42px]
+                mt-[1%]
+                h-[38px]
                 w-full
                 border-[3px]
                 border-black
@@ -216,27 +294,24 @@ export default function Submission() {
                 focus:bg-white/40
 
                 md:mt-[1%]
-                md:h-[clamp(44px,3.3vw,58px)]
+                md:h-[clamp(40px,3vw,52px)]
                 md:border-[4px]
                 md:px-5
-                md:text-[clamp(1.1rem,1.5vw,1.7rem)]
+                md:text-[clamp(1.1rem,1.4vw,1.6rem)]
               "
             />
           </div>
 
-          {/* ===================================================
-              PROJECT DESCRIPTION
-          ==================================================== */}
-
+          {/* PROJECT DESCRIPTION */}
           <div
             className="
               absolute
               left-[8%]
-              top-[28%]
+              top-[25%]
               w-[84%]
 
               md:left-[7%]
-              md:top-[43%]
+              md:top-[38%]
               md:w-[44%]
             "
           >
@@ -245,11 +320,11 @@ export default function Submission() {
               className="
                 block
                 font-pixeboy
-                text-[clamp(1.05rem,4vw,1.35rem)]
+                text-[clamp(1rem,3.8vw,1.3rem)]
                 leading-none
                 text-black
 
-                md:text-[clamp(1.6rem,2.4vw,2.8rem)]
+                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
               "
             >
               PROJECT DESCRIPTION
@@ -263,8 +338,8 @@ export default function Submission() {
                 setSubmitted(false);
               }}
               className="
-                mt-[1.5%]
-                h-[105px]
+                mt-[1%]
+                h-[85px]
                 w-full
                 resize-none
                 border-[3px]
@@ -273,35 +348,32 @@ export default function Submission() {
                 px-3
                 py-2
                 font-pixeboy
-                text-[1rem]
+                text-[0.95rem]
                 leading-tight
                 text-black
                 outline-none
                 focus:bg-white/40
 
                 md:mt-[1%]
-                md:h-[clamp(145px,14vw,185px)]
+                md:h-[clamp(115px,11vw,150px)]
                 md:border-[4px]
                 md:px-5
-                md:py-4
-                md:text-[clamp(1.1rem,1.5vw,1.7rem)]
+                md:py-3
+                md:text-[clamp(1rem,1.3vw,1.5rem)]
               "
             />
           </div>
 
-          {/* ===================================================
-              TRACK
-          ==================================================== */}
-
+          {/* TRACK */}
           <div
             className="
               absolute
               left-[8%]
-              top-[45%]
+              top-[40%]
               w-[84%]
 
               md:left-[7%]
-              md:top-[71%]
+              md:top-[64%]
               md:w-[44%]
             "
           >
@@ -310,59 +382,131 @@ export default function Submission() {
               className="
                 block
                 font-pixeboy
-                text-[clamp(1.05rem,4vw,1.35rem)]
+                text-[clamp(1rem,3.8vw,1.3rem)]
                 leading-none
                 text-black
 
-                md:text-[clamp(1.6rem,2.4vw,2.8rem)]
+                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
               "
             >
               TRACK
             </label>
 
-            <input
+            <select
               id="track"
               value={track}
-              onChange={(e) => {
-                setTrack(e.target.value);
-                setSubmitted(false);
-              }}
+              onChange={(e) => handleTrackChange(e.target.value)}
               className="
-                mt-[1.5%]
-                h-[42px]
+                mt-[1%]
+                h-[38px]
                 w-full
                 border-[3px]
                 border-black
                 bg-white/20
                 px-3
                 font-pixeboy
-                text-[1rem]
+                text-[0.95rem]
                 text-black
                 outline-none
                 focus:bg-white/40
 
                 md:mt-[1%]
-                md:h-[clamp(44px,3.3vw,58px)]
+                md:h-[clamp(40px,3vw,52px)]
                 md:border-[4px]
                 md:px-5
-                md:text-[clamp(1.1rem,1.5vw,1.7rem)]
+                md:text-[clamp(1rem,1.3vw,1.5rem)]
               "
-            />
+            >
+              <option value="" disabled className="bg-white text-black">
+                SELECT TRACK
+              </option>
+              {Object.keys(TRACK_SUBTRACKS_MAP).map((t) => (
+                <option key={t} value={t} className="bg-white text-black">
+                  {t}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* ===================================================
-              GITHUB
-          ==================================================== */}
-
+          {/* SUBTRACK */}
           <div
             className="
               absolute
               left-[8%]
-              top-[56%]
+              top-[50%]
+              w-[84%]
+
+              md:left-[7%]
+              md:top-[79%]
+              md:w-[44%]
+            "
+          >
+            <label
+              htmlFor="subtrack"
+              className="
+                block
+                font-pixeboy
+                text-[clamp(1rem,3.8vw,1.3rem)]
+                leading-none
+                text-black
+
+                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
+              "
+            >
+              SUBTRACK
+            </label>
+
+            <select
+              id="subtrack"
+              value={subtrack}
+              disabled={availableSubtracks.length === 0}
+              onChange={(e) => {
+                setSubtrack(e.target.value);
+                setSubmitted(false);
+              }}
+              className="
+                mt-[1%]
+                h-[38px]
+                w-full
+                border-[3px]
+                border-black
+                bg-white/20
+                px-3
+                font-pixeboy
+                text-[0.95rem]
+                text-black
+                outline-none
+                focus:bg-white/40
+                disabled:opacity-50
+
+                md:mt-[1%]
+                md:h-[clamp(40px,3vw,52px)]
+                md:border-[4px]
+                md:px-5
+                md:text-[clamp(1rem,1.3vw,1.5rem)]
+              "
+            >
+              <option value="" disabled className="bg-white text-black">
+                {track ? "SELECT SUBTRACK" : "SELECT A TRACK FIRST"}
+              </option>
+              {availableSubtracks.map((st) => (
+                <option key={st} value={st} className="bg-white text-black">
+                  {st}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* GITHUB LINK */}
+          <div
+            className="
+              absolute
+              left-[8%]
+              top-[60%]
               w-[84%]
 
               md:left-[53.5%]
-              md:top-[25%]
+              md:top-[22%]
               md:w-[39%]
             "
           >
@@ -371,11 +515,11 @@ export default function Submission() {
               className="
                 block
                 font-pixeboy
-                text-[clamp(1.05rem,4vw,1.35rem)]
+                text-[clamp(1rem,3.8vw,1.3rem)]
                 leading-none
                 text-black
 
-                md:text-[clamp(1.6rem,2.4vw,2.8rem)]
+                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
               "
             >
               GITHUB LINK
@@ -388,8 +532,8 @@ export default function Submission() {
               onChange={(e) => setGithub(e.target.value)}
               placeholder="ENTER YOUR GITHUB LINK"
               className="
-                mt-[1.5%]
-                h-[38px]
+                mt-[1%]
+                h-[36px]
                 w-full
                 border-[3px]
                 border-black
@@ -404,7 +548,7 @@ export default function Submission() {
                 focus:bg-white/40
 
                 md:mt-[1%]
-                md:h-[clamp(40px,3vw,52px)]
+                md:h-[clamp(38px,2.8vw,48px)]
                 md:border-[4px]
                 md:px-5
                 md:text-[clamp(0.9rem,1.1vw,1.2rem)]
@@ -412,19 +556,16 @@ export default function Submission() {
             />
           </div>
 
-          {/* ===================================================
-              FIGMA
-          ==================================================== */}
-
+          {/* FIGMA LINK */}
           <div
             className="
               absolute
               left-[8%]
-              top-[66%]
+              top-[69%]
               w-[84%]
 
               md:left-[53.5%]
-              md:top-[38%]
+              md:top-[36%]
               md:w-[39%]
             "
           >
@@ -433,11 +574,11 @@ export default function Submission() {
               className="
                 block
                 font-pixeboy
-                text-[clamp(1.05rem,4vw,1.35rem)]
+                text-[clamp(1rem,3.8vw,1.3rem)]
                 leading-none
                 text-black
 
-                md:text-[clamp(1.6rem,2.4vw,2.8rem)]
+                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
               "
             >
               FIGMA LINK
@@ -450,8 +591,8 @@ export default function Submission() {
               onChange={(e) => setFigma(e.target.value)}
               placeholder="ENTER YOUR FIGMA LINK"
               className="
-                mt-[1.5%]
-                h-[38px]
+                mt-[1%]
+                h-[36px]
                 w-full
                 border-[3px]
                 border-black
@@ -466,7 +607,7 @@ export default function Submission() {
                 focus:bg-white/40
 
                 md:mt-[1%]
-                md:h-[clamp(40px,3vw,52px)]
+                md:h-[clamp(38px,2.8vw,48px)]
                 md:border-[4px]
                 md:px-5
                 md:text-[clamp(0.9rem,1.1vw,1.2rem)]
@@ -474,15 +615,12 @@ export default function Submission() {
             />
           </div>
 
-          {/* ===================================================
-              OTHER LINKS
-          ==================================================== */}
-
+          {/* OTHER LINKS */}
           <div
             className="
               absolute
               left-[8%]
-              top-[76%]
+              top-[78%]
               w-[84%]
 
               md:left-[53.5%]
@@ -495,11 +633,11 @@ export default function Submission() {
               className="
                 block
                 font-pixeboy
-                text-[clamp(1.05rem,4vw,1.35rem)]
+                text-[clamp(1rem,3.8vw,1.3rem)]
                 leading-none
                 text-black
 
-                md:text-[clamp(1.6rem,2.4vw,2.8rem)]
+                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
               "
             >
               OTHER LINKS
@@ -512,8 +650,8 @@ export default function Submission() {
               onChange={(e) => setOtherLinks(e.target.value)}
               placeholder="ENTER ANY OTHER LINK"
               className="
-                mt-[1.5%]
-                h-[38px]
+                mt-[1%]
+                h-[36px]
                 w-full
                 border-[3px]
                 border-black
@@ -528,7 +666,7 @@ export default function Submission() {
                 focus:bg-white/40
 
                 md:mt-[1%]
-                md:h-[clamp(40px,3vw,52px)]
+                md:h-[clamp(38px,2.8vw,48px)]
                 md:border-[4px]
                 md:px-5
                 md:text-[clamp(0.9rem,1.1vw,1.2rem)]
@@ -536,16 +674,13 @@ export default function Submission() {
             />
           </div>
 
-          {/* ===================================================
-              SUBMIT
-          ==================================================== */}
-
+          {/* SUBMIT BUTTON */}
           <button
             type="submit"
             className="
               absolute
               left-[50%]
-              top-[90%]
+              top-[89%]
               w-[32%]
               -translate-x-1/2
               rounded-full
@@ -560,7 +695,7 @@ export default function Submission() {
               active:scale-[0.98]
 
               md:left-[67%]
-              md:top-[63%]
+              md:top-[65%]
               md:w-[13%]
               md:translate-x-0
               md:py-[0.8%]
@@ -570,10 +705,7 @@ export default function Submission() {
             SUBMIT
           </button>
 
-          {/* ===================================================
-              SUCCESS MESSAGE
-          ==================================================== */}
-
+          {/* SUCCESS MESSAGE */}
           {submitted && (
             <div
               className="

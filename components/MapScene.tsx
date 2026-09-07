@@ -59,7 +59,7 @@ export default function MapScene() {
             pointer-events-none
           "
         >
-          PROBLEM STATEMENTS
+          TRACKS
         </h1>
 
         {/* Interactive layer */}
@@ -74,6 +74,7 @@ export default function MapScene() {
           ))}
 
           <RevealPanel
+            key={selected?.id ?? "closed"}
             problem={selected}
             onClose={() => setSelected(null)}
           />
@@ -146,6 +147,7 @@ export default function MapScene() {
     ))}
 
     <RevealPanel
+      key={selected?.id ?? "closed"}
       problem={selected}
       onClose={() => setSelected(null)}
     />

@@ -15,7 +15,14 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  background-color: #3f6b34;
+  font-family: var(--font-pixeboy), "Pixeboy", monospace;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 /* =========================================================
@@ -55,8 +62,8 @@ body {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-pixeboy), "Pixeboy", monospace;
+  --font-mono: var(--font-pixeboy), "Pixeboy", monospace;
   --font-pixeboy: "Pixeboy", monospace;
 }
 
