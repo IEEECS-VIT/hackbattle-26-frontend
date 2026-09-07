@@ -12,16 +12,16 @@
   overflow: hidden;
   width: 100%;
   height: var(--frame-height);
-  margin-top: calc(-1 * var(--heading-line));
+ 
   color: white;
   font-family: var(--font-pixeboy), 'Pixeboy', monospace;
   scroll-margin-top: var(--nav-height);
 }
 .landscape {
   position: absolute;
-  inset: var(--heading-line) 0 0;
+  inset: 0 0 0 0;
   z-index: -2;
-  background: #537b42 url('/problems/landscape.webp') 12% 60% / cover no-repeat;
+  background: #070e04 url('/problems/landscape.webp') 12% 60% / cover no-repeat;
 }
 .section::after {
   content: '';

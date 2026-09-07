@@ -22,7 +22,7 @@ export default function MapScene() {
     <section id="problems" aria-labelledby="problems-heading" className={styles.section}>
       <div className={styles.landscape} />
       <header className={styles.heading}>
-        <h2 id="problems-heading"><span>PROBLEM</span><span>STATEMENTS</span></h2>
+        <h2 id="problems-heading"><span>TRACKS</span></h2>
       </header>
       <div className={styles.scene}>
         <div className={styles.islands} role="group" aria-label="Choose a problem statement">
