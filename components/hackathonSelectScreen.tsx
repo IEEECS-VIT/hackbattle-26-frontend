@@ -186,17 +186,19 @@ export const HackathonSelectionScreen: React.FC<{
 
         {/* Action Bubble positioning */}
         <div
-          /* AFTER */
           className="
-            hidden md:block
             absolute
-            md:left-auto
-            md:right-[45%]
-            md:top-[5%]
             z-20
             pointer-events-auto
 
-            
+            /* MOBILE POSITION (Adjust left/top here to slide bubble on mobile) */
+            left-[10%]
+            top-[0%]
+
+            /* DESKTOP POSITION (Untouched from your snippet) */
+            md:left-auto
+            md:right-[45%]
+            md:top-[5%]
           "
         >
           <ActionBubble
@@ -245,16 +247,20 @@ export const HackathonSelectionScreen: React.FC<{
 
         {/* Action Bubble positioning */}
         <div
-          /* AFTER */
-className="
-  hidden md:block
-  absolute
-  md:right-auto
-  md:left-[45%]
-  md:top-[5%]
-  z-20
-  pointer-events-auto
-"
+          className="
+            absolute
+            z-20
+            pointer-events-auto
+
+            /* MOBILE POSITION (Adjust left/top here to slide bubble on mobile) */
+            left-[55%]
+            top-[40%]
+
+            /* DESKTOP POSITION (Untouched from your snippet) */
+            md:right-auto
+            md:left-[45%]
+            md:top-[5%]
+          "
         >
           <ActionBubble
             label="BUILD TEAM"
