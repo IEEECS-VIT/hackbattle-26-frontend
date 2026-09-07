@@ -11,18 +11,61 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full overflow-x-hidden">
       <Hero />
-      <MarqueeDivider />
+      <MarqueeDivider
+        layers={[
+          {
+            src: "/vine-marquee-thick.png",
+            height: 140,
+            speed: 34,
+            direction: "right",
+            opacity: 0.85,
+            offsetY: -10,
+          },
+          
+        ]}
+      />
       <AboutPage />
-      <MarqueeDivider />
+      <MarqueeDivider
+        layers={[
+          {
+            src: "/vine-marquee-thick.png",
+            height: 140,
+            speed: 34,
+            direction: "right",
+            opacity: 0.85,
+          },
+         
+        ]}
+      />
 
       <MapScene />
-      <MarqueeDivider />
+      <MarqueeDivider
+        layers={[
+          {
+            src: "/vine-marquee-thick.png",
+            height: 140,
+            speed: 34,
+            direction: "right",
+            opacity: 0.85,
+          },
+         
+        ]}
+      />
 
       <section id="judge" className="w-full scroll-mt-16 md:scroll-mt-[84px]">
         <PokedexJudge />
       </section>
-      <MarqueeDivider />
-
+      <MarqueeDivider
+        layers={[
+          {
+            src: "/vine-marquee-thick.png",
+            height: 140,
+            speed: 34,
+            direction: "right",
+            opacity: 0.85,
+          },
+        ]}
+      />
       <section className="w-full">
         <FAQ />
       </section>
