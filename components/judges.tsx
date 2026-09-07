@@ -79,7 +79,11 @@ export default function PokedexJudge() {
   }, []);
 
   useEffect(() => {
-    fetchRandomPokemon();
+    const timer = window.setTimeout(() => {
+      void fetchRandomPokemon();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [fetchRandomPokemon]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {

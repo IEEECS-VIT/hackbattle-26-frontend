@@ -21,7 +21,6 @@ const PokedexJudgeMobile: React.FC = () => {
         {/* Pixel Header Title */}
         <h1
           style={{
-            fontFamily: "var(--font-jersey-20), 'Jersey 20', sans-serif",
             fontWeight: 400,
             fontSize: "128px",
             lineHeight: "36px",

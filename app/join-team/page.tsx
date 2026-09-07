@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
 import TeamScreen from "@/components/TeamScreen";
 import { api } from "@/lib/api";
 
@@ -11,8 +12,43 @@ export default function JoinTeamPage() {
   const [teamCode, setTeamCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
   const [showPopup, setShowPopup] = useState(true);
+
+  // Check whether the logged-in user is already in a team
+  useEffect(() => {
+    const checkExistingTeam = async () => {
+      try {
+        const { data, status } = await api.getTeam();
+
+        console.log("Existing team check:", {
+          status,
+          data,
+        });
+
+        // Already in a team -> Redirect to /team
+        if (status === 200 && data) {
+          router.replace("/team");
+          return;
+        }
+
+        // User is not in a team -> Prompt join popup
+        if (status === 204 || status === 403 || status === 404) {
+          setShowPopup(true);
+          return;
+        }
+
+        // Not authenticated
+        if (status === 401) {
+          router.replace("/login");
+          return;
+        }
+      } catch (err) {
+        console.error("Unable to determine team status:", err);
+      }
+    };
+
+    checkExistingTeam();
+  }, [router]);
 
   const handleJoinTeam = async () => {
     const code = teamCode.trim().toUpperCase();
@@ -29,16 +65,19 @@ export default function JoinTeamPage() {
       const { data, status } = await api.joinTeam(code);
 
       if (status === 200) {
-        // Successfully joined the team
+        // Successfully joined
         setShowPopup(false);
-
-        // Go to the team page
-        router.push("/team");
+        router.replace("/team");
         return;
       }
 
-      if (status === 204) {
-        setError("TEAM NOT FOUND");
+      if (status === 201) {
+        setError("YOU ARE ALREADY IN A TEAM");
+        return;
+      }
+
+      if (status === 204 || status === 400 || status === 404) {
+        setError("INVALID TEAM CODE");
         return;
       }
 
@@ -52,9 +91,7 @@ export default function JoinTeamPage() {
         return;
       }
 
-      setError(
-        data?.message || "UNABLE TO JOIN TEAM"
-      );
+      setError(data?.message || "UNABLE TO JOIN TEAM");
     } catch (err) {
       console.error("Join team error:", err);
       setError("UNABLE TO CONNECT TO SERVER");
