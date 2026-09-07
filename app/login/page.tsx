@@ -71,11 +71,19 @@ export default function LoginPage() {
     signInWithGoogle,
     signOut,
     user,
+    hasTeam,
   } = useAuth();
   const [selectedType, setSelectedType] = useState<ParticipantType | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
 
+  const handleGoToTeam = () => {
+    if (hasTeam) {
+      router.push("/team"); 
+    } else {
+      router.push("/dashboard"); 
+    }
+  };
   const handleSignIn = async () => {
     if (!selectedType) return;
     setPending(true);
@@ -113,13 +121,10 @@ export default function LoginPage() {
         sizes="100vw"
         className="-z-30 object-cover object-center"
       />
-     
-     
-     
+
       <div className="pointer-events-none absolute bottom-[-8rem] right-[-4rem] h-80 w-80 rounded-full blur-5xl" />
 
       <section className="w-full max-w-4xl text-center">
-        
         {!user && (
           <p className="mt-2 text-2xl leading-none text-white/75 sm:mt-4 sm:text-3xl">
             Choose your participant type to enter the arena.
@@ -138,34 +143,40 @@ export default function LoginPage() {
               <div className="text-center">
                 <div className="min-w-0">
                   <p className="text-2xl leading-none tracking-[0.12em] text-black">
-                    {participantType === "vit" ? "VIT STUDENT" : "EXTERNAL PARTICIPANT"}
+                    {participantType === "vit"
+                      ? "VIT STUDENT"
+                      : "EXTERNAL PARTICIPANT"}
                   </p>
                   <h2 className="mt-2 break-words text-4xl leading-[0.95] text-black sm:text-5xl">
-                    WELCOME, {user.displayName?.split(" ")[0]?.toUpperCase() || "TRAINER"}
+                    WELCOME,{" "}
+                    {user.displayName?.split(" ")[0]?.toUpperCase() ||
+                      "TRAINER"}
                   </h2>
-                  <p className="mt-1 truncate text-2xl leading-none text-black">{user.email}</p>
+                  <p className="mt-1 truncate text-2xl leading-none text-black">
+                    {user.email}
+                  </p>
                 </div>
               </div>
               <div className="mt-7 flex flex-col gap-3">
-  {/* GO TO TEAM PAGE BUTTON */}
-  <button
-    type="button"
-    onClick={() => router.push("/dashboard")} // Update route path to your team page path
-    className="w-full rounded-2xl border-2 border-[#173c50] bg-[#ffdf50] px-5 py-3 text-3xl text-[#153e53] shadow-[0_5px_0_#173c50] transition hover:bg-[#ffe873] active:translate-y-1 active:shadow-none"
-  >
-    GO TO TEAM PAGE
-  </button>
+                {/* GO TO TEAM PAGE BUTTON */}
+                <button
+                  type="button"
+                  onClick={handleGoToTeam}
+                  className="w-full rounded-2xl border-2 border-[#173c50] bg-[#ffdf50] px-5 py-3 text-3xl text-[#153e53] shadow-[0_5px_0_#173c50] transition hover:bg-[#ffe873] active:translate-y-1 active:shadow-none"
+                >
+                  GO TO TEAM PAGE
+                </button>
 
-  {/* SIGN OUT BUTTON */}
-  <button
-    type="button"
-    onClick={handleSignOut}
-    disabled={pending}
-    className="w-full rounded-2xl border-2 border-[#173c50] bg-[#ef5350] px-5 py-3 text-3xl text-white shadow-[0_5px_0_#173c50] transition hover:brightness-105 active:translate-y-1 active:shadow-none disabled:cursor-wait disabled:opacity-60"
-  >
-    {pending ? "SIGNING OUT..." : "SIGN OUT"}
-  </button>
-</div>
+                {/* SIGN OUT BUTTON */}
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  disabled={pending}
+                  className="w-full rounded-2xl border-2 border-[#173c50] bg-[#ef5350] px-5 py-3 text-3xl text-white shadow-[0_5px_0_#173c50] transition hover:brightness-105 active:translate-y-1 active:shadow-none disabled:cursor-wait disabled:opacity-60"
+                >
+                  {pending ? "SIGNING OUT..." : "SIGN OUT"}
+                </button>
+              </div>
             </div>
           ) : (
             <>
@@ -198,7 +209,13 @@ export default function LoginPage() {
                       <span className="mt-3 block max-w-xs text-2xl leading-none text-white/65 sm:text-[1.7rem]">
                         {option.description}
                       </span>
-                      <span className={`absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full border-2 text-sm font-bold transition ${selected ? "border-[#ffdf50] bg-[#ffdf50] text-[#153e53]" : "border-white/35 text-transparent"}`}>
+                      <span
+                        className={`absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full border-2 text-sm font-bold transition ${
+                          selected
+                            ? "border-[#ffdf50] bg-[#ffdf50] text-[#153e53]"
+                            : "border-white/35 text-transparent"
+                        }`}
+                      >
                         ✓
                       </span>
                     </button>
@@ -221,12 +238,18 @@ export default function LoginPage() {
           )}
 
           {!configured && (
-            <p role="alert" className="mt-4 rounded-2xl border-2 border-[#ffdf50]/50 bg-[#3e3311]/70 px-4 py-3 text-2xl leading-none text-[#fff0a8]">
+            <p
+              role="alert"
+              className="mt-4 rounded-2xl border-2 border-[#ffdf50]/50 bg-[#3e3311]/70 px-4 py-3 text-2xl leading-none text-[#fff0a8]"
+            >
               Firebase browser configuration is missing from this environment.
             </p>
           )}
           {error && (
-            <p role="alert" className="mt-4 rounded-2xl border-2 border-[#ff8b87]/40 bg-[#501d26]/75 px-4 py-3 text-2xl leading-none text-[#ffd1cf]">
+            <p
+              role="alert"
+              className="mt-4 rounded-2xl border-2 border-[#ff8b87]/40 bg-[#501d26]/75 px-4 py-3 text-2xl leading-none text-[#ffd1cf]"
+            >
               {error}
             </p>
           )}

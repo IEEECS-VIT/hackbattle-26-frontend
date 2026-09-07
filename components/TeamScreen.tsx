@@ -115,7 +115,7 @@ export default function TeamScreen({
     const { data, status } = await api.leaveTeam();
 
     if (status === 200) {
-      router.push("/join-team");
+      router.push("/dashboard");
       return;
     }
 
