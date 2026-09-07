@@ -85,7 +85,7 @@ export default function Submission() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            problem_stmt: description.trim(),
+            project_desc: description.trim(),
             track: track.trim(),
             subtrack: subtrack.trim(),
             github_link: github.trim(),
