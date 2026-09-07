@@ -1,0 +1,143 @@
+.section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  background: #537b42;
+  color: white;
+  font-family: var(--font-pixeboy), 'Pixeboy', monospace;
+  scroll-margin-top: 84px;
+}
+.landscape {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: url('/problems/landscape.webp') center bottom / 100% 115% no-repeat;
+}
+.section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #1235271c 0%, transparent 25%, transparent 80%, #102a2b55 100%);
+}
+.heading {
+  position: relative;
+  z-index: 5;
+  padding: 2.3% 8% 0;
+  pointer-events: none;
+}
+.heading h2 {
+  margin: 0;
+  font-size: clamp(62px, 10.5vw, 185px);
+  font-weight: 400;
+  line-height: .79;
+  letter-spacing: .012em;
+  text-shadow: 0 5px 3px #123d5059;
+}
+.scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.37;
+  margin-top: 1.5%;
+}
+.islands { position: absolute; inset: 0; }
+.island {
+  position: absolute;
+  width: 16%;
+  height: 22%;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: transform .3s ease, filter .3s ease;
+}
+.island[data-track='1'] { left: 4.5%; top: 1%; }
+.island[data-track='2'] { left: 22%; top: 19%; }
+.island[data-track='3'] { left: 5%; top: 37%; }
+.island[data-track='4'] { left: 24%; top: 55%; }
+.island[data-track='5'] { left: 10%; top: 73%; }
+.stageArt { position: absolute; width: 100%; height: 100%; object-fit: contain; inset: 0; filter: drop-shadow(0 12px 7px #15351c55); }
+.islandBall {
+  position: absolute;
+  width: 43%; height: 43%; object-fit: contain;
+  left: 30%; top: 15%;
+  z-index: 2;
+  filter: drop-shadow(0 6px 3px #0c171a88);
+  transition: transform .3s ease, filter .3s ease;
+}
+.island[data-track='1'] .islandBall { top: 26%; }
+.island[data-track='3'] .islandBall { top: 15%; width: 47%; left: 27%; }
+.island[data-track='5'] .islandBall { top: 25%; }
+.number {
+  position: absolute; top: 2%; left: -8%; z-index: 4;
+  font-size: clamp(20px, 2.9vw, 46px); line-height: 1;
+  text-shadow: 0 2px 3px #163c2cb0;
+}
+.island:nth-child(even) .number { left: auto; right: -6%; }
+.islandLight {
+  position: absolute; left: 20%; top: 39%; width: 65%; height: 16%;
+  border-radius: 50%; background: var(--track-color);
+  filter: blur(11px); opacity: 0; transition: opacity .45s ease;
+}
+.island[data-active='true'] .islandLight { opacity: .6; }
+.selectedMark {
+  position: absolute; left: 14%; top: 63%; width: 70%; height: 17%;
+  border-radius: 50%; border-bottom: 2px solid var(--track-color);
+  opacity: 0; filter: drop-shadow(0 0 5px var(--track-color));
+}
+.island[data-active='true'] .selectedMark { opacity: .8; }
+.island:hover .islandBall { transform: translateY(-7%) rotate(-5deg); filter: drop-shadow(0 10px 6px #0c171a99); }
+.island:active { transform: scale(.96); }
+.island:focus-visible { outline: 3px solid #fff6b2; outline-offset: 4px; border-radius: 20%; }
+.reveal { position: absolute; width: 39%; height: 65%; left: 54%; top: 8%; }
+.groundShadow { position: absolute; bottom: 7%; left: 7%; width: 87%; height: 15%; background: #12251bb0; border-radius: 50%; filter: blur(15px); }
+.closedBall { position: absolute; width: 68%; height: 68%; top: 6%; left: 16%; object-fit: contain; filter: drop-shadow(0 18px 10px #10232166); }
+.openBall { position: absolute; inset: 0; z-index: 2; perspective: 900px; }
+.shell, .frontShell { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
+.shell { z-index: 1; filter: drop-shadow(0 12px 8px #14241c55); }
+.frontShell { z-index: 4; mask-image: linear-gradient(transparent 73%, #000 82%); }
+.smoke { position: absolute; z-index: 3; pointer-events: none; left: -17%; top: 25%; width: 134%; height: 83%; }
+.smokeCanvas { position: absolute; width: 100%; height: 100%; inset: 0; }
+.smokeFallback { position: absolute; inset: 25% 8% 7%; border-radius: 45%; background: radial-gradient(ellipse at 22% 50%, var(--track-color), transparent 53%), radial-gradient(ellipse at 80% 55%, var(--track-color), transparent 57%); filter: blur(17px); opacity: .3; }
+.smoke:has(canvas[data-rendered='true']) .smokeFallback { opacity: .08; }
+.description {
+  position: absolute; z-index: 5; left: 14%; top: 38%; width: 72%; height: 39%;
+  display: flex; flex-direction: column; justify-content: center;
+  text-align: center;
+  text-shadow: 0 2px 3px #140d24, 0 0 12px #10051fff;
+  font-size: clamp(12px, 1.45vw, 26px); line-height: 1.18;
+}
+.description::before { content: ''; position: absolute; z-index: -1; inset: -10% -7%; background: radial-gradient(ellipse, #180d2dc9 0%, #180d2d80 42%, transparent 72%); }
+.description p { margin: 0; text-transform: uppercase; }
+.trackLabel { font-size: .7em; letter-spacing: .18em; color: #fff7d1; margin-bottom: .7em; opacity: .85; }
+.hint { position: absolute; width: 100%; bottom: -5%; text-align: center; font-size: clamp(12px,1.4vw,20px); letter-spacing: .08em; text-shadow: 0 2px 4px #082619; opacity: .9; }
+@media (min-width: 1800px) { .heading h2 { font-size: 10.5vw; } .description { font-size: 1.45vw; } }
+@media (max-width: 767px) {
+  .section { scroll-margin-top: 64px; }
+  .heading { padding: 6% 5% 0; }
+  .heading h2 { font-size: 12.4vw; line-height: .86; }
+  .landscape { background-size: auto 100%; background-position: 34% center; }
+  .scene { aspect-ratio: auto; height: 850px; height: clamp(820px, 210vw, 1160px); margin-top: 6%; }
+  .islands { height: 47%; }
+  .island { width: 27%; height: 33%; }
+  .island[data-track='1'] { left: 3%; top: 0; }
+  .island[data-track='2'] { left: 36%; top: 16%; }
+  .island[data-track='3'] { left: 6%; top: 36%; }
+  .island[data-track='4'] { left: 66%; top: 34%; }
+  .island[data-track='5'] { left: 36%; top: 59%; }
+  .number { font-size: 6vw; left: -1%; }
+  .island:nth-child(even) .number { right: -2%; }
+  .reveal { width: 76%; height: 50%; left: 12%; top: 47%; }
+  .description { font-size: clamp(14px,3.65vw,21px); top: 36%; height: 42%; left: 11%; width: 78%; line-height: 1.18; }
+  .hint { font-size: 3vw; bottom: -3%; white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .island, .islandBall, .islandLight { transition: none; }
+}
+
+.shellLid { z-index: 2; clip-path: inset(0 0 45% 0); transform-origin: 50% 55%; }
+.shellBowl { clip-path: inset(54% 0 0 0); }
