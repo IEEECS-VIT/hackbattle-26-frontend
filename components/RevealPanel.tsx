@@ -102,12 +102,6 @@ export default function RevealPanel({
   const [phase, setPhase] = useState<Phase>("drop");
 
   useEffect(() => {
-    if (problem) {
-      setPhase("drop");
-    }
-  }, [problem?.id]);
-
-  useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         onClose();

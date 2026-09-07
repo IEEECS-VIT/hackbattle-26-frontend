@@ -74,6 +74,7 @@ export default function MapScene() {
           ))}
 
           <RevealPanel
+            key={selected?.id ?? "closed"}
             problem={selected}
             onClose={() => setSelected(null)}
           />
@@ -146,6 +147,7 @@ export default function MapScene() {
     ))}
 
     <RevealPanel
+      key={selected?.id ?? "closed"}
       problem={selected}
       onClose={() => setSelected(null)}
     />
