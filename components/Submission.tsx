@@ -2,7 +2,6 @@
 
 import { FormEvent, useState, useMemo } from "react";
 import { api } from "@/lib/api";
-import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/components/ToastProvider";
 
 const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
@@ -46,7 +45,6 @@ export default function Submission() {
   const [figma, setFigma] = useState("");
   const [otherLinks, setOtherLinks] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const { getIdToken } = useAuth();
   const { showToast } = useToast();
 
   // Get dynamic subtrack options according to selected track
