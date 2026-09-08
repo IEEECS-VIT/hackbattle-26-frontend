@@ -6,16 +6,17 @@ import PokedexJudgeMobile from "./PokedexJudgeMobile";
 
 interface JudgeInfo {
   name: string;
-  label1: string;
-  label2: string;
-  label3: string;
-  label4: string;
   image: string;
 }
 
+const SINGLE_JUDGE: JudgeInfo = {
+  name: "Palak Awasthi",
+  image: "/judges/judge1.jpg",
+};
+
 export default function PokedexJudge() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [currentJudge, setCurrentJudge] = useState<JudgeInfo | null>(null);
+  const [currentJudge, setCurrentJudge] = useState<JudgeInfo>(SINGLE_JUDGE);
   const [isFlashing, setIsFlashing] = useState<boolean>(false);
   const [showQuestionMark, setShowQuestionMark] = useState<boolean>(false);
   const [loadKey, setLoadKey] = useState<number>(0);
@@ -37,54 +38,17 @@ export default function PokedexJudge() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const fetchRandomPokemon = useCallback(async () => {
+  const handleScanJudge = useCallback(() => {
     setIsFlashing(true);
     setShowQuestionMark(true);
 
-    try {
-      const randomId = Math.floor(Math.random() * 151) + 1;
-      const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${randomId}`
-      );
-      const data = await response.json();
-
-      const types = data.types
-        .map((t: { type: { name: string } }) => t.type.name.toUpperCase())
-        .join(" / ");
-      const primaryAbility =
-        data.abilities[0]?.ability.name.toUpperCase() || "UNKNOWN";
-
-      const fetchedJudge: JudgeInfo = {
-        name: data.name,
-        label1: `INFO: #${data.id}`,
-        label2: `INFO: ${types}`,
-        label3: `SOCIAL MEDIA: ${primaryAbility}`,
-        label4: `SOCIAL MEDIA: ${data.base_experience || "???"}`,
-        image:
-          data.sprites.other["official-artwork"].front_default ||
-          data.sprites.front_default,
-      };
-
-      setTimeout(() => {
-        setCurrentJudge(fetchedJudge);
-        setLoadKey((prev) => prev + 1);
-        setIsFlashing(false);
-        setShowQuestionMark(false);
-      }, 800);
-    } catch (error) {
-      console.error("Error fetching from PokeAPI:", error);
+    setTimeout(() => {
+      setCurrentJudge(SINGLE_JUDGE);
+      setLoadKey((prev) => prev + 1);
       setIsFlashing(false);
       setShowQuestionMark(false);
-    }
+    }, 400);
   }, []);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void fetchRandomPokemon();
-    }, 0);
-
-    return () => window.clearTimeout(timer);
-  }, [fetchRandomPokemon]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -180,14 +144,14 @@ export default function PokedexJudge() {
 
               {/* SCREEN CONTAINER */}
               <div
-                className="bg-black p-1 mt-6 mb-2 w-full flex flex-col items-center justify-center"
+                className="bg-black p-1 mt-4 mb-2 w-full flex flex-col items-center justify-center"
                 style={{
                   clipPath:
                     "polygon(0% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 88%)",
                 }}
               >
                 <div
-                  className="bg-[#dedede] p-3 sm:p-5 relative shadow-inner w-full h-full flex flex-col items-center justify-center"
+                  className="bg-[#dedede] p-3 sm:p-4 relative shadow-inner w-full flex flex-col items-center justify-center"
                   style={{
                     clipPath:
                       "polygon(0% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 88%)",
@@ -201,7 +165,7 @@ export default function PokedexJudge() {
                     }}
                   >
                     <div
-                      className="bg-[#232323] h-40 sm:h-45 w-full overflow-hidden relative flex items-center justify-center shadow-[inset_0_4px_10px_rgba(0,0,0,0.8)]"
+                      className="bg-[#232323] w-full aspect-square overflow-hidden relative flex items-center justify-center shadow-[inset_0_4px_10px_rgba(0,0,0,0.8)]"
                       style={{
                         clipPath:
                           "polygon(0% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 88%)",
@@ -221,13 +185,14 @@ export default function PokedexJudge() {
                           ?
                         </div>
                       ) : (
-                        <div className="relative w-full h-full p-2">
+                        <div className="relative w-full h-full">
                           <Image
                             key={loadKey}
                             src={currentJudge.image}
                             alt={currentJudge.name}
                             fill
-                            className="object-contain p-2 animate-image-pop"
+                            className="object-cover animate-image-pop"
+                            priority
                             unoptimized
                           />
                         </div>
@@ -253,17 +218,17 @@ export default function PokedexJudge() {
               <div className="flex items-end justify-between w-full relative px-0.5 gap-2">
                 <div className="flex items-center bg-black rounded-md h-11 sm:h-12 p-1 overflow-hidden flex-1 relative border border-zinc-700 transform -translate-y-4 sm:-translate-y-6">
                   <button
-                    onClick={fetchRandomPokemon}
+                    onClick={handleScanJudge}
                     className="bg-[#ff9500] text-black border border-white rounded-full w-7 h-7 sm:w-8 sm:h-8 font-black text-base sm:text-lg flex items-center justify-center cursor-pointer hover:bg-[#ffb03a] hover:scale-105 active:scale-95 transition-all z-20 absolute left-1 shadow-inner"
                   >
                     &gt;
                   </button>
 
                   <button
-                    onClick={fetchRandomPokemon}
+                    onClick={handleScanJudge}
                     className="w-full bg-transparent text-white font-pixeboy text-lg sm:text-xl tracking-widest text-center py-2 pl-6 outline-none cursor-pointer hover:text-[#ff9500] active:scale-[0.98] transition-all truncate"
                   >
-                    Surprise me!
+                    Surprise Me!
                   </button>
                 </div>
 
@@ -305,7 +270,7 @@ export default function PokedexJudge() {
                     }}
                   >
                     <div
-                      className="bg-[#c2c2c2] w-full h-full p-3 sm:p-4 flex flex-col justify-between font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] min-h-[260px] md:min-h-[340px]"
+                      className="bg-[#c2c2c2] w-full h-full p-3 sm:p-4 flex flex-col items-center justify-center font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] min-h-[260px] md:min-h-[340px]"
                       style={{
                         clipPath:
                           "polygon(7% 0, 100% 0, 100% 100%, 0 100%, 0 5%)",
@@ -318,48 +283,14 @@ export default function PokedexJudge() {
                       </div>
 
                       {currentJudge && (
-                        <>
-                          {/* Upper Group */}
-                          <div
-                            key={`info-${loadKey}`}
-                            className="flex flex-col items-end w-full mt-6 sm:mt-8 flex-grow justify-start pt-2"
-                          >
-                            <h2 className="text-3xl sm:text-4xl uppercase tracking-normal text-[#0c0c0c] mb-2 text-right w-full animate-text-slide font-pixeboy font-normal break-words">
-                              {currentJudge.name}
-                            </h2>
-                            <p
-                              style={{ animationDelay: "0.1s" }}
-                              className="text-xl sm:text-2xl uppercase text-zinc-800 text-right w-full leading-tight animate-text-slide font-pixeboy break-words"
-                            >
-                              {currentJudge.label1}
-                            </p>
-                            <p
-                              style={{ animationDelay: "0.2s" }}
-                              className="text-xl sm:text-2xl uppercase text-zinc-800 text-right w-full leading-tight animate-text-slide font-pixeboy break-words"
-                            >
-                              {currentJudge.label2}
-                            </p>
-                          </div>
-
-                          {/* Lower Group */}
-                          <div
-                            key={`social-${loadKey}`}
-                            className="w-full flex flex-col items-end text-right mt-2 pb-1 text-zinc-900 font-pixeboy text-xl sm:text-2xl tracking-wide gap-0.5"
-                          >
-                            <p
-                              style={{ animationDelay: "0.3s" }}
-                              className="w-full truncate uppercase animate-text-slide"
-                            >
-                              {currentJudge.label3}
-                            </p>
-                            <p
-                              style={{ animationDelay: "0.4s" }}
-                              className="w-full truncate uppercase animate-text-slide"
-                            >
-                              {currentJudge.label4}
-                            </p>
-                          </div>
-                        </>
+                        <div
+                          key={`info-${loadKey}`}
+                          className="flex flex-col items-center justify-center w-full flex-grow text-center"
+                        >
+                          <h2 className="text-4xl sm:text-5xl uppercase tracking-normal text-[#0c0c0c] animate-text-slide font-pixeboy font-normal break-words">
+                            {currentJudge.name}
+                          </h2>
+                        </div>
                       )}
                     </div>
                   </div>
