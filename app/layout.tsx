@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ToastProvider } from "@/components/ToastProvider";
 import localFont from "next/font/local";
+import SiteLoader from "@/components/SiteLoader";
 
 export const metadata: Metadata = {
   title: "HackBattle 2026",
@@ -29,8 +30,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>
-            {/* REMOVED <Navbar /> FROM HERE */}
-            {children}
+            <SiteLoader>{children}</SiteLoader>
           </ToastProvider>
         </AuthProvider>
       </body>
