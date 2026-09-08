@@ -53,7 +53,7 @@ export default function Navbar() {
             <Image
               src="/Navbar/ieee-cs_logo.svg"
               alt=""
-              width={37}
+              width={92}
               height={40}
               priority
               className="h-auto w-6"
@@ -64,7 +64,7 @@ export default function Navbar() {
               width={92}
               height={40}
               priority
-              className="h-auto w-[60px]"
+              className="h-auto w-[70px]"
             />
 
             {/* Divider Line */}
@@ -73,8 +73,8 @@ export default function Navbar() {
             <Image
               src="/bob.png"
               alt="Bank of Baroda"
-              width={260}
-              height={70}
+              width={82}
+              height={10}
               className="h-auto w-[clamp(6rem,32vw,9rem)] object-contain drop-shadow-[2px_2px_0_#1a4a60]"
               priority
             />
@@ -165,7 +165,7 @@ export default function Navbar() {
             <Image
               src="/Navbar/ieee-cs_logo.svg"
               alt="IEEE Computer Society Logo"
-              width={37}
+              width={92}
               height={40}
               priority
               className="w-7 lg:w-8 xl:w-9 2xl:w-[37px] h-auto"
@@ -187,8 +187,8 @@ export default function Navbar() {
             <Image
               src="/bob.png"
               alt="Bank of Baroda"
-              width={100}
-              height={55}
+              width={92}
+              height={40}
               priority
               className="h-auto w-26 md:w-40 object-contain ml-1"
             />

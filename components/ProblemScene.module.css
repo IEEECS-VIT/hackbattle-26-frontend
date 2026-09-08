@@ -38,14 +38,16 @@
   text-align: center;
   pointer-events: none;
 }
-.heading h2 {
+.tracksTitle {
   margin: 0;
-  font-size: 96px;
+  font-size: 76px;
   font-weight: 400;
   line-height: var(--heading-line);
   letter-spacing: .012em;
   text-shadow: 0 5px 3px #123d5059;
   transform: translateY(30px);
+  color: white;
+  font-family: var(--font-pixeboy), 'Pixeboy', monospace;
 }
 .heading h2 span { display: block; }
 .scene {
@@ -165,13 +167,13 @@
   .hint { font-size: clamp(11px,3cqw,14px); bottom: -6%; white-space: nowrap; }
 }
 @media (min-width: 768px) {
-  .heading h2 { font-size: 140px; transform: translateY(40px); }
+  .heading h2 { font-size: 120px; transform: translateY(40px); }
 }
 @media (min-width: 1024px) {
-  .heading h2 { font-size: 180px; transform: translateY(44px); }
+  .heading h2 { font-size: 160px; transform: translateY(44px); }
 }
 @media (min-width: 1280px) {
-  .heading h2 { font-size: 220px; transform: translateY(48px); }
+  .heading h2 { font-size: 200px; transform: translateY(48px); }
 }
 @media (min-width: 640px) and (max-width: 767px) { .section { --nav-height: 72px; } }
 /* Short landscape screens scroll a little instead of shrinking the copy illegibly. */
