@@ -2,7 +2,7 @@ export const faqData = [
   {
     question: "WHAT IS HACKBATTLE?",
     answer:
-      "HackBattle is a 24-hour hackathon where participants collaborate to build innovative software and hardware solutions while competing for exciting prizes and networking opportunities.",
+      "HackBattle is a 36-hour hackathon where participants collaborate to build innovative software and hardware solutions while competing for exciting prizes and networking opportunities.",
   },
   {
     question: "WHO CAN PARTICIPATE?",
@@ -12,12 +12,12 @@ export const faqData = [
   {
     question: "IS THERE A REGISTRATION FEE?",
     answer:
-      "No. Registration for HackBattle is completely free. There are no participation charges for selected teams.",
+      "For  information regarding registration fees and participation charges, please refer to the official graVITas website.",
   },
   {
     question: "CAN I PARTICIPATE INDIVIDUALLY?",
     answer:
-      "You may register individually if allowed by the organizers. However, participating in a team is recommended for a better hackathon experience.",
+      "No. Participation in HackBattle requires a team. Individual participation is not allowed.",
   },
   {
     question: "WHAT SHOULD I BRING?",

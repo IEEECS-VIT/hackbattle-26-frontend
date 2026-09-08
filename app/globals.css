@@ -159,7 +159,6 @@ textarea {
 
 @media (max-width: 768px) {
   #faq {
-    aspect-ratio: 299 / 651;
     height: auto;
     min-height: 0;
   }

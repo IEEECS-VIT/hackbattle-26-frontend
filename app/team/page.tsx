@@ -4,9 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import TeamScreen from "@/components/TeamScreen";
 import { api, GetTeamResponse } from "@/lib/api";
+import { useToast } from "@/components/ToastProvider";
 
 export default function TeamPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [teamData, setTeamData] = useState<GetTeamResponse | null>(null);
   const [teamName, setTeamName] = useState("");
   const [teamCode, setTeamCode] = useState<string | null>(null);
@@ -58,12 +60,15 @@ const handleCreateTeam = async () => {
     if ((status === 200 || status === 201) && data) {
       setTeamCode(data.code ?? null);
       setShowPopup(false);
+      showToast("Team created successfully!", "success");
 
       // Fetch the complete team including members
       await fetchTeam();
 
       return;
     }
+
+    showToast("Failed to create team.", "error");
 
     // User is already in a team
     if (status === 409) {
@@ -95,6 +100,7 @@ const handleCreateTeam = async () => {
   } catch (err) {
     console.error("Create team error:", err);
     setError("UNABLE TO CONNECT TO SERVER");
+    showToast("Failed to create team.", "error");
   } finally {
     setCreating(false);
   }

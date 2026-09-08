@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 
 import TeamScreen from "@/components/TeamScreen";
 import { api } from "@/lib/api";
+import { useToast } from "@/components/ToastProvider";
 
 export default function JoinTeamPage() {
   const router = useRouter();
+  const { showToast } = useToast();
 
   const [teamCode, setTeamCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -66,10 +68,16 @@ export default function JoinTeamPage() {
 
       if (status === 200) {
         // Successfully joined
+        showToast("Joined team successfully!", "success");
         setShowPopup(false);
         router.replace("/team");
         return;
       }
+
+      showToast(
+        "Failed to join team. Check the team code and try again.",
+        "error"
+      );
 
       if (status === 201) {
         setError("YOU ARE ALREADY IN A TEAM");
@@ -95,6 +103,10 @@ export default function JoinTeamPage() {
     } catch (err) {
       console.error("Join team error:", err);
       setError("UNABLE TO CONNECT TO SERVER");
+      showToast(
+        "Failed to join team. Check the team code and try again.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }

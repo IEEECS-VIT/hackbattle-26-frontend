@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { AuthProvider } from "@/components/AuthProvider";
+import { ToastProvider } from "@/components/ToastProvider";
 import localFont from "next/font/local";
 
 export const metadata: Metadata = {
@@ -27,8 +28,10 @@ export default function RootLayout({
     >
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <AuthProvider>
-          {/* REMOVED <Navbar /> FROM HERE */}
-          {children}
+          <ToastProvider>
+            {/* REMOVED <Navbar /> FROM HERE */}
+            {children}
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>
