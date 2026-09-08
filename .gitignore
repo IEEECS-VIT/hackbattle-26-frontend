@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Keep all environment files local, including examples.
+# Keep environment values local; commit the placeholder template.
 .env*
+!.env.example
 
 # vercel
 .vercel
