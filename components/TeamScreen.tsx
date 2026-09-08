@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, GetTeamResponse } from "@/lib/api";
+import { useToast } from "@/components/ToastProvider";
 
 type Player = {
   id: number;
@@ -82,6 +83,7 @@ export default function TeamScreen({
   teamData = null,
 }: TeamScreenProps) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
 
   const members = teamData?.members || [];
@@ -106,27 +108,35 @@ export default function TeamScreen({
       await navigator.clipboard.writeText(activeTeamCode);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
+      showToast("Team code copied!", "success");
     } catch {
-      // Clipboard unavailable
+      showToast("Failed to copy team code.", "error");
     }
   };
 
   const handleLeaveTeam = async () => {
-    const { data, status } = await api.leaveTeam();
+    try {
+      const { data, status } = await api.leaveTeam();
 
     if (status === 200) {
+      showToast("You left the team.", "success");
       router.push("/dashboard");
       return;
     }
 
-    if (status === 401) {
-      alert("PLEASE LOG IN FIRST");
-    } else if (status === 403) {
-      alert("YOU ARE NOT IN A TEAM");
-    } else if (status === 404) {
-      alert("TEAM NOT FOUND");
-    } else {
-      alert(data?.message || "UNABLE TO LEAVE TEAM");
+      showToast("Failed to leave team.", "error");
+
+      if (status === 401) {
+        alert("PLEASE LOG IN FIRST");
+      } else if (status === 403) {
+        alert("YOU ARE NOT IN A TEAM");
+      } else if (status === 404) {
+        alert("TEAM NOT FOUND");
+      } else {
+        alert(data?.message || "UNABLE TO LEAVE TEAM");
+      }
+    } catch {
+      showToast("Failed to leave team.", "error");
     }
   };
 

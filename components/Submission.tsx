@@ -2,7 +2,7 @@
 
 import { FormEvent, useState, useMemo } from "react";
 import { useAuth } from "@/components/AuthProvider";
-
+import { useToast } from "@/components/ToastProvider";
 
 const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
   "AI / ML": [
@@ -46,6 +46,7 @@ export default function Submission() {
   const [otherLinks, setOtherLinks] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const { getIdToken } = useAuth();
+  const { showToast } = useToast();
 
   // Get dynamic subtrack options according to selected track
   const availableSubtracks = useMemo(() => {
@@ -110,6 +111,7 @@ export default function Submission() {
       }
 
       setSubmitted(true);
+      showToast("Project submitted successfully!", "success");
     } catch (error) {
       console.error("Submission error:", error);
 
@@ -118,6 +120,7 @@ export default function Submission() {
           ? error.message
           : "Unable to submit project. Please try again."
       );
+      showToast("Failed to submit project. Please try again.", "error");
     }
   }
 

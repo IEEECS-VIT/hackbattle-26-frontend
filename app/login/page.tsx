@@ -9,6 +9,7 @@ import {
   type ParticipantType,
   useAuth,
 } from "@/components/AuthProvider";
+import { useToast } from "@/components/ToastProvider";
 
 const participantOptions: Array<{
   id: ParticipantType;
@@ -64,6 +65,7 @@ function GoogleIcon() {
 
 export default function LoginPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const {
     configured,
     loading,
@@ -90,9 +92,11 @@ export default function LoginPage() {
     setError("");
     try {
       await signInWithGoogle(selectedType);
+      showToast("Login successful!", "success");
       router.push("/dashboard"); // <-- ADD THIS LINE (replace /test-ui with your target route)
     } catch (signInError) {
       setError(authErrorMessage(signInError));
+      showToast("Login failed. Please try again.", "error");
     } finally {
       setPending(false);
     }
@@ -104,8 +108,10 @@ export default function LoginPage() {
     try {
       await signOut();
       setSelectedType(null);
+      showToast("Signed out successfully!", "success");
     } catch (signOutError) {
       setError(authErrorMessage(signOutError));
+      showToast("Failed to sign out. Please try again.", "error");
     } finally {
       setPending(false);
     }
