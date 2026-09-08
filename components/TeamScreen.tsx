@@ -84,7 +84,6 @@ export default function TeamScreen({
 }: TeamScreenProps) {
   const router = useRouter();
   const { showToast } = useToast();
-  const [copied, setCopied] = useState(false);
 
   const members = teamData?.members || [];
   const isLeader = teamData?.isLeader ?? false;
@@ -105,11 +104,26 @@ export default function TeamScreen({
     if (!activeTeamCode) return;
 
     try {
-      await navigator.clipboard.writeText(activeTeamCode);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
+      if (typeof navigator !== "undefined" && navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(activeTeamCode);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = activeTeamCode;
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        textarea.style.top = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textarea);
+        if (!successful) {
+          throw new Error("execCommand copy failed");
+        }
+      }
       showToast("Team code copied!", "success");
-    } catch {
+    } catch (err) {
+      console.error("Copy team code error:", err);
       showToast("Failed to copy team code.", "error");
     }
   };
@@ -118,22 +132,20 @@ export default function TeamScreen({
     try {
       const { data, status } = await api.leaveTeam();
 
-    if (status === 200) {
-      showToast("You left the team.", "success");
-      router.push("/dashboard");
-      return;
-    }
-
-      showToast("Failed to leave team.", "error");
+      if (status === 200) {
+        showToast("You left the team.", "success");
+        router.push("/dashboard");
+        return;
+      }
 
       if (status === 401) {
-        alert("PLEASE LOG IN FIRST");
+        showToast("PLEASE LOG IN FIRST", "error");
       } else if (status === 403) {
-        alert("YOU ARE NOT IN A TEAM");
+        showToast("YOU ARE NOT IN A TEAM", "error");
       } else if (status === 404) {
-        alert("TEAM NOT FOUND");
+        showToast("TEAM NOT FOUND", "error");
       } else {
-        alert(data?.message || "UNABLE TO LEAVE TEAM");
+        showToast(data?.message || "Failed to leave team.", "error");
       }
     } catch {
       showToast("Failed to leave team.", "error");
@@ -144,7 +156,7 @@ export default function TeamScreen({
     const size = members.length;
     if (size < 2 || size > 5) {
       e.preventDefault();
-      alert("TEAM MUST HAVE 2 TO 5 MEMBERS TO SUBMIT A PROJECT");
+      showToast("TEAM MUST HAVE 2 TO 5 MEMBERS TO SUBMIT A PROJECT", "error");
     }
   };
 
@@ -305,7 +317,8 @@ export default function TeamScreen({
                 absolute
                 right-2
                 top-10
-                z-30
+                z-50
+                pointer-events-auto
                 sm:right-4
                 sm:top-3
                 md:right-5
@@ -377,19 +390,6 @@ export default function TeamScreen({
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                   </svg>
                 </button>
-
-                {copied && (
-                  <span
-                    className="
-                      font-pixeboy
-                      leading-none
-                      text-[#2e7d32]
-                    "
-                    style={{ fontSize: "clamp(10px, 1vw, 14px)" }}
-                  >
-                    COPIED!
-                  </span>
-                )}
               </div>
             </div>
           )}
