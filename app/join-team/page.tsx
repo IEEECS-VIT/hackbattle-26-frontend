@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 
 import TeamScreen from "@/components/TeamScreen";
 import { api } from "@/lib/api";
+import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/components/ToastProvider";
 
 export default function JoinTeamPage() {
   const router = useRouter();
   const { showToast } = useToast();
+  const { user, loading: authLoading } = useAuth();
 
   const [teamCode, setTeamCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,6 +20,13 @@ export default function JoinTeamPage() {
 
   // Check whether the logged-in user is already in a team
   useEffect(() => {
+    if (authLoading) return;
+
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+
     const checkExistingTeam = async () => {
       try {
         const { data, status } = await api.getTeam();
@@ -50,7 +59,7 @@ export default function JoinTeamPage() {
     };
 
     checkExistingTeam();
-  }, [router]);
+  }, [router, user, authLoading]);
 
   const handleJoinTeam = async () => {
     const code = teamCode.trim().toUpperCase();

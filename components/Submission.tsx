@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState, useMemo } from "react";
-import { useAuth } from "@/components/AuthProvider";
+import { api } from "@/lib/api";
 import { useToast } from "@/components/ToastProvider";
 
 const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
@@ -45,7 +45,6 @@ export default function Submission() {
   const [figma, setFigma] = useState("");
   const [otherLinks, setOtherLinks] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const { getIdToken } = useAuth();
   const { showToast } = useToast();
 
   // Get dynamic subtrack options according to selected track
@@ -63,64 +62,45 @@ export default function Submission() {
     event.preventDefault();
 
     if (!description.trim() || !github.trim()) {
-      alert("Project Description and GitHub Link are required.");
+      showToast("Project Description and GitHub Link are required.", "error");
       return;
     }
 
     try {
       setSubmitted(false);
 
-      const token = await getIdToken();
+      const { data, status } = await api.submitProject({
+        project_desc: description.trim(),
+        track: track.trim(),
+        subtrack: subtrack.trim(),
+        github_link: github.trim(),
+        figma_link: figma.trim(),
+        other_files: otherLinks.trim(),
+      });
 
-      if (!token) {
-        alert("Please log in before submitting.");
+      if (status === 200 || status === 201) {
+        setSubmitted(true);
+        showToast("Project submitted successfully!", "success");
         return;
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/teams/project/submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            project_desc: description.trim(),
-            track: track.trim(),
-            subtrack: subtrack.trim(),
-            github_link: github.trim(),
-            figma_link: figma.trim(),
-            other_files: otherLinks.trim(),
-          }),
-        }
+      if (status === 401) {
+        showToast("Please log in before submitting.", "error");
+        return;
+      }
+
+      throw new Error(
+        data?.message || `Submission failed (${status})`
       );
-
-      let data: { message?: string } = {};
-
-      try {
-        data = await response.json();
-      } catch {
-        // Some error responses may not contain JSON.
-      }
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || `Submission failed (${response.status})`
-        );
-      }
-
-      setSubmitted(true);
-      showToast("Project submitted successfully!", "success");
     } catch (error) {
       console.error("Submission error:", error);
 
-      alert(
+      showToast(
         error instanceof Error
           ? error.message
-          : "Unable to submit project. Please try again."
+          : "Failed to submit project. Please try again.",
+        "error"
       );
-      showToast("Failed to submit project. Please try again.", "error");
     }
   }
 
