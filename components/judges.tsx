@@ -135,7 +135,7 @@ export default function PokedexJudge() {
         {/* HEADER */}
         <div className="mb-4 z-20 portrait-header-box">
           <h1
-            className="text-white text-7xl md:text-[10rem] lg:text-[12rem] font-pixeboy leading-none tracking-normal drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)] filter transition-all duration-300 select-none text-center portrait-header-text"
+            className="text-white text-[96px] leading-[100px] md:text-[140px] md:leading-none lg:text-[180px] xl:text-[220px] font-pixeboy tracking-normal drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)] filter transition-all duration-300 select-none text-center portrait-header-text"
             style={{ fontWeight: 400 }}
           >
             JUDGE
@@ -382,11 +382,6 @@ export default function PokedexJudge() {
             padding-top: 3rem !important;
             padding-bottom: 2rem !important;
             background-position: center bottom !important;
-          }
-
-          .portrait-header-text {
-            font-size: clamp(8rem, 18vw, 18rem) !important;
-            line-height: 0.85 !important;
           }
 
           .portrait-inner-wrapper {

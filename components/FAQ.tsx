@@ -34,7 +34,7 @@ export default function FAQ() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-[130rem] flex-col gap-[clamp(1rem,2vw,2rem)] px-[clamp(1rem,3vw,3rem)] pt-[clamp(1rem,2vw,2rem)] pb-[clamp(2rem,6vw,5rem)] max-md:max-w-none max-md:w-full max-md:h-auto max-md:px-4 max-md:pt-6 max-md:pb-6 max-md:gap-0 max-md:items-center">
         {/* FAQ Title */}
-        <h1 className="font-pixeboy text-center text-white leading-none drop-shadow-[0_6px_8px_rgba(0,0,0,0.9)] text-[clamp(4rem,12vw,15rem)] max-md:relative max-md:inset-auto max-md:w-full max-md:h-auto max-md:text-center max-md:text-[clamp(68px,20vw,104px)] max-md:tracking-[2px] max-md:drop-shadow-[0_3px_6px_rgba(0,30,40,0.85)] max-md:pt-0">
+        <h1 className="font-pixeboy text-center text-white text-[96px] leading-[100px] drop-shadow-[0_6px_8px_rgba(0,0,0,0.9)] md:text-[140px] md:leading-none lg:text-[180px] xl:text-[220px] max-md:relative max-md:inset-auto max-md:w-full max-md:h-auto max-md:text-center max-md:tracking-[2px] max-md:drop-shadow-[0_3px_6px_rgba(0,30,40,0.85)] max-md:pt-0">
           FAQ
         </h1>
 
