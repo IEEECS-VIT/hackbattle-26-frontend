@@ -38,13 +38,16 @@
   text-align: center;
   pointer-events: none;
 }
-.heading h2 {
+.tracksTitle {
   margin: 0;
-  font-size: min(12vw, calc(var(--heading-line) * 1.24));
+  /* Adjust size scale to match your other section titles */
+  font-size: min(12vw, calc(var(--heading-line) * 1.5));
   font-weight: 400;
   line-height: var(--heading-line);
   letter-spacing: .012em;
   text-shadow: 0 5px 3px #123d5059;
+  color: white;
+  font-family: var(--font-pixeboy), 'Pixeboy', monospace;
 }
 .heading h2 span { display: block; }
 .scene {

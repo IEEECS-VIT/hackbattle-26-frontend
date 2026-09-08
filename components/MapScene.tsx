@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useReducedMotion } from 'framer-motion';
-import { problems } from '@/data/problems';
-import type { Problem } from '@/types/problem';
-import PokeballIsland from './PokeballIsland';
-import RevealPanel from './RevealPanel';
-import styles from './ProblemScene.module.css';
+import { useState } from "react";
+import { useReducedMotion } from "framer-motion";
+import { problems } from "@/data/problems";
+import type { Problem } from "@/types/problem";
+import PokeballIsland from "./PokeballIsland";
+import RevealPanel from "./RevealPanel";
+import styles from "./ProblemScene.module.css";
 
 export default function MapScene() {
   const [selected, setSelected] = useState<Problem>(problems[2]);
@@ -19,20 +19,38 @@ export default function MapScene() {
   }
 
   return (
-    <section id="problems" aria-labelledby="problems-heading" className={styles.section}>
+    <section
+      id="problems"
+      aria-labelledby="problems-heading"
+      className={styles.section}
+    >
       <div className={styles.landscape} />
       <header className={styles.heading}>
-        <h2 id="problems-heading"><span>TRACKS</span></h2>
+        {/* Added specific module class to avoid global inheritance */}
+        <h2 id="problems-heading" className={styles.tracksTitle}>
+          TRACKS
+        </h2>
       </header>
       <div className={styles.scene}>
-        <div className={styles.islands} role="group" aria-label="Choose a problem statement">
+        <div
+          className={styles.islands}
+          role="group"
+          aria-label="Choose a problem statement"
+        >
           {problems.map((problem) => (
-            <PokeballIsland key={problem.id} problem={problem}
-              onSelect={selectProblem} isActive={selected.id === problem.id} />
+            <PokeballIsland
+              key={problem.id}
+              problem={problem}
+              onSelect={selectProblem}
+              isActive={selected.id === problem.id}
+            />
           ))}
         </div>
-        <RevealPanel replay={replay} problem={selected}
-          reducedMotion={Boolean(reducedMotion)} />
+        <RevealPanel
+          replay={replay}
+          problem={selected}
+          reducedMotion={Boolean(reducedMotion)}
+        />
       </div>
     </section>
   );
