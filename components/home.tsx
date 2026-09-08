@@ -29,7 +29,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <div id="home">
+    <div id="home" className="w-full max-w-full select-none overflow-x-clip">
       {/* Mobile hero */}
       <section className="font-pixeboy relative flex min-h-[100svh] w-full items-end overflow-hidden bg-[#08798b] pt-16 sm:pt-[72px] md:hidden">
         <video
@@ -39,8 +39,9 @@ const Hero = () => {
           muted
           playsInline
           preload="auto"
+          draggable={false}
           aria-hidden="true"
-          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
+          className="pointer-events-none absolute inset-0 z-0 h-full w-full select-none object-cover object-center"
         >
           <source src="/hackbattle-mobile-video.webm" type="video/webm" />
         </video>
@@ -48,9 +49,9 @@ const Hero = () => {
         <div className="retro-scanlines pointer-events-none absolute inset-0 z-20 opacity-10" />
 
         <div className="relative z-30 mx-auto flex w-full flex-col items-center px-4 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:pb-12">
-          <div className="flex w-fit max-w-full flex-col items-start gap-0">
+          <div className="flex w-full max-w-[38rem] flex-col items-start gap-0">
             <p
-              className="text-[1.7rem] leading-none tracking-normal text-white sm:text-4xl"
+              className="text-[clamp(1.55rem,7vw,2.25rem)] leading-none tracking-normal text-white"
               style={{
                 textShadow:
                   "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60",
@@ -58,9 +59,9 @@ const Hero = () => {
             >
               PRESENTS
             </p>
-            <div className="relative">
+            <div className="relative w-full">
               <h1
-                className="hackbattle-title text-[clamp(3.3rem,16.2vw,5.8rem)] font-bold leading-[0.8] tracking-[0.015em] sm:text-[6.5rem]"
+                className="hackbattle-title w-full whitespace-nowrap text-left text-[clamp(2.75rem,14.2vw,5.8rem)] font-bold leading-[0.8] tracking-[0.015em]"
                 style={{
                   ...titleGradient,
                   filter: "drop-shadow(3px 5px 0 rgba(26,74,96,.9))",
@@ -70,7 +71,7 @@ const Hero = () => {
               </h1>
               <span
                 aria-hidden="true"
-                className="absolute left-0 top-0 w-full text-[clamp(3.3rem,16.2vw,5.8rem)] font-bold leading-[0.8] tracking-[0.015em] sm:text-[6.5rem]"
+                className="pointer-events-none absolute left-0 top-0 w-full whitespace-nowrap text-left text-[clamp(2.75rem,14.2vw,5.8rem)] font-bold leading-[0.8] tracking-[0.015em]"
                 style={{
                   background:
                     "radial-gradient(circle at 70% 50%, #fff 0%, #fff 16%, #f8c61c 34%)",
@@ -82,7 +83,7 @@ const Hero = () => {
               </span>
             </div>
             <h2
-              className="max-w-[23rem] text-left text-[1.7rem] leading-[0.95] tracking-wide text-white sm:max-w-none sm:text-4xl"
+              className="max-w-[min(23rem,92vw)] text-left text-[clamp(1.55rem,7vw,2.25rem)] leading-[0.95] tracking-wide text-white sm:max-w-none"
               style={{
                 textShadow:
                   "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60, 0 3px 0 #1a4a60",
@@ -101,20 +102,23 @@ const Hero = () => {
           loop
           muted
           playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+          preload="auto"
+          draggable={false}
+          aria-hidden="true"
+          className="pointer-events-none absolute top-0 left-0 z-0 h-full w-full select-none object-cover"
         >
           <source src="/hackbattle-video.webm" type="video/webm" />
           <div className="w-full h-full bg-cyan-600"></div>
         </video>
         <div className="absolute inset-0 bg-blue-900/10 z-10"></div>
-        <div className="absolute bottom-[12%] sm:bottom-[15%] md:bottom-[18%] lg:bottom-[20%] left-3 sm:left-6 md:left-12 lg:left-16 z-30 flex flex-col items-start max-w-[92vw] sm:max-w-[90vw] md:max-w-none">
+        <div className="absolute bottom-[clamp(3rem,18svh,12rem)] left-[clamp(1.5rem,4vw,4rem)] z-30 flex w-[min(92vw,100rem)] max-w-[calc(100vw-3rem)] flex-col items-start">
           {/* Bank of Baroda Logo (Desktop) */}
           <div className="ml-3 sm:ml-2 md:ml-0 mb-10">
         
           </div>
 
           <h2
-            className="text-white text-xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl tracking-normal mt-0 mb-0 ml-3 sm:ml-5 md:ml-10"
+            className="ml-[clamp(.75rem,2vw,2.5rem)] text-[clamp(1.8rem,min(3.2vw,5.5svh),3.75rem)] leading-none tracking-normal text-white"
             style={{
               textShadow:
                 "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60, 1px 1px 0 #1a4a60, 0px 2px 0 #1a4a60, 2px 0px 0 #1a4a60",
@@ -123,11 +127,11 @@ const Hero = () => {
             PRESENTS
           </h2>
           <div
-            className="relative mt-[-0.6rem] sm:mt-[-0.8rem] md:mt-[-1.2rem] lg:mt-[-1.8rem] xl:mt-[-2.2rem] mb-0 ml-3 sm:ml-5 md:ml-10"
+            className="relative ml-[clamp(.75rem,2vw,2.5rem)] mt-[clamp(-2rem,-1.5vw,-.8rem)] max-w-full"
             data-text="HACKBATTLE"
           >
             <h1
-              className="text-[2.5rem] sm:text-5xl md:text-[6rem] lg:text-[8rem] xl:text-[10rem] 2xl:text-[12rem] leading-[0.85] font-bold tracking-wider hackbattle-title"
+              className="hackbattle-title text-[clamp(5rem,min(10.5vw,18svh),12rem)] font-bold leading-[0.85] tracking-wider"
               style={{
                 background:
                   "radial-gradient(circle at 53% 50%, #ffffff 0%, #ffffff 6%, #fff6d0 10%, #ffd54f 13%, #f8c61c 16%, #f8c61c 100%)",
@@ -139,7 +143,7 @@ const Hero = () => {
               HACKBATTLE
             </h1>
             <h1
-              className="text-[2.5rem] sm:text-5xl md:text-[6rem] lg:text-[8rem] xl:text-[10rem] 2xl:text-[12rem] leading-[0.85] font-bold tracking-wider absolute top-0 left-0 w-full pointer-events-none"
+              className="pointer-events-none absolute top-0 left-0 w-full text-[clamp(5rem,min(10.5vw,18svh),12rem)] font-bold leading-[0.85] tracking-wider"
               style={{
                 background:
                   "radial-gradient(circle at 70% 50%, #ffffff 0%, #ffffff 18%, #f8c61c 32%)",
@@ -151,7 +155,7 @@ const Hero = () => {
             </h1>
           </div>
           <h3
-            className="text-white text-lg sm:text-2xl md:text-3xl lg:text-[2.8rem] xl:text-[3.6rem] 2xl:text-[4rem] tracking-normal mt-[-0.5rem] sm:mt-[-0.6rem] md:mt-[-0.8rem] lg:mt-[-1rem] xl:mt-[-1.2rem] ml-3 sm:ml-5 md:ml-10"
+            className="ml-[clamp(.75rem,2vw,2.5rem)] mt-[clamp(-1rem,-.8vw,-.35rem)] max-w-full text-[clamp(1.7rem,min(3vw,5svh),4rem)] leading-[.95] tracking-normal text-white"
             style={{
               textShadow:
                 "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60, 1px 1px 0 #1a4a60, 0px 2px 0 #1a4a60, 2px 0px 0 #1a4a60",

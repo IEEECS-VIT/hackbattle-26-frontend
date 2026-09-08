@@ -9,7 +9,7 @@ import MarqueeDivider from "@/components/MarqueeDivider";
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full overflow-x-hidden">
+    <main className="landing-page min-h-screen w-full overflow-x-clip">
       <Hero />
       <MarqueeDivider
         layers={[
