@@ -33,21 +33,17 @@ const PokedexJudgeMobile: React.FC = () => {
         <h1
           style={{
             fontWeight: 400,
-            fontSize: "128px",
-            lineHeight: "36px",
             letterSpacing: "-0.02em",
             color: "#DA0E2F",
-            width: "284px",
-            height: "36px",
           }}
-          className="select-none text-center mb-4 font-pixeboy"
+          className="font-pixeboy mb-4 w-full select-none text-center text-[70px] leading-[80px]"
         >
           JUDGE
         </h1>
 
         {/* Mobile Judge SVG Asset Container (Relative Anchor) */}
         <div className="relative w-full h-[580px] mt-6 drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]">
-          
+
           {/* Base SVG Frame */}
           <Image
             src="/mobilejudge.svg"
@@ -60,7 +56,7 @@ const PokedexJudgeMobile: React.FC = () => {
           {currentJudge && (
             <>
               {/* 1. HER PICTURE (Positioned Relative to mobilejudge.svg) */}
-              <div 
+              <div
                 className="absolute z-20 flex items-center justify-center pointer-events-none"
                 style={{
                   top: "24%",    // Vertical alignment relative to SVG frame
