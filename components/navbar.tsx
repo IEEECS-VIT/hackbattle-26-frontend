@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { label: "HOME", href: "/" },
   { label: "ABOUT", href: "/#about" },
-  { label: "TRACKS", href: "/#problems" },
   { label: "JUDGE", href: "/#judge" },
   { label: "FAQ", href: "/#faq" },
 ];
@@ -137,6 +136,7 @@ export default function Navbar() {
       </nav>
 
       {/* Original desktop navigation — intentionally unchanged */}
+      {/* Original desktop navigation — updated for centered links */}
       <nav
         className="
           fixed
@@ -160,8 +160,12 @@ export default function Navbar() {
           hidden lg:block
         "
       >
-        <div className="flex h-full items-center justify-between px-3 sm:px-6 md:px-[26px] gap-3">
-          <Link href="/" className="flex items-center shrink-0">
+        <div className="grid h-full grid-cols-[1fr_auto_1fr] items-center px-3 sm:px-6 md:px-[26px] gap-3">
+          {/* Left Column: Logos */}
+          <Link
+            href="/"
+            className="flex items-center shrink-0 justify-self-start"
+          >
             <Image
               src="/Navbar/ieee-cs_logo.svg"
               alt="IEEE Computer Society Logo"
@@ -194,7 +198,8 @@ export default function Navbar() {
             />
           </Link>
 
-          <div className="flex items-center gap-3 md:gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {/* Center Column: Navigation Links */}
+          <div className="flex items-center justify-center gap-3 md:gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -206,10 +211,11 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* Right Column: Profile/Login Icon */}
           <Link
             href="/login"
             aria-label="Login"
-            className="relative block h-[38px] w-[90px] lg:w-[100px] xl:w-[110px] 2xl:w-[118px] flex-shrink-0"
+            className="relative block h-[38px] w-[90px] lg:w-[100px] xl:w-[110px] 2xl:w-[118px] flex-shrink-0 justify-self-end"
           >
             <Image
               src="/Navbar/profile_icon.svg"
