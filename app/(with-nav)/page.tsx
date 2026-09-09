@@ -25,7 +25,7 @@ export default function Home() {
         ]}
       />
       <AboutPage />
-      {/* <MarqueeDivider
+      <MarqueeDivider
         layers={[
           {
             src: "/vine-marquee-thick.png",
@@ -39,7 +39,6 @@ export default function Home() {
       />
 
       <MapScene />
-     */ }
       <MarqueeDivider
         layers={[
           {
