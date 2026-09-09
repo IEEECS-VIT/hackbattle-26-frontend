@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import Image from "next/image";
 
 const titleGradient = {
   background:
@@ -50,18 +49,6 @@ const Hero = () => {
 
         <div className="relative z-30 mx-auto flex w-full flex-col items-center px-4 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:pb-12">
           <div className="flex w-fit max-w-full flex-col items-start gap-0">
-            {/* Bank of Baroda Logo (Mobile) */}
-            <div className="mb-1">
-              <Image
-                src="/bob.png"
-                alt="Bank of Baroda"
-                width={100}
-                height={20}
-                className="h-auto w-26 sm:w-34 object-contain drop-shadow-[2px_2px_0_#1a4a60]"
-                priority
-              />
-            </div>
-
             <p
               className="text-[1.7rem] leading-none tracking-normal text-white sm:text-4xl"
               style={{

@@ -2,15 +2,30 @@ import { onAuthStateChanged, type Auth } from "firebase/auth";
 
 import { getFirebaseAuth } from "@/lib/firebase";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8081";
+const BASE_URL = (
+  process.env.NEXT_PUBLIC_BACKEND_URL || "https://hackbattle26-backend.onrender.com"
+).replace(/\/+$/, "");
 
 function waitForAuthUser(
   auth: Auth
 ): Promise<import("firebase/auth").User | null> {
   return new Promise((resolve) => {
+    let resolved = false;
+    const timer = setTimeout(() => {
+      if (!resolved) {
+        resolved = true;
+        unsubscribe();
+        resolve(auth.currentUser);
+      }
+    }, 5000);
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      unsubscribe();
-      resolve(user);
+      if (!resolved) {
+        resolved = true;
+        clearTimeout(timer);
+        unsubscribe();
+        resolve(user);
+      }
     });
   });
 }
@@ -40,8 +55,6 @@ async function fetchWithAuth<T>(
     };
   }
 
-  console.log("Authenticated Firebase user:", user.email);
-
   const token = await user.getIdToken();
 
   const headers: HeadersInit = {
@@ -50,8 +63,11 @@ async function fetchWithAuth<T>(
     ...options.headers,
   };
 
+  const requestUrl = `${BASE_URL}${endpoint}`;
+  const method = options.method || "GET";
+
   try {
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
+    const res = await fetch(requestUrl, {
       ...options,
       headers,
     });
@@ -75,7 +91,10 @@ async function fetchWithAuth<T>(
       status: res.status,
     };
   } catch (error) {
-    console.error("Backend request failed:", error);
+    console.error(
+      `[API Error] Request failed for ${method} ${requestUrl} (Auth token present: ${Boolean(token)}):`,
+      error
+    );
 
     return {
       data: null,
@@ -105,6 +124,19 @@ export interface GetTeamResponse {
   isLeader: boolean;
 }
 
+export interface SubmitProjectPayload {
+  project_desc: string;
+  track: string;
+  subtrack: string;
+  github_link: string;
+  figma_link?: string;
+  other_files?: string;
+}
+
+export interface SubmitProjectResponse {
+  message?: string;
+}
+
 export const api = {
   createTeam: (name: string) =>
     fetchWithAuth<CreateTeamResponse>("/teams/create", {
@@ -130,5 +162,11 @@ export const api = {
   getTeam: () =>
     fetchWithAuth<GetTeamResponse>("/teams/get", {
       method: "GET",
+    }),
+
+  submitProject: (payload: SubmitProjectPayload) =>
+    fetchWithAuth<SubmitProjectResponse>("/teams/project/submit", {
+      method: "POST",
+      body: JSON.stringify(payload),
     }),
 };

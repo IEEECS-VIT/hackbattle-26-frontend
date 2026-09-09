@@ -26,9 +26,15 @@ export default function FAQItem({
     hover:bg-[#0B5960]/50
     hover:shadow-[0_0_20px_rgba(120,230,230,0.25)]
     last:mb-0
+    max-md:mb-3
+    max-md:bg-[#50BDDC]/40
+    max-md:backdrop-blur-md
+    max-md:border-2
+    max-md:border-white/85
+    max-md:shadow-[0_4px_20px_rgba(0,50,70,0.25),0_0_12px_rgba(255,255,255,0.4)]
+    max-md:rounded-md
   "
     >
-      {/* Overlay */}
       {/* Hover overlay */}
       <div
         className="
@@ -53,38 +59,38 @@ export default function FAQItem({
       flex w-full items-center gap-4
       px-[clamp(1rem,2vw,2rem)]
       py-[clamp(1rem,2vw,2rem)]
-      max-md:px-[clamp(8px,4vw,16px)]
-      max-md:py-[clamp(8px,4.68vw,18px)]
-      max-md:gap-[clamp(6px,3vw,12px)]
+      max-md:px-4
+      max-md:py-3.5
+      max-md:gap-3
     "
       >
         <div
           className={`shrink-0 transition-transform duration-300 ${
-            isOpen ? "rotate-90" : ""
+            isOpen ? "rotate-90 text-white" : "rotate-0 text-white/90"
           }`}
         >
           <svg
-            className="h-[clamp(1.2rem,2vw,2.5rem)] w-[clamp(1.2rem,2vw,2.5rem)] max-md:h-[clamp(10px,4.68vw,18px)] max-md:w-[clamp(10px,4.68vw,18px)]"
+            className="h-[clamp(1.2rem,2vw,2.5rem)] w-[clamp(1.2rem,2vw,2.5rem)] max-md:h-4 max-md:w-4 max-md:drop-shadow-[0_1px_3px_rgba(0,30,40,0.8)]"
             viewBox="0 0 31 31"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M8 5L24 15.5L8 26V5Z" fill="white" />
+            <path d="M8 5L24 15.5L8 26V5Z" fill="currentColor" />
           </svg>
         </div>
 
-        <span className="flex-1 text-left font-pixeboy text-white leading-tight break-words text-[clamp(1.15rem,2vw,3rem)] max-md:text-[clamp(9px,3.85vw,14px)] max-md:leading-[1.2] max-md:tracking-[0.3px]">
+        <span className="flex-1 text-left font-pixeboy text-white leading-tight break-words text-[clamp(1.15rem,2vw,3rem)] max-md:text-[clamp(13px,4vw,16px)] max-md:leading-snug max-md:tracking-[0.4px] max-md:font-bold max-md:drop-shadow-[0_2px_4px_rgba(0,35,50,0.85)]">
           {question}
         </span>
       </button>
 
       <div
-        className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ${
-          isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ${
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}
       >
-        <div className="overflow-hidden">
-          <div className="font-pixeboy text-white leading-relaxed px-[clamp(1rem,2vw,2rem)] pb-[clamp(1rem,2vw,2rem)] text-[clamp(1rem,1.5vw,2rem)] max-md:px-[clamp(8px,4vw,16px)] max-md:pb-[clamp(6px,3vw,12px)] max-md:pt-0 max-md:text-[clamp(9px,3.68vw,13px)] max-md:leading-[1.45]">
+        <div className="overflow-hidden max-md:border-t-2 max-md:border-white/50 max-md:bg-[#0E5260]/65">
+          <div className="font-pixeboy text-white leading-relaxed px-[clamp(1rem,2vw,2rem)] pb-[clamp(1rem,2vw,2rem)] text-[clamp(1rem,1.5vw,2rem)] max-md:px-4 max-md:py-3.5 max-md:text-[clamp(12px,3.8vw,15px)] max-md:leading-relaxed max-md:tracking-[0.3px] max-md:text-white max-md:drop-shadow-[0_1px_3px_rgba(0,25,35,0.8)]">
             {answer}
           </div>
         </div>

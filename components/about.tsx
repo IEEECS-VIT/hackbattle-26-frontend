@@ -3,7 +3,7 @@ export default function AboutPage() {
   return (
     <section
       id = "about"
-      className="relative min-h-[110vh] md:min-h-screen w-full overflow-hidden"
+      className="relative min-h-[110vh] md:min-h-screen w-full overflow-hidden pb-24"
       style={{
         backgroundImage: "url('/grass.webp')",
         backgroundSize: "cover",
@@ -279,12 +279,12 @@ export default function AboutPage() {
 
             text-white
 
-            text-[96px]
-            leading-[100px]
-            md:text-[140px]
+            text-[76px]
+            leading-[80px]
+            md:text-[120px]
             md:leading-none
-            lg:text-[180px]
-            xl:text-[220px]
+            lg:text-[160px]
+            xl:text-[200px]
           "
         >
           ABOUT US

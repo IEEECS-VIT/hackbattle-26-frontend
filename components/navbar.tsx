@@ -42,21 +42,21 @@ export default function Navbar() {
         aria-label="Mobile navigation"
         className="fixed inset-x-0 top-0 z-50 border-b border-white/30 bg-gradient-to-b from-[#167f91]/90 to-[#095d70]/85 shadow-[0_8px_30px_rgba(4,45,61,0.18)] backdrop-blur-xl md:hidden"
       >
-        <div className="flex h-16 items-center justify-between px-4 sm:h-[72px] sm:px-6">
+        <div className="flex h-16 items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6">
           <Link
             href="/"
             aria-label="HackBattle home"
-            className="flex shrink-0 items-center gap-1.5"
+            className="flex shrink-0 items-center gap-1"
             onClick={() => setMenuOpen(false)}
           >
             {/* IEEE CS Logos */}
             <Image
               src="/Navbar/ieee-cs_logo.svg"
               alt=""
-              width={37}
+              width={92}
               height={40}
               priority
-              className="h-auto w-7"
+              className="h-auto w-6"
             />
             <Image
               src="/Navbar/ieee-cs_text.svg"
@@ -64,7 +64,7 @@ export default function Navbar() {
               width={92}
               height={40}
               priority
-              className="h-auto w-[72px]"
+              className="h-auto w-[70px]"
             />
 
             {/* Divider Line */}
@@ -73,9 +73,9 @@ export default function Navbar() {
             <Image
               src="/bob.png"
               alt="Bank of Baroda"
-              width={260}
-              height={70}
-              className="h-auto w-44 md:w-56 lg:w-72 object-contain drop-shadow-[2px_2px_0_#1a4a60]"
+              width={82}
+              height={10}
+              className="h-auto w-[clamp(6rem,32vw,9rem)] object-contain drop-shadow-[2px_2px_0_#1a4a60]"
               priority
             />
           </Link>
@@ -88,7 +88,7 @@ export default function Navbar() {
               menuOpen ? "Close navigation menu" : "Open navigation menu"
             }
             onClick={() => setMenuOpen((open) => !open)}
-            className="relative grid h-11 w-11 place-items-center rounded-full transition-transform active:translate-y-0.5"
+            className="relative grid h-11 w-11 shrink-0 place-items-center rounded-full transition-transform active:translate-y-0.5"
           >
             <Image
               src="/Navbar/pokeball.svg"
@@ -163,7 +163,7 @@ export default function Navbar() {
             <Image
               src="/Navbar/ieee-cs_logo.svg"
               alt="IEEE Computer Society Logo"
-              width={37}
+              width={92}
               height={40}
               priority
               className="w-7 lg:w-8 xl:w-9 2xl:w-[37px] h-auto"
@@ -185,8 +185,8 @@ export default function Navbar() {
             <Image
               src="/bob.png"
               alt="Bank of Baroda"
-              width={100}
-              height={55}
+              width={92}
+              height={40}
               priority
               className="h-auto w-26 md:w-40 object-contain ml-1"
             />
