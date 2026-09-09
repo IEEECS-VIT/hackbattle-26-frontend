@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 
 // SINGLE JUDGE DATA
@@ -10,12 +10,7 @@ const SINGLE_JUDGE = {
 };
 
 const PokedexJudgeMobile: React.FC = () => {
-  const [currentJudge, setCurrentJudge] = useState<typeof SINGLE_JUDGE | null>(null);
-
-  // Directly load judge on mount without loading/spinning animations
-  useEffect(() => {
-    setCurrentJudge(SINGLE_JUDGE);
-  }, []);
+  const currentJudge = SINGLE_JUDGE;
 
   return (
     <div
@@ -37,21 +32,17 @@ const PokedexJudgeMobile: React.FC = () => {
         <h1
           style={{
             fontWeight: 400,
-            fontSize: "128px",
-            lineHeight: "36px",
             letterSpacing: "-0.02em",
             color: "#DA0E2F",
-            width: "284px",
-            height: "36px",
           }}
-          className="select-none text-center mb-4 font-pixeboy"
+          className="font-pixeboy mb-4 w-full select-none text-center text-[76px] leading-[80px]"
         >
           JUDGE
         </h1>
 
         {/* Mobile Judge SVG Asset Container (Relative Anchor) */}
         <div className="relative w-full h-[580px] mt-6 drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]">
-          
+
           {/* Base SVG Frame */}
           <Image
             src="/mobilejudge.svg"
@@ -64,7 +55,7 @@ const PokedexJudgeMobile: React.FC = () => {
           {currentJudge && (
             <>
               {/* 1. HER PICTURE (Positioned Relative to mobilejudge.svg) */}
-              <div 
+              <div
                 className="absolute z-20 flex items-center justify-center pointer-events-none"
                 style={{
                   top: "24%",    // Vertical alignment relative to SVG frame

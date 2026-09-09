@@ -40,7 +40,7 @@ export default function Navbar() {
       {}
       <nav
         aria-label="Mobile navigation"
-        className="fixed inset-x-0 top-0 z-50 border-b border-white/30 bg-gradient-to-b from-[#167f91]/90 to-[#095d70]/85 shadow-[0_8px_30px_rgba(4,45,61,0.18)] backdrop-blur-xl md:hidden"
+        className="site-navigation fixed inset-x-0 top-0 z-50 select-none border-b border-white/30 bg-gradient-to-b from-[#167f91]/90 to-[#095d70]/85 shadow-[0_8px_30px_rgba(4,45,61,0.18)] backdrop-blur-xl lg:hidden"
       >
         <div className="flex h-16 items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6">
           <Link
@@ -155,7 +155,9 @@ export default function Navbar() {
           bg-gradient-to-b
           from-[#1B7C8C]/70
           to-[#0F6775]/70
-          hidden md:block
+          site-navigation
+          select-none
+          hidden lg:block
         "
       >
         <div className="flex h-full items-center justify-between px-3 sm:px-6 md:px-[26px] gap-3">
