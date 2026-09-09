@@ -178,7 +178,7 @@ export const HackathonSelectionScreen: React.FC<{
         active:translate-y-[2px]
       "
       >
-        <span aria-hidden="true">←</span> BACK TO LOGIN
+        <span aria-hidden="true">←</span> BACK TO DASHBOARD
       </Link>
 
       {/* ================================================= */}
