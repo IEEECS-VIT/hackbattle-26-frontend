@@ -279,12 +279,12 @@ export default function AboutPage() {
 
             text-white
 
-            text-[76px]
+            text-[70px]
             leading-[80px]
-            md:text-[120px]
+            md:text-[111px]
             md:leading-none
-            lg:text-[160px]
-            xl:text-[200px]
+            lg:text-[148px]
+            xl:text-[185px]
           "
         >
           ABOUT US

@@ -35,7 +35,7 @@ const PokedexJudgeMobile: React.FC = () => {
             letterSpacing: "-0.02em",
             color: "#DA0E2F",
           }}
-          className="font-pixeboy mb-4 w-full select-none text-center text-[76px] leading-[80px]"
+          className="font-pixeboy mb-4 w-full select-none text-center text-[70px] leading-[80px]"
         >
           JUDGE
         </h1>
