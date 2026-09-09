@@ -74,8 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setHasTeam(false);
       setTeamData(null);
       return false;
-    } catch (err: any) {
-      if (err?.message === "USER_NOT_REGISTERED") {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message === "USER_NOT_REGISTERED") {
         throw err;
       }
       console.error("Failed to check team status:", err);
