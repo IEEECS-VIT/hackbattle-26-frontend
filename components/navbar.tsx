@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { label: "HOME", href: "/" },
   { label: "ABOUT", href: "/#about" },
-  { label: "TRACKS", href: "/#problems" },
   { label: "JUDGE", href: "/#judge" },
   { label: "FAQ", href: "/#faq" },
 ];
@@ -40,7 +39,7 @@ export default function Navbar() {
       {}
       <nav
         aria-label="Mobile navigation"
-        className="fixed inset-x-0 top-0 z-50 border-b border-white/30 bg-gradient-to-b from-[#167f91]/90 to-[#095d70]/85 shadow-[0_8px_30px_rgba(4,45,61,0.18)] backdrop-blur-xl md:hidden"
+        className="site-navigation fixed inset-x-0 top-0 z-50 select-none border-b border-white/30 bg-gradient-to-b from-[#167f91]/90 to-[#095d70]/85 shadow-[0_8px_30px_rgba(4,45,61,0.18)] backdrop-blur-xl lg:hidden"
       >
         <div className="flex h-16 items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6">
           <Link
@@ -53,7 +52,7 @@ export default function Navbar() {
             <Image
               src="/Navbar/ieee-cs_logo.svg"
               alt=""
-              width={37}
+              width={92}
               height={40}
               priority
               className="h-auto w-6"
@@ -64,7 +63,7 @@ export default function Navbar() {
               width={92}
               height={40}
               priority
-              className="h-auto w-[60px]"
+              className="h-auto w-[70px]"
             />
 
             {/* Divider Line */}
@@ -73,8 +72,8 @@ export default function Navbar() {
             <Image
               src="/bob.png"
               alt="Bank of Baroda"
-              width={260}
-              height={70}
+              width={82}
+              height={10}
               className="h-auto w-[clamp(6rem,32vw,9rem)] object-contain drop-shadow-[2px_2px_0_#1a4a60]"
               priority
             />
@@ -137,6 +136,7 @@ export default function Navbar() {
       </nav>
 
       {/* Original desktop navigation — intentionally unchanged */}
+      {/* Original desktop navigation — updated for centered links */}
       <nav
         className="
           fixed
@@ -155,15 +155,21 @@ export default function Navbar() {
           bg-gradient-to-b
           from-[#1B7C8C]/70
           to-[#0F6775]/70
-          hidden md:block
+          site-navigation
+          select-none
+          hidden lg:block
         "
       >
-        <div className="flex h-full items-center justify-between px-3 sm:px-6 md:px-[26px] gap-3">
-          <Link href="/" className="flex items-center shrink-0">
+        <div className="grid h-full grid-cols-[1fr_auto_1fr] items-center px-3 sm:px-6 md:px-[26px] gap-3">
+          {/* Left Column: Logos */}
+          <Link
+            href="/"
+            className="flex items-center shrink-0 justify-self-start"
+          >
             <Image
               src="/Navbar/ieee-cs_logo.svg"
               alt="IEEE Computer Society Logo"
-              width={37}
+              width={92}
               height={40}
               priority
               className="w-7 lg:w-8 xl:w-9 2xl:w-[37px] h-auto"
@@ -185,14 +191,15 @@ export default function Navbar() {
             <Image
               src="/bob.png"
               alt="Bank of Baroda"
-              width={100}
-              height={55}
+              width={92}
+              height={40}
               priority
               className="h-auto w-26 md:w-40 object-contain ml-1"
             />
           </Link>
 
-          <div className="flex items-center gap-3 md:gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {/* Center Column: Navigation Links */}
+          <div className="flex items-center justify-center gap-3 md:gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -204,10 +211,11 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* Right Column: Profile/Login Icon */}
           <Link
             href="/login"
             aria-label="Login"
-            className="relative block h-[38px] w-[90px] lg:w-[100px] xl:w-[110px] 2xl:w-[118px] flex-shrink-0"
+            className="relative block h-[38px] w-[90px] lg:w-[100px] xl:w-[110px] 2xl:w-[118px] flex-shrink-0 justify-self-end"
           >
             <Image
               src="/Navbar/profile_icon.svg"

@@ -9,7 +9,7 @@ import MarqueeDivider from "@/components/MarqueeDivider";
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full overflow-x-hidden">
+    <main className="landing-page min-h-screen w-full overflow-x-clip">
       <Hero />
       <MarqueeDivider
         layers={[
@@ -25,7 +25,7 @@ export default function Home() {
         ]}
       />
       <AboutPage />
-      <MarqueeDivider
+      {/* <MarqueeDivider
         layers={[
           {
             src: "/vine-marquee-thick.png",
@@ -39,6 +39,7 @@ export default function Home() {
       />
 
       <MapScene />
+     */ }
       <MarqueeDivider
         layers={[
           {
