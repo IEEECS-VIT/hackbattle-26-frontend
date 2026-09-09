@@ -100,6 +100,6 @@ const PokedexJudgeMobile: React.FC = () => {
       </div>
     </div>
   );
-};
+}; //fix PR
 
 export default PokedexJudgeMobile;
