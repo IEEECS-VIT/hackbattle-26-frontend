@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 // SINGLE JUDGE DATA
@@ -10,7 +10,8 @@ const SINGLE_JUDGE = {
 };
 
 const PokedexJudgeMobile: React.FC = () => {
-  const currentJudge = SINGLE_JUDGE;
+  // Initialize state directly with default value (no useEffect required)
+  const [currentJudge] = useState<typeof SINGLE_JUDGE | null>(SINGLE_JUDGE);
 
   return (
     <div
@@ -95,6 +96,6 @@ const PokedexJudgeMobile: React.FC = () => {
       </div>
     </div>
   );
-};
+}; //fix PR
 
 export default PokedexJudgeMobile;
