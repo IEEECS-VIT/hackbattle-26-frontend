@@ -15,7 +15,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { api, type GetTeamResponse } from "@/lib/api"; // <-- Import api helper
+import { api, type GetTeamResponse } from "@/lib/api";
 import { getFirebaseAuth, isFirebaseConfigured } from "@/lib/firebase";
 
 export type ParticipantType = "vit" | "external";
@@ -45,12 +45,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [teamData, setTeamData] = useState<GetTeamResponse | null>(null);
   const [loading, setLoading] = useState(isFirebaseConfigured);
 
-  // Fetch team status using the imported backend API helper
+  // Helper to clear local state and sign out
+  const handleUnauthorized = async (auth = getFirebaseAuth()) => {
+    if (auth) await firebaseSignOut(auth);
+    window.localStorage.removeItem(PARTICIPANT_TYPE_KEY);
+    setUser(null);
+    setParticipantType(null);
+    setHasTeam(false);
+    setTeamData(null);
+  };
+
+  // Fetch team status and verify user exists in backend DB
   const fetchTeamStatus = async (): Promise<boolean> => {
     try {
       const res = await api.getTeam();
 
-      // If endpoint returns status 200 and valid team data
+      // If backend responds with status 404/401/403 or specific user error
+      if (res.status === 404 || res.status === 401 || res.status === 403) {
+        throw new Error("USER_NOT_REGISTERED");
+      }
+
       if (res.status === 200 && res.data && res.data.id) {
         setHasTeam(true);
         setTeamData(res.data);
@@ -60,7 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setHasTeam(false);
       setTeamData(null);
       return false;
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.message === "USER_NOT_REGISTERED") {
+        throw err;
+      }
       console.error("Failed to check team status:", err);
       setHasTeam(false);
       setTeamData(null);
@@ -73,19 +90,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!auth) return;
 
     return onAuthStateChanged(auth, async (nextUser) => {
-      setUser(nextUser);
       if (nextUser) {
         const savedType = window.localStorage.getItem(PARTICIPANT_TYPE_KEY);
         setParticipantType(
           savedType === "vit" || savedType === "external" ? savedType : null
         );
 
-        await fetchTeamStatus();
+        try {
+          await fetchTeamStatus();
+          setUser(nextUser);
+        } catch (err) {
+          // If backend check fails (e.g., user not seeded/registered), boot them
+          await handleUnauthorized(auth);
+        }
       } else {
-        window.localStorage.removeItem(PARTICIPANT_TYPE_KEY);
-        setParticipantType(null);
-        setHasTeam(false);
-        setTeamData(null);
+        await handleUnauthorized(auth);
       }
       setLoading(false);
     });
@@ -112,30 +131,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           prompt: "select_account",
           ...(selectedType === "vit" ? { hd: "vitstudent.ac.in" } : {}),
         });
+
         const credential = await signInWithPopup(auth, provider);
 
+        // 1. Verify VIT domain restriction
         if (
           selectedType === "vit" &&
           !credential.user.email?.toLowerCase().endsWith("@vitstudent.ac.in")
         ) {
-          await firebaseSignOut(auth);
+          await handleUnauthorized(auth);
           throw new Error("VIT_EMAIL_REQUIRED");
+        }
+
+        // 2. Verify backend registration / seeded data
+        try {
+          await fetchTeamStatus();
+        } catch (err) {
+          await handleUnauthorized(auth);
+          throw new Error("USER_NOT_REGISTERED");
         }
 
         window.localStorage.setItem(PARTICIPANT_TYPE_KEY, selectedType);
         setParticipantType(selectedType);
-
-        await fetchTeamStatus();
+        setUser(credential.user);
 
         return credential.user;
       },
       signOut: async () => {
         const auth = getFirebaseAuth();
-        if (auth) await firebaseSignOut(auth);
-        window.localStorage.removeItem(PARTICIPANT_TYPE_KEY);
-        setParticipantType(null);
-        setHasTeam(false);
-        setTeamData(null);
+        await handleUnauthorized(auth);
       },
       getIdToken: () => user?.getIdToken() ?? Promise.resolve(null),
       checkTeamStatus: fetchTeamStatus,
