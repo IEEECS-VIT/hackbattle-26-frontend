@@ -7,11 +7,17 @@ import PokedexJudgeMobile from "./PokedexJudgeMobile";
 interface JudgeInfo {
   name: string;
   image: string;
+  line1: string;
+  line2: string;
+  line3: string;
 }
 
 const SINGLE_JUDGE: JudgeInfo = {
   name: "Palak Awasthi",
   image: "/judges/judge1.jpg",
+  line1: "Software Developer 2 @ PayPal",
+  line2: "Google Women Techmakers Ambassador",
+  line3: "Top 100 Influential Voice in AI",
 };
 
 export default function PokedexJudge() {
@@ -96,9 +102,7 @@ export default function PokedexJudge() {
         {/* HEADER */}
         <div className="mb-2 z-20 portrait-header-box">
           <h1
-
             className="text-white text-5xl md:text-[7rem] lg:text-[8.5rem] font-pixeboy leading-none tracking-normal drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)] filter transition-all duration-300 select-none text-center portrait-header-text"
-
             style={{ fontWeight: 400 }}
           >
             JUDGE
@@ -269,13 +273,13 @@ export default function PokedexJudge() {
                     }}
                   >
                     <div
-                      className="bg-[#c2c2c2] w-full h-full p-2.5 sm:p-3 flex flex-col items-center justify-center font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] min-h-[200px] md:min-h-[270px]"
+                      className="bg-[#c2c2c2] w-full h-full p-3 sm:p-4 flex flex-col items-center justify-start font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] min-h-[200px] md:min-h-[270px]"
                       style={{
                         clipPath:
                           "polygon(7% 0, 100% 0, 100% 100%, 0 100%, 0 5%)",
                       }}
                     >
-                      <div className="absolute top-0 right-0 bg-[#D30A40] border-b-2 border-l-2 border-black px-1.5 py-0.5 flex items-center gap-1 rounded-bl-md">
+                      <div className="absolute top-0 right-0 bg-[#D30A40] border-b-2 border-l-2 border-black px-1.5 py-0.5 flex items-center gap-1 rounded-bl-md z-10">
                         <span className="w-2 h-2 bg-[#ff3b30] border border-black rounded-full shadow-sm" />
                         <span className="w-2 h-2 bg-[#ffcc00] border border-black rounded-full shadow-sm" />
                         <span className="w-2 h-2 bg-[#4cd964] border border-black rounded-full shadow-sm" />
@@ -284,11 +288,25 @@ export default function PokedexJudge() {
                       {currentJudge && (
                         <div
                           key={`info-${loadKey}`}
-                          className="flex flex-col items-center justify-center w-full flex-grow text-center"
+                          className="flex flex-col items-center justify-start w-full flex-grow text-center pt-2 animate-text-slide"
                         >
-                          <h2 className="text-3xl sm:text-4xl uppercase tracking-normal text-[#0c0c0c] animate-text-slide font-pixeboy font-normal break-words">
+                          {/* Name at the Top */}
+                          <h2 className="text-3xl sm:text-4xl uppercase tracking-normal text-[#0c0c0c] font-pixeboy font-normal break-words border-b-2 border-black/20 pb-1.5 mb-2.5 w-full">
                             {currentJudge.name}
                           </h2>
+
+                          {/* 3-Line Intro matching exact background color */}
+                          <div className="flex flex-col gap-1.5 w-full text-[#0c0c0c] text-lg sm:text-xl font-normal leading-tight tracking-wide">
+                            <p className="bg-[#c2c2c2] py-1 px-1.5">
+                              {currentJudge.line1}
+                            </p>
+                            <p className="bg-[#c2c2c2] py-1 px-1.5">
+                              {currentJudge.line2}
+                            </p>
+                            <p className="bg-[#c2c2c2] py-1 px-1.5">
+                              {currentJudge.line3}
+                            </p>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -314,12 +332,10 @@ export default function PokedexJudge() {
             background-position: center bottom !important;
           }
 
-
           .portrait-header-text {
             font-size: clamp(6rem, 15vw, 14rem) !important;
             line-height: 0.85 !important;
           }
-
 
           .portrait-inner-wrapper {
             padding-top: 0 !important;
