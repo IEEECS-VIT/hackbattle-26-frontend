@@ -200,8 +200,8 @@ export default function TeamScreen({
           "
       >
         {/* NAVIGATION */}
-      <div
-        className="
+        <div
+          className="
           team-nav-row
           w-full
           max-w-[1400px]
@@ -210,12 +210,11 @@ export default function TeamScreen({
           sm:pb-3
           md:pb-3
         "
-      >
-        <div className="flex items-center gap-2 sm:gap-3">
-
-    <Link
-      href="/login"
-      className="
+        >
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/login"
+              className="
         team-nav-btn
         inline-flex
         items-center
@@ -235,15 +234,15 @@ export default function TeamScreen({
         active:translate-y-[1px]
         active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
       "
-    >
-      BACK
-    </Link>
+            >
+              BACK
+            </Link>
 
-    {isLeader && (
-      <Link
-        href="/submission"
-        onClick={handleSubmissionClick}
-        className="
+            {isLeader && (
+              <Link
+                href="/submission"
+                onClick={handleSubmissionClick}
+                className="
           team-nav-btn
           inline-flex
           items-center
@@ -263,17 +262,17 @@ export default function TeamScreen({
           active:translate-y-[1px]
           active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
         "
-      >
-        <span className="sm:hidden">SUBMIT</span>
-        <span className="hidden sm:inline">SUBMIT PROJECT</span>
-      </Link>
-    )}
+              >
+                <span className="sm:hidden">SUBMIT</span>
+                <span className="hidden sm:inline">SUBMIT PROJECT</span>
+              </Link>
+            )}
 
-    <div className="ml-auto">
-      <button
-        type="button"
-        onClick={handleLeaveTeam}
-        className="
+            <div className="ml-auto">
+              <button
+                type="button"
+                onClick={handleLeaveTeam}
+                className="
           team-nav-btn
           inline-flex
           items-center
@@ -293,13 +292,12 @@ export default function TeamScreen({
           active:translate-y-[1px]
           active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
         "
-      >
-        LEAVE TEAM
-      </button>
-    </div>
-
-  </div>
-</div>
+              >
+                LEAVE TEAM
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* MAIN GAME AREA */}
         <div
@@ -355,7 +353,11 @@ export default function TeamScreen({
                   "
                   style={{ fontSize: "clamp(14px, 1.6vw, 22px)" }}
                 >
-                  {activeTeamCode ? activeTeamCode : <span className="opacity-50">----</span>}
+                  {activeTeamCode ? (
+                    activeTeamCode
+                  ) : (
+                    <span className="opacity-50">----</span>
+                  )}
                 </span>
 
                 {/* COPY BUTTON */}
@@ -397,7 +399,7 @@ export default function TeamScreen({
               </div>
             </div>
           )}
-          
+
           {/* HEADING */}
           <div
             className="
@@ -409,7 +411,7 @@ export default function TeamScreen({
               px-2
               pt-0
             "
-                    >
+          >
             <h1
               className="
                   font-pixeboy
@@ -419,9 +421,9 @@ export default function TeamScreen({
                   text-white
                   pt-1
                 "
-                style={{
+              style={{
                 fontSize: "clamp(55px, 12vh, 140px)",
-                lineHeight: "0.9", 
+                lineHeight: "0.9",
                 textShadow:
                   "4px 4px 0 #0a2a3a, -2px -2px 0 #0a2a3a, 2px -2px 0 #0a2a3a, -2px 2px 0 #0a2a3a, 0 5px 0 rgba(0,0,0,0.6)",
                 letterSpacing: "0.05em",
@@ -485,28 +487,27 @@ export default function TeamScreen({
                 {player.filled ? (
                   <div
                     className="
-                      team-slot-filled
-                      flex
-                      h-full
-                      w-full
-                      flex-col
-                      justify-center
-                      rounded-[5px]
-                      border-[2px]
-                      border-black
-                      bg-white
-                      px-2.5
-                      py-1.5
-                      shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                    "
+      team-slot-filled
+      flex
+      h-auto
+      min-h-[48px]
+      w-full
+      flex-col
+      justify-center
+      rounded-[5px]
+      border-[2px]
+      border-black
+      bg-white
+      px-2.5
+      py-1.5
+      shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+    "
                   >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="truncate pr-1 font-pixeboy leading-none text-black">
-                        {player.name}
-                      </span>
-                    </div>
+                    <span className="font-pixeboy leading-tight text-black break-all text-[clamp(11px,1.2vw,15px)]">
+                      {player.name}
+                    </span>
 
-                    <span className="mt-0.5 truncate font-pixeboy leading-none text-[#c0392b]">
+                    <span className="mt-0.5 font-pixeboy leading-tight text-[#c0392b] break-all text-[clamp(10px,1.1vw,14px)]">
                       {player.id === 1
                         ? `${player.teamName} (LEADER)`
                         : player.teamName}
