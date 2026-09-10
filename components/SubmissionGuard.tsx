@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import SimpleLoader from "./SimpleLoader";
 import { useAuth } from "./AuthProvider";
 import { api } from "@/lib/api";
 
@@ -87,8 +88,7 @@ export default function SubmissionGuard({
           error
         );
 
-        // Important:
-        // don't redirect on transient network errors.
+        // Don't redirect on transient network errors.
         setAuthorized(false);
       } finally {
         if (!cancelled) {
