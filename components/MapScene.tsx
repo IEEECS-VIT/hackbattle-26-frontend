@@ -22,32 +22,36 @@ export default function MapScene() {
     <section
       id="problems"
       aria-labelledby="problems-heading"
-      className={styles.section}
+      className={`${styles.section} w-full overflow-x-hidden min-h-screen py-6 px-3 sm:px-6`}
     >
       <div className={styles.landscape} />
 
-      {/* Centered Header with adjusted button offset */}
-      <header className="relative flex flex-col md:flex-row items-center justify-center mb-8 px-4 w-full">
+      {/* Header Container - Fixed Overlap on Mobile */}
+      {/* Header Container */}
+      <header className="relative z-30 flex flex-col items-center justify-center gap-2 mb-6 px-4 w-full max-w-5xl mx-auto pt-4">
+        {/* Heading without absolute positioning constraints */}
         <h2
           id="problems-heading"
-          className={`${styles.tracksTitle} text-center`}
+          className="font-pixeboy text-center text-4xl sm:text-6xl text-[#ffdf50] tracking-widest drop-shadow-[0_4px_0_#163e54] m-0 p-0 leading-none"
         >
           TRACKS
         </h2>
 
+        {/* Downscaled, stacked Download Button */}
         <a
           href="/HB-26-Tracks.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 md:mt-0 md:absolute md:right-4 md:top-8 inline-flex items-center gap-2 rounded-xl border-2 border-[#163e54] bg-[#ffdb37] px-5 py-2.5 font-pixeboy text-xl text-[#153e53] shadow-[0_4px_0_#163e54] transition-transform active:translate-y-0.5 hover:bg-[#ffe156]"
+          className="md:absolute md:right-4 md:top-1/2 md:-translate-y-1/2 inline-flex items-center justify-center rounded-md border-2 border-[#163e54] bg-[#ffdb37] px-3 py-1 font-pixeboy text-xs sm:text-sm text-[#153e53] shadow-[0_2.5px_0_#163e54] transition-transform active:translate-y-0.5 hover:bg-[#ffe156] whitespace-nowrap"
         >
-           DOWNLOAD TRACKS PDF
+          DOWNLOAD TRACKS PDF
         </a>
       </header>
-
-      <div className={styles.scene}>
+      <div
+        className={`${styles.scene} flex flex-col items-center w-full max-w-5xl mx-auto`}
+      >
         <div
-          className={styles.islands}
+          className={`${styles.islands} w-full`}
           role="group"
           aria-label="Choose a problem statement"
         >
@@ -60,6 +64,7 @@ export default function MapScene() {
             />
           ))}
         </div>
+
         <RevealPanel
           replay={replay}
           problem={selected}

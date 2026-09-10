@@ -344,7 +344,7 @@ export default function AboutPage() {
               text-left
             "
           >
-            JOIN THE ADRENALINE-PUMPING 36-HOUR HACK BATTLE BY{" "}
+            JOIN THE ADRENALINE-PUMPING 36-HOUR HACK BATTLE BY
             <span className="text-[#FFD84D]">IEEE CS VIT</span>, WHERE TECH
             INNOVATORS GATHER FOR GROUNDBREAKING{" "}
             <span className="text-[#FFD84D]">CHALLENGES</span>, KEYNOTE
