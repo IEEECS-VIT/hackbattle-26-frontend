@@ -50,103 +50,61 @@ export default function Footer() {
 
         {/* IEEE CS Socials */}
         <div className="flex flex-col items-center gap-3">
-          {/* Message */}
-  
 
           {/* Social links */}
-          <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">
+          <div className="flex items-center justify-center gap-4 sm:gap-5 md:gap-6">
+
+            {/* Instagram */}
             <a
               href="https://www.instagram.com/ieeecs_vit/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="IEEE CS VIT Instagram"
-              className="
-        rounded-md
-        border
-        border-white/20
-        bg-black/25
-        px-5
-        py-2.5
-        font-pixeboy
-        text-lg
-        leading-none
-        text-white
-        shadow-[0_2px_6px_rgba(0,0,0,0.2)]
-        backdrop-blur-[2px]
-        transition-all
-        duration-200
-        hover:bg-black/65
-        hover:border-white/40
-        hover:text-[#FFD84D]
-        hover:-translate-y-0.5
-        md:text-xl
-        lg:text-2xl
-      "
+              className="transition-transform duration-200 hover:-translate-y-1"
             >
-              INSTAGRAM
+              <Image
+                src="/Social/instagram.svg"
+                alt="Instagram"
+                width={32}
+                height={32}
+                className="h-7 w-7 sm:h-8 sm:w-8"
+              />
             </a>
 
+            {/* LinkedIn */}
             <a
               href="https://www.linkedin.com/company/ieee-cs-vit/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="IEEE CS VIT LinkedIn"
-              className="
-        rounded-md
-        border
-        border-white/20
-        bg-black/25
-        px-5
-        py-2.5
-        font-pixeboy
-        text-lg
-        leading-none
-        text-white
-        shadow-[0_2px_6px_rgba(0,0,0,0.2)]
-        backdrop-blur-[2px]
-        transition-all
-        duration-200
-        hover:bg-black/65
-        hover:border-white/40
-        hover:text-[#FFD84D]
-        hover:-translate-y-0.5
-        md:text-xl
-        lg:text-2xl
-      "
+              className="transition-transform duration-200 hover:-translate-y-1"
             >
-              LINKEDIN
+              <Image
+                src="/Social/linkedin.svg"
+                alt="LinkedIn"
+                width={32}
+                height={32}
+                className="h-7 w-7 sm:h-8 sm:w-8"
+              />
             </a>
 
+            {/* YouTube */}
             <a
               href="https://www.youtube.com/@ieeecomputersociety-vitcha2386"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="IEEE CS VIT YouTube"
-              className="
-        rounded-md
-        border
-        border-white/20
-        bg-black/25
-        px-5
-        py-2.5
-        font-pixeboy
-        text-lg
-        leading-none
-        text-white
-        shadow-[0_2px_6px_rgba(0,0,0,0.2)]
-        backdrop-blur-[2px]
-        transition-all
-        duration-200
-        hover:bg-black/65
-        hover:border-white/40
-        hover:text-[#FFD84D]
-        hover:-translate-y-0.5
-        md:text-xl
-        lg:text-2xl
-      "
+              className="transition-transform duration-200 hover:-translate-y-1"
             >
-              YOUTUBE
+              <Image
+                src="/Social/youtube.svg"
+                alt="YouTube"
+                width={32}
+                height={32}
+                className="h-7 w-7 sm:h-8 sm:w-8"
+              />
             </a>
+
           </div>
         </div>
       </div>

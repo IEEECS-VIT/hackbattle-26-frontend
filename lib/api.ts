@@ -125,17 +125,26 @@ export interface GetTeamResponse {
   name: string;
   code: string;
   leaderId: string;
+
   members: {
     email: string;
     name: string;
   }[];
+
   isLeader: boolean;
+
+  // Saved submission returned by /teams/get
+  problem_stmt?: string | null;
+  github_link?: string | null;
+  figma_link?: string | null;
+  other_files?: string | null;
+  submitted_at?: string | null;
+  updated_at?: string | null;
 }
 
 export interface SubmitProjectPayload {
-  project_desc: string;
-  track: string;
-  subtrack: string;
+  // Backend expects problem_stmt, NOT project_desc.
+  problem_stmt: string;
   github_link: string;
   figma_link?: string;
   other_files?: string;
