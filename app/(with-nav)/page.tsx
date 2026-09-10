@@ -51,7 +51,7 @@ export default function Home() {
         ]}
       />
 
-      <section id="judge" className="landing-section w-full">
+      <section id="judge" className="w-full scroll-mt-16 md:scroll-mt-[84px]">
         <PokedexJudge />
       </section>
       <MarqueeDivider
