@@ -1,7 +1,7 @@
 import Hero from "@/components/home";
 import FAQ from "@/components/FAQ";
 import AboutPage from "@/components/about";
-// import MapScene from "@/components/MapScene";
+import MapScene from "@/components/MapScene";
 import PokedexJudge from "@/components/judges";
 import Footer from "@/components/footer";
 import MarqueeDivider from "@/components/MarqueeDivider";
@@ -24,7 +24,6 @@ export default function Home() {
         ]}
       />
       <AboutPage />
-      {/* Tracks is temporarily hidden.
       <MarqueeDivider
         layers={[
           {
@@ -39,7 +38,7 @@ export default function Home() {
       />
 
       <MapScene />
-      */}
+     
       <MarqueeDivider
         layers={[
           {
