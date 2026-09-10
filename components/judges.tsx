@@ -100,13 +100,9 @@ export default function PokedexJudge() {
 
       {/* Outer Content Container */}
       <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pt-1 md:pt-2 pb-8 portrait-inner-wrapper">
-        
-        {/* HEADER */}
-        <div className="mb-2 z-20 portrait-header-box">
-          <h1
-            className="text-white text-[70px] leading-[80px] md:text-[111px] md:leading-none lg:text-[148px] xl:text-[185px] font-pixeboy tracking-normal drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)] filter transition-all duration-300 select-none text-center portrait-header-text"
-            style={{ fontWeight: 400 }}
-          >
+        {/* HEADER MATCHED TO ABOUT & TRACKS */}
+        <div className="mb-6 z-20 portrait-header-box">
+          <h1 className="font-pixeboy font-normal text-center text-white text-3xl sm:text-4xl md:text-5xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54] filter transition-all duration-300 portrait-header-text">
             JUDGE
           </h1>
         </div>
@@ -341,7 +337,7 @@ export default function PokedexJudge() {
             padding-top: 0 !important;
             padding-bottom: 0 !important;
             height: 100% !important;
-            justify-content: space-between !important;
+            justify-between: space-between !important;
           }
 
           .portrait-header-box {
@@ -350,11 +346,7 @@ export default function PokedexJudge() {
 
           .portrait-card-scaler {
             transform: scale(
-              min(
-                calc(85vw / 600px),
-                calc(55vh / 430px),
-                1.0
-              )
+              min(calc(85vw / 600px), calc(55vh / 430px), 1)
             ) !important;
             transform-origin: center center !important;
             margin-top: auto !important;
