@@ -7,6 +7,10 @@ import Image from "next/image";
 const SINGLE_JUDGE = {
   name: "Palak Awasthi",
   image: "/judges/judge1.jpg", // Replace with your actual image path in /public
+  line1: "SOFTWARE ENGINEERING MTS @ SALESFORCE",
+  line2: "GOOGLE WOMEN TECHMAKERS AMBASSADOR",
+  line3: "LINKEDIN TOP 100 INFLUENTIAL VOICE IN AI",
+  line4: "MIT APPLIED AI & DATA SCIENCE",
 };
 
 const PokedexJudgeMobile: React.FC = () => {
@@ -74,19 +78,26 @@ const PokedexJudgeMobile: React.FC = () => {
                 />
               </div>
 
-              {/* 2. HER NAME (Positioned Relative to mobilejudge.svg) */}
+              {/* 2. HER NAME AND DETAILS (Positioned Relative to mobilejudge.svg) */}
               <div
-                className="absolute z-20 flex items-center justify-center text-center pointer-events-none"
+                className="absolute z-20 flex flex-col items-center justify-start text-center pointer-events-none px-2"
                 style={{
-                  top: "75%",      // Positioned directly under photo relative to SVG frame
-                  left: "12%",
-                  width: "76%",
-                  height: "8%",
+                  top: "72%",      // Positioned directly under photo relative to SVG frame
+                  left: "10%",
+                  width: "80%",
+                  height: "22%",
                 }}
               >
-                <h2 className="text-black font-pixeboy text-4xl sm:text-4xl uppercase tracking-wider truncate w-full">
+                <h2 className="text-black font-pixeboy text-2xl sm:text-3xl uppercase tracking-wider truncate w-full leading-none mb-1">
                   {currentJudge.name}
                 </h2>
+
+                <div className="flex flex-col gap-0.5 w-full text-black font-pixeboy text-xs sm:text-sm leading-tight">
+                  <p className="truncate">{currentJudge.line1}</p>
+                  <p className="truncate">{currentJudge.line2}</p>
+                  <p className="truncate">{currentJudge.line3}</p>
+                  <p className="truncate">{currentJudge.line4}</p>
+                </div>
               </div>
             </>
           )}
@@ -96,6 +107,6 @@ const PokedexJudgeMobile: React.FC = () => {
       </div>
     </div>
   );
-}; //fix PR
+};
 
 export default PokedexJudgeMobile;

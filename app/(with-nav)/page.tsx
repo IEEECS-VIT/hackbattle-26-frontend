@@ -1,11 +1,11 @@
 import Hero from "@/components/home";
-import MapScene from "@/components/MapScene";
 import FAQ from "@/components/FAQ";
 import AboutPage from "@/components/about";
+import MapScene from "@/components/MapScene";
 import PokedexJudge from "@/components/judges";
 import Footer from "@/components/footer";
 import MarqueeDivider from "@/components/MarqueeDivider";
-
+import Chatbot from "@/components/Chatbot";
 
 export default function Home() {
   return (
@@ -21,11 +21,10 @@ export default function Home() {
             opacity: 0.85,
             offsetY: -10,
           },
-          
         ]}
       />
       <AboutPage />
-      {/* <MarqueeDivider
+      <MarqueeDivider
         layers={[
           {
             src: "/vine-marquee-thick.png",
@@ -39,7 +38,7 @@ export default function Home() {
       />
 
       <MapScene />
-     */ }
+     
       <MarqueeDivider
         layers={[
           {
@@ -49,7 +48,6 @@ export default function Home() {
             direction: "right",
             opacity: 0.85,
           },
-         
         ]}
       />
 
@@ -72,6 +70,9 @@ export default function Home() {
       </section>
 
       <Footer />
+
+    
+      <Chatbot /> 
     </main>
   );
 }
