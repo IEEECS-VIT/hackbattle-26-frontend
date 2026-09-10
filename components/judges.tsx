@@ -10,7 +10,7 @@ interface JudgeInfo {
   line1: string;
   line2: string;
   line3: string;
-  linkedinUrl: string;
+  line4: string;
 }
 
 const SINGLE_JUDGE: JudgeInfo = {
@@ -19,7 +19,7 @@ const SINGLE_JUDGE: JudgeInfo = {
   line1: "SOFTWARE ENGINEERING MTS @ SALESFORCE",
   line2: "GOOGLE WOMEN TECHMAKERS AMBASSADOR",
   line3: "LINKEDIN TOP 100 INFLUENTIAL VOICE IN AI",
-  linkedinUrl: "https://www.linkedin.com/in/palakawasthi/",
+  line4: "MIT APPLIED AI & DATA SCIENCE",
 };
 
 export default function PokedexJudge() {
@@ -275,7 +275,7 @@ export default function PokedexJudge() {
                     }}
                   >
                     <div
-                      className="bg-[#c2c2c2] w-full h-full p-3 sm:p-4 flex flex-col items-center justify-between font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] min-h-[200px] md:min-h-[270px]"
+                      className="bg-[#c2c2c2] w-full h-full p-3 sm:p-4 flex flex-col items-center justify-start font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] min-h-[200px] md:min-h-[270px]"
                       style={{
                         clipPath:
                           "polygon(7% 0, 100% 0, 100% 100%, 0 100%, 0 5%)",
@@ -290,47 +290,27 @@ export default function PokedexJudge() {
                       {currentJudge && (
                         <div
                           key={`info-${loadKey}`}
-                          className="flex flex-col items-center justify-between w-full h-full flex-grow text-center pt-2 animate-text-slide"
+                          className="flex flex-col items-center justify-start w-full flex-grow text-center pt-2 animate-text-slide"
                         >
-                          <div className="flex flex-col items-center w-full">
-                            {/* Name at the Top */}
-                            <h2 className="text-3xl sm:text-4xl uppercase tracking-normal text-[#0c0c0c] font-pixeboy font-normal break-words border-b-2 border-black/20 pb-1.5 mb-2.5 w-full">
-                              {currentJudge.name}
-                            </h2>
+                          {/* Name at the Top */}
+                          <h2 className="text-3xl sm:text-4xl uppercase tracking-normal text-[#0c0c0c] font-pixeboy font-normal break-words border-b-2 border-black/20 pb-1.5 mb-2.5 w-full">
+                            {currentJudge.name}
+                          </h2>
 
-                            {/* 3-Line Intro */}
-                            <div className="flex flex-col gap-1 w-full text-[#0c0c0c] text-base sm:text-lg font-normal leading-tight tracking-wide">
-                              <p className="bg-[#c2c2c2] py-0.5 px-1">
-                                {currentJudge.line1}
-                              </p>
-                              <p className="bg-[#c2c2c2] py-0.5 px-1">
-                                {currentJudge.line2}
-                              </p>
-                              <p className="bg-[#c2c2c2] py-0.5 px-1">
-                                {currentJudge.line3}
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* LinkedIn Button with Font Isolation Fix */}
-                          <div className="mt-3 pt-2 pb-1 border-t border-black/10 w-full flex justify-center font-sans">
-                            <a
-                              href={currentJudge.linkedinUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] hover:bg-[#005582] text-white rounded-md border border-black transition-transform hover:scale-105 active:scale-95 shadow-md"
-                              aria-label="LinkedIn Profile"
-                            >
-                              <svg
-                                className="w-4 h-4 fill-current shrink-0"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-1.2.98-2.18 2.18-2.18s2.18.98 2.18 2.18v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-                              </svg>
-                              <span className="font-sans text-xs font-bold tracking-wide">
-                                LinkedIn
-                              </span>
-                            </a>
+                          {/* 4-Line Intro matching exact background color */}
+                          <div className="flex flex-col gap-1 w-full text-[#0c0c0c] text-base sm:text-lg font-normal leading-tight tracking-wide">
+                            <p className="bg-[#c2c2c2] py-0.5 px-1">
+                              {currentJudge.line1}
+                            </p>
+                            <p className="bg-[#c2c2c2] py-0.5 px-1">
+                              {currentJudge.line2}
+                            </p>
+                            <p className="bg-[#c2c2c2] py-0.5 px-1">
+                              {currentJudge.line3}
+                            </p>
+                            <p className="bg-[#c2c2c2] py-0.5 px-1">
+                              {currentJudge.line4}
+                            </p>
                           </div>
                         </div>
                       )}
