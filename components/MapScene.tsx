@@ -34,7 +34,7 @@ export default function MapScene() {
         {/* Clean Flex Title (No CSS Module overlaps) */}
         <h2
           id="problems-heading"
-          className="font-pixeboy text-center text-white text-3xl sm:text-5xl md:text-6xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54]"
+          className="font-pixeboy text-center text-white text-4xl sm:text-6xl md:text-7xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54]"
         >
           TRACKS
         </h2>

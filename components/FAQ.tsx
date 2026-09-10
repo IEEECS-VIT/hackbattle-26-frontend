@@ -34,7 +34,7 @@ export default function FAQ() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-[130rem] flex-col gap-[clamp(1rem,2vw,2rem)] px-[clamp(1rem,3vw,3rem)] pt-8 md:pt-12 pb-[clamp(2rem,6vw,5rem)] max-md:max-w-none max-md:w-full max-md:h-auto max-md:px-4 max-md:pb-6 max-md:gap-0 max-md:items-center">
         {/* Scaled FAQ Title */}
-        <h1 className="font-pixeboy text-center text-white text-3xl sm:text-5xl md:text-6xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54]">
+        <h1 className="font-pixeboy text-center text-white text-4xl sm:text-6xl md:text-7xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54]">
           FAQ
         </h1>
 
