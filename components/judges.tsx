@@ -10,14 +10,16 @@ interface JudgeInfo {
   line1: string;
   line2: string;
   line3: string;
+  line4: string;
 }
 
 const SINGLE_JUDGE: JudgeInfo = {
   name: "Palak Awasthi",
   image: "/judges/judge1.jpg",
-  line1: "Software Developer 2 @ PayPal",
-  line2: "Google Women Techmakers Ambassador",
-  line3: "Top 100 Influential Voice in AI",
+  line1: "SOFTWARE ENGINEERING MTS @ SALESFORCE",
+  line2: "GOOGLE WOMEN TECHMAKERS AMBASSADOR",
+  line3: "LINKEDIN TOP 100 INFLUENTIAL VOICE IN AI",
+  line4: "MIT APPLIED AI & DATA SCIENCE",
 };
 
 export default function PokedexJudge() {
@@ -295,16 +297,19 @@ export default function PokedexJudge() {
                             {currentJudge.name}
                           </h2>
 
-                          {/* 3-Line Intro matching exact background color */}
-                          <div className="flex flex-col gap-1.5 w-full text-[#0c0c0c] text-lg sm:text-xl font-normal leading-tight tracking-wide">
-                            <p className="bg-[#c2c2c2] py-1 px-1.5">
+                          {/* 4-Line Intro matching exact background color */}
+                          <div className="flex flex-col gap-1 w-full text-[#0c0c0c] text-base sm:text-lg font-normal leading-tight tracking-wide">
+                            <p className="bg-[#c2c2c2] py-0.5 px-1">
                               {currentJudge.line1}
                             </p>
-                            <p className="bg-[#c2c2c2] py-1 px-1.5">
+                            <p className="bg-[#c2c2c2] py-0.5 px-1">
                               {currentJudge.line2}
                             </p>
-                            <p className="bg-[#c2c2c2] py-1 px-1.5">
+                            <p className="bg-[#c2c2c2] py-0.5 px-1">
                               {currentJudge.line3}
+                            </p>
+                            <p className="bg-[#c2c2c2] py-0.5 px-1">
+                              {currentJudge.line4}
                             </p>
                           </div>
                         </div>
@@ -325,7 +330,7 @@ export default function PokedexJudge() {
             min-height: 100vh !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
+            justify-between: space-between !important;
             overflow: hidden !important;
             padding-top: 2rem !important;
             padding-bottom: 1.5rem !important;
