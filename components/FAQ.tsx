@@ -11,7 +11,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="relative w-full overflow-hidden flex flex-col max-md:min-h-0 max-md:h-auto max-md:py-0"
+      className="relative flex w-full scroll-mt-16 flex-col overflow-hidden md:scroll-mt-[84px] max-md:min-h-0 max-md:h-auto max-md:py-0"
     >
       {/* Desktop background */}
       <Image
