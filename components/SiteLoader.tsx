@@ -12,8 +12,8 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
   const seen = useSyncExternalStore<boolean | null>(subscribeToIntro, getIntroSeen, getServerIntroSeen);
   const pathname = usePathname();
   const content = useRef<HTMLDivElement>(null);
-  const showIntro = seen === false && pathname === "/";
-  const blocked = seen === null || showIntro;
+  const showIntro = seen !== true && pathname === "/";
+  const blocked = seen !== true;
 
   useEffect(() => {
     // Direct dashboard/login arrivals use plain loading too.
@@ -22,7 +22,7 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {seen === null && <SimpleLoader fullScreen />}
+      {seen === null && pathname !== "/" && <SimpleLoader fullScreen />}
       {showIntro && <IntroLoader content={content} />}
       <div ref={content} className="flex flex-1 flex-col" inert={blocked} aria-hidden={blocked || undefined}>
         {children}
