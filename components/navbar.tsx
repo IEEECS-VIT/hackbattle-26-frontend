@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { scrollToSection } from "@/lib/section-navigation";
 
 const navItems = [
   { label: "HOME", href: "/" },
@@ -18,56 +17,6 @@ const navItems = [
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // Hash arrivals from other pages must wait for the loader and webfont layout.
-  useEffect(() => {
-    if (pathname !== "/") return;
-    let cancelled = false;
-    let frame = 0;
-    let observer: MutationObserver | undefined;
-
-    const alignHash = () => {
-      observer?.disconnect();
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        if (cancelled || !window.location.hash) return;
-        const section = document.getElementById(window.location.hash.slice(1));
-        const loadingContent = section?.closest("[inert]");
-        if (loadingContent) {
-          observer = new MutationObserver(alignHash);
-          observer.observe(loadingContent, { attributes: true, attributeFilter: ["inert"] });
-          return;
-        }
-        scrollToSection(window.location.hash);
-      });
-    };
-
-    void document.fonts.ready.then(() => {
-      if (!cancelled) alignHash();
-    });
-    window.addEventListener("hashchange", alignHash);
-    window.addEventListener("popstate", alignHash);
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(frame);
-      observer?.disconnect();
-      window.removeEventListener("hashchange", alignHash);
-      window.removeEventListener("popstate", alignHash);
-    };
-  }, [pathname]);
-
-  function navigateToSection(event: { preventDefault: () => void }, href: string) {
-    setMenuOpen(false);
-    if (pathname !== "/" || !href.startsWith("/#")) return;
-    const hash = href.slice(1);
-    if (!document.getElementById(hash.slice(1))) return;
-    event.preventDefault();
-    if (window.location.hash !== hash) {
-      window.history.pushState(null, "", href);
-    }
-    // Let the mobile menu close before measuring the heading.
-    requestAnimationFrame(() => scrollToSection(hash));
-  }
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -94,7 +43,7 @@ export default function Navbar() {
         aria-label="Mobile navigation"
         className="site-navigation fixed inset-x-0 top-0 z-50 select-none border-b border-white/30 bg-gradient-to-b from-[#167f91]/90 to-[#095d70]/85 shadow-[0_8px_30px_rgba(4,45,61,0.18)] backdrop-blur-xl lg:hidden"
       >
-        <div data-navigation-bar className="flex h-[calc(var(--site-nav-height)-2px)] items-center justify-between gap-2 px-3 sm:px-6">
+        <div className="flex h-16 items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6">
           <Link
             href="/"
             aria-label="HackBattle home"
@@ -165,7 +114,6 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                onNavigate={(event) => navigateToSection(event, item.href)}
                 onClick={() => setMenuOpen(false)}
                 className="font-pixeboy group flex items-center justify-between rounded-xl px-3 py-2.5 text-[30px] leading-none text-white hover:bg-white/10 hover:text-[#ffdf50]"
               >
@@ -192,7 +140,6 @@ export default function Navbar() {
       {/* Original desktop navigation — intentionally unchanged */}
       {/* Original desktop navigation — updated for centered links */}
       <nav
-        data-navigation-bar
         className="
           fixed
           top-0
@@ -200,7 +147,7 @@ export default function Navbar() {
           right-0
           z-50
 
-          h-[var(--site-nav-height)]
+          h-[84px]
 
           border-b
           border-white/40
@@ -259,7 +206,6 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                onNavigate={(event) => navigateToSection(event, item.href)}
                 className="font-pixeboy shrink-0 whitespace-nowrap rounded-xl border border-transparent px-3 py-2 text-[26px] leading-none uppercase text-white transition-all duration-300 hover:border-white/25 hover:bg-white/10 hover:shadow-[0_6px_20px_rgba(3,35,46,0.18),inset_0_1px_0_rgba(255,255,255,0.16)] hover:backdrop-blur-sm sm:text-[22px] md:text-[26px] lg:text-[30px] xl:text-[36px] 2xl:text-[42px]"
               >
                 {item.label}

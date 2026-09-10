@@ -27,17 +27,16 @@ export default function RevealPanel({
     ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
   };
 
-  // Formatter to render clear, readable typography
   const renderFormattedDescription = (text: string) => {
     const parts = text.split("\n\n");
     return parts.map((part, index) => {
       if (part.startsWith("The Problem:")) {
         return (
-          <div key={index} className="mb-3">
+          <div key={index} className="mb-2.5">
             <span className="block text-xs font-bold uppercase tracking-wider text-[#ffdf50] font-sans">
               The Problem
             </span>
-            <p className="text-sm leading-snug text-white/90 font-sans font-normal">
+            <p className="text-xs sm:text-sm leading-relaxed text-white/90 font-sans font-normal">
               {part.replace("The Problem:", "").trim()}
             </p>
           </div>
@@ -45,11 +44,11 @@ export default function RevealPanel({
       }
       if (part.startsWith("The Challenge:")) {
         return (
-          <div key={index} className="mb-3">
+          <div key={index} className="mb-2.5">
             <span className="block text-xs font-bold uppercase tracking-wider text-[#77dce7] font-sans">
               The Challenge
             </span>
-            <p className="text-sm leading-snug text-white/90 font-sans font-normal">
+            <p className="text-xs sm:text-sm leading-relaxed text-white/90 font-sans font-normal">
               {part.replace("The Challenge:", "").trim()}
             </p>
           </div>
@@ -69,11 +68,11 @@ export default function RevealPanel({
             <span className="block text-xs font-bold uppercase tracking-wider text-[#ffdf50] mb-1">
               Subtracks
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1">
               {subtrackList.map((sub, i) => (
                 <span
                   key={i}
-                  className="inline-block rounded-md bg-white/10 px-2 py-0.5 text-xs text-white/90 border border-white/15"
+                  className="inline-block rounded-md bg-white/10 px-1.5 py-0.5 text-[11px] sm:text-xs text-white/90 border border-white/15"
                 >
                   {sub}
                 </span>
@@ -85,7 +84,7 @@ export default function RevealPanel({
       return (
         <p
           key={index}
-          className="mb-3 text-sm leading-snug text-white/90 font-sans font-normal"
+          className="mb-2.5 text-xs sm:text-sm leading-relaxed text-white/90 font-sans font-normal"
         >
           {part}
         </p>
@@ -97,13 +96,13 @@ export default function RevealPanel({
     <div
       ref={revealRef}
       id="problem-reveal"
-      className={styles.reveal}
+      className={`${styles.reveal} flex flex-col items-center w-full px-2 mt-4`}
       style={{ "--track-color": problem.smokeColor } as CSSProperties}
     >
       <div className={styles.groundShadow} />
 
       {/* Pokéball Graphic */}
-      <div className={styles.artwork}>
+      <div className={`${styles.artwork} max-w-[280px] sm:max-w-none`}>
         {!reducedMotion && (
           <motion.img
             key={`closed-${sequence}`}
@@ -191,7 +190,7 @@ export default function RevealPanel({
       {/* Styled Card Container */}
       <motion.div
         key={`copy-${sequence}`}
-        className="relative z-30 w-full max-w-md rounded-2xl border-2 border-[#163e54] bg-[#075568]/95 p-5 shadow-[0_8px_0_#163e54] backdrop-blur-lg"
+        className="relative z-30 w-full max-w-md rounded-2xl border-2 border-[#163e54] bg-[#075568]/95 p-4 sm:p-5 shadow-[0_6px_0_#163e54] sm:shadow-[0_8px_0_#163e54] backdrop-blur-lg my-2 max-h-[55vh] sm:max-h-none overflow-y-auto"
         initial={
           reducedMotion ? false : { opacity: 0, y: 10, filter: "blur(5px)" }
         }
@@ -201,8 +200,8 @@ export default function RevealPanel({
         aria-label={`Problem statement ${problem.index}: ${problem.title}`}
       >
         {/* Header Header Bar */}
-        <div className="flex items-center justify-between border-b border-white/20 pb-2 mb-3">
-          <span className="font-pixeboy text-2xl text-[#ffdf50] tracking-wide">
+        <div className="flex items-center justify-between border-b border-white/20 pb-2 mb-2 sm:mb-3">
+          <span className="font-pixeboy text-lg sm:text-2xl text-[#ffdf50] tracking-wide break-words">
             TRACK {String(problem.index).padStart(2, "0")}: {problem.title}
           </span>
         </div>
@@ -213,7 +212,9 @@ export default function RevealPanel({
         </div>
       </motion.div>
 
-      <p className={styles.hint}>SELECT A POKÉBALL TO EXPLORE</p>
+      <p className={`${styles.hint} mt-2 text-xs sm:text-sm`}>
+        SELECT A POKÉBALL TO EXPLORE
+      </p>
     </div>
   );
 }

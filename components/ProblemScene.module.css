@@ -1,5 +1,5 @@
 .section {
-  --nav-height: var(--site-nav-height);
+  --nav-height: 84px;
   --heading-line: clamp(48px, 9svh, 92px);
   --frame-height: max(560px, calc(100svh - var(--nav-height)));
   --scene-height: calc(var(--frame-height) - var(--heading-line) * 2 - 20px);
@@ -45,7 +45,7 @@
   line-height: var(--heading-line);
   letter-spacing: .012em;
   text-shadow: 0 5px 3px #123d5059;
-  transform: none;
+  transform: translateY(30px);
   color: white;
   font-family: var(--font-pixeboy), 'Pixeboy', monospace;
 }
@@ -147,6 +147,7 @@
 .hint { position: absolute; width: 100%; bottom: -7%; text-align: center; font-size: clamp(11px,2.3cqh,16px); letter-spacing: .04em; text-shadow: 0 2px 4px #082619; opacity: .9; }
 @media (max-width: 767px) {
   .section {
+    --nav-height: 64px;
     --heading-line: clamp(36px, 5.8svh, 52px);
     --frame-height: max(620px, calc(100svh - var(--nav-height)));
   }
@@ -174,6 +175,7 @@
 @media (min-width: 1280px) {
   .heading h2 { font-size: 185px; transform: translateY(48px); }
 }
+@media (min-width: 640px) and (max-width: 767px) { .section { --nav-height: 72px; } }
 /* Short landscape screens scroll a little instead of shrinking the copy illegibly. */
 @media (max-height: 620px) and (min-width: 768px) {
   .section { --heading-line: 42px; --frame-height: 520px; }

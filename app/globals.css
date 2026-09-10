@@ -11,49 +11,6 @@ html {
   overflow-x: hidden;
 }
 
-:root {
-  /* Mobile bar plus its two borders; desktop includes its border in 84px. */
-  --site-nav-height: 66px;
-  --section-heading-inset: 24px;
-}
-
-@media (min-width: 640px) {
-  :root {
-    --site-nav-height: 74px;
-  }
-}
-
-@media (min-width: 1024px) {
-  :root {
-    --site-nav-height: 84px;
-  }
-}
-
-.landing-section {
-  scroll-margin-top: var(--site-nav-height);
-}
-
-.section-heading-inset {
-  padding-top: var(--section-heading-inset);
-}
-
-/* Select the correct first-paint loader before React reads browser storage. */
-.first-visit-loader {
-  display: contents;
-}
-
-.repeat-visit-loader {
-  display: none;
-}
-
-html[data-hackbattle-intro-seen="true"] .first-visit-loader {
-  display: none;
-}
-
-html[data-hackbattle-intro-seen="true"] .repeat-visit-loader {
-  display: contents;
-}
-
 body {
   margin: 0;
   padding: 0;
