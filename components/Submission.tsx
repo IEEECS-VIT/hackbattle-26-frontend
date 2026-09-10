@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  FormEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import Link from "next/link";
-
+import { FormEvent, useState, useMemo } from "react";
 import { api } from "@/lib/api";
 import { useToast } from "@/components/ToastProvider";
+import Link from "next/link";
 
 const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
   "AI / ML": [
@@ -18,28 +12,24 @@ const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
     "Generative AI & LLM Applications",
     "Predictive Analytics & Forecasting",
   ],
-
   Web3: [
     "DeFi (Decentralized Finance)",
     "NFTs & Gaming",
     "DAO & Governance",
     "Smart Contract Infrastructure",
   ],
-
   Healthcare: [
     "Remote Patient Monitoring",
     "AI Diagnostics",
     "Mental Health & Wellness",
     "Medical Records & Privacy",
   ],
-
   FinTech: [
     "Micro-investing & Wealthtech",
     "Fraud Detection",
     "Payment Gateway Innovations",
     "Personal Finance Management",
   ],
-
   OpenInnovation: [
     "General Problem Solving",
     "Social Good & Sustainability",
@@ -47,347 +37,64 @@ const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
   ],
 };
 
-/* ----------------------------- */
-/* URL VALIDATION                 */
-/* ----------------------------- */
-
-function isHttpsUrl(value: string): boolean {
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-function isGithubUrl(value: string): boolean {
-  try {
-    const url = new URL(value);
-
-    return (
-      url.protocol === "https:" &&
-      (url.hostname === "github.com" ||
-        url.hostname === "www.github.com")
-    );
-  } catch {
-    return false;
-  }
-}
-
-function isFigmaUrl(value: string): boolean {
-  try {
-    const url = new URL(value);
-
-    return (
-      url.protocol === "https:" &&
-      (url.hostname === "figma.com" ||
-        url.hostname === "www.figma.com")
-    );
-  } catch {
-    return false;
-  }
-}
-
 export default function Submission() {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [track, setTrack] = useState("");
   const [subtrack, setSubtrack] = useState("");
-
   const [github, setGithub] = useState("");
   const [figma, setFigma] = useState("");
   const [otherLinks, setOtherLinks] = useState("");
-
   const [submitted, setSubmitted] = useState(false);
-  const [loadingSubmission, setLoadingSubmission] = useState(true);
-
   const { showToast } = useToast();
 
+  // Get dynamic subtrack options according to selected track
   const availableSubtracks = useMemo(() => {
     return TRACK_SUBTRACKS_MAP[track] || [];
   }, [track]);
 
-  /* --------------------------------------------- */
-  /* LOAD EXISTING SUBMISSION                      */
-  /* --------------------------------------------- */
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadExistingSubmission = async () => {
-      try {
-        setLoadingSubmission(true);
-
-        const { data, status } = await api.getTeam();
-
-        if (cancelled) return;
-
-        // User is not currently in a team.
-        if (
-          status === 204 ||
-          status === 403 ||
-          status === 404
-        ) {
-          setLoadingSubmission(false);
-          return;
-        }
-
-        // Authentication is invalid.
-        if (status === 401) {
-          setLoadingSubmission(false);
-          return;
-        }
-
-        // Unexpected API response.
-        if (status !== 200 || !data) {
-          setLoadingSubmission(false);
-          return;
-        }
-
-        /*
-         * Restore values actually stored by the backend.
-         */
-        setDescription(data.problem_stmt ?? "");
-        setGithub(data.github_link ?? "");
-        setFigma(data.figma_link ?? "");
-        setOtherLinks(data.other_files ?? "");
-
-        /*
-         * projectName / track / subtrack are not part of the
-         * current backend submission payload.
-         *
-         * Keep them locally, scoped to this team.
-         */
-        try {
-          const storageKey =
-            `hackbattle-submission-meta-${data.id}`;
-
-          const savedMeta =
-            window.localStorage.getItem(storageKey);
-
-          if (savedMeta) {
-            const meta = JSON.parse(savedMeta) as {
-              projectName?: string;
-              track?: string;
-              subtrack?: string;
-            };
-
-            setProjectName(meta.projectName ?? "");
-            setTrack(meta.track ?? "");
-            setSubtrack(meta.subtrack ?? "");
-          }
-        } catch (storageError) {
-          console.error(
-            "Failed to restore submission metadata:",
-            storageError
-          );
-        }
-
-        /*
-         * If the backend already has a submission,
-         * show the saved state.
-         */
-        if (
-          data.problem_stmt ||
-          data.github_link ||
-          data.figma_link ||
-          data.other_files
-        ) {
-          setSubmitted(true);
-        }
-      } catch (error) {
-        console.error(
-          "Failed to load existing submission:",
-          error
-        );
-      } finally {
-        if (!cancelled) {
-          setLoadingSubmission(false);
-        }
-      }
-    };
-
-    void loadExistingSubmission();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const handleTrackChange = (selectedTrack: string) => {
     setTrack(selectedTrack);
-    setSubtrack("");
+    setSubtrack(""); // Reset subtrack when main track changes
     setSubmitted(false);
   };
 
-  /* --------------------------------------------- */
-  /* SUBMIT                                         */
-  /* --------------------------------------------- */
-
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const cleanProjectName = projectName.trim();
-    const cleanDescription = description.trim();
-    const cleanTrack = track.trim();
-    const cleanSubtrack = subtrack.trim();
-
-    const cleanGithub = github.trim();
-    const cleanFigma = figma.trim();
-    const cleanOtherLinks = otherLinks.trim();
-
-    /* BUG 5
-       Require all mandatory project information.
-    */
-    if (
-      !cleanProjectName ||
-      !cleanDescription ||
-      !cleanTrack ||
-      !cleanSubtrack ||
-      !cleanGithub
-    ) {
-      showToast(
-        "Project Name, Description, Track, Subtrack and GitHub Link are required.",
-        "error"
-      );
-      return;
-    }
-
-    /* BUG 14
-       GitHub must actually be a GitHub URL.
-    */
-    if (!isGithubUrl(cleanGithub)) {
-      showToast(
-        "Please enter a valid GitHub repository URL.",
-        "error"
-      );
-      return;
-    }
-
-    /* Figma is optional, but if supplied it must be Figma. */
-    if (
-      cleanFigma &&
-      !isFigmaUrl(cleanFigma)
-    ) {
-      showToast(
-        "Please enter a valid Figma URL.",
-        "error"
-      );
-      return;
-    }
-
-    /* Other links are optional HTTPS URLs. */
-    if (
-      cleanOtherLinks &&
-      !isHttpsUrl(cleanOtherLinks)
-    ) {
-      showToast(
-        "Other Links must be a valid HTTPS URL.",
-        "error"
-      );
+    if (!description.trim() || !github.trim()) {
+      showToast("Project Description and GitHub Link are required.", "error");
       return;
     }
 
     try {
       setSubmitted(false);
 
-      /*
-       * IMPORTANT:
-       *
-       * Backend expects:
-       *   problem_stmt
-       *   github_link
-       *   figma_link
-       *   other_files
-       *
-       * It does NOT expect:
-       *   project_desc
-       *   track
-       *   subtrack
-       */
-      const { data, status } =
-        await api.submitProject({
-          problem_stmt: cleanDescription,
-          github_link: cleanGithub,
-          figma_link: cleanFigma,
-          other_files: cleanOtherLinks,
-        });
+      const { data, status } = await api.submitProject({
+        project_desc: description.trim(),
+        track: track.trim(),
+        subtrack: subtrack.trim(),
+        github_link: github.trim(),
+        figma_link: figma.trim(),
+        other_files: otherLinks.trim(),
+      });
 
-      if (
-        status === 200 ||
-        status === 201
-      ) {
-        /*
-         * Save UI-only metadata locally.
-         *
-         * This does NOT replace backend persistence.
-         * The actual submission is stored by the backend.
-         */
-        try {
-          const teamResponse =
-            await api.getTeam();
-
-          if (
-            teamResponse.status === 200 &&
-            teamResponse.data?.id
-          ) {
-            window.localStorage.setItem(
-              `hackbattle-submission-meta-${teamResponse.data.id}`,
-              JSON.stringify({
-                projectName: cleanProjectName,
-                track: cleanTrack,
-                subtrack: cleanSubtrack,
-              })
-            );
-          }
-        } catch (storageError) {
-          console.error(
-            "Failed to save submission metadata:",
-            storageError
-          );
-        }
-
+      if (status === 200 || status === 201) {
         setSubmitted(true);
-
-        showToast(
-          data?.message ||
-            "Project submitted successfully!",
-          "success"
-        );
-
+        showToast("Project submitted successfully!", "success");
         return;
       }
 
-      /* Authentication */
       if (status === 401) {
-        showToast(
-          "Please log in before submitting.",
-          "error"
-        );
+        showToast("Please log in before submitting.", "error");
         return;
       }
 
-      /* Not team leader */
-      if (status === 403) {
-        showToast(
-          "Only the team leader can submit the project.",
-          "error"
-        );
-        return;
-      }
-
-      /* Backend returned an actual error */
       throw new Error(
-        data?.message ||
-          `Submission failed (${status})`
+        data?.message || `Submission failed (${status})`
       );
     } catch (error) {
-      console.error(
-        "Submission error:",
-        error
-      );
+      console.error("Submission error:", error);
 
       showToast(
         error instanceof Error
@@ -397,10 +104,6 @@ export default function Submission() {
       );
     }
   }
-
-  /* --------------------------------------------- */
-  /* UI                                              */
-  /* --------------------------------------------- */
 
   return (
     <main className="w-full min-h-screen bg-black p-0">
@@ -443,7 +146,7 @@ export default function Submission() {
 
         <div className="absolute inset-0 z-[1] bg-white/[0.06]" />
 
-        {/* IEEE CS LOGO */}
+        {/* LOGOS */}
         <img
           src="/submission/HTML UI/IEEE_CS_logo.svg"
           alt="IEEE Computer Society"
@@ -463,7 +166,6 @@ export default function Submission() {
           "
         />
 
-        {/* HACKBATTLE LOGO */}
         <img
           src="/submission/HTML UI/HACKBATTLE.svg"
           alt="HackBattle"
@@ -482,45 +184,40 @@ export default function Submission() {
             md:max-w-[105px]
           "
         />
-
-        {/* BUG 1:
-            Directly goes to the team page. */}
         <Link
-  href="/team"
-  className="
-    absolute
-    z-30
-    rounded-full
-    bg-[#397b68]
-    px-6
-    py-3
-    font-pixeboy
-    text-xl
-    text-white
-    transition
-    hover:scale-105
-    hover:bg-[#316b5b]
+          href="/team"
+          className="
+            absolute
+            z-30
+            rounded-full
+            bg-[#397b68]
+            px-6
+            py-3
+            font-pixeboy
+            text-xl
+            text-white
+            transition
+            hover:scale-105
 
-    right-[5%]
-    top-[17%]
+            /* Desktop */
+            right-[5%]
+            top-[17%]
 
-    max-md:left-1/2
-    max-md:right-auto
-    max-md:top-[94%]
-    max-md:-translate-x-1/2
-    max-md:px-5
-    max-md:py-2
-    max-md:text-base
-    max-md:whitespace-nowrap
-  "
->
-  GO TO TEAM PAGE
+            /* Mobile */
+            max-md:left-1/2
+            max-md:right-auto
+            max-md:top-[94%]
+            max-md:-translate-x-1/2
+            max-md:px-5
+            max-md:py-2
+            max-md:text-base
+            max-md:whitespace-nowrap
+        "
+      >
+        GO TO TEAM PAGE
 </Link>
         {/* FORM */}
-        <form
-          onSubmit={handleSubmit}
-          className="absolute inset-0 z-10"
-        >
+        <form onSubmit={handleSubmit} className="absolute inset-0 z-10">
           {/* TITLE */}
           <h1
             className="
@@ -557,6 +254,7 @@ export default function Submission() {
               w-[3px]
               -translate-x-1/2
               bg-black
+
               md:block
             "
           />
@@ -591,13 +289,11 @@ export default function Submission() {
 
             <input
               id="project-name"
-              required
               value={projectName}
               onChange={(e) => {
                 setProjectName(e.target.value);
                 setSubmitted(false);
               }}
-              disabled={loadingSubmission}
               className="
                 mt-[1%]
                 h-[38px]
@@ -651,13 +347,11 @@ export default function Submission() {
 
             <textarea
               id="project-description"
-              required
               value={description}
               onChange={(e) => {
                 setDescription(e.target.value);
                 setSubmitted(false);
               }}
-              disabled={loadingSubmission}
               className="
                 mt-[1%]
                 h-[85px]
@@ -715,12 +409,8 @@ export default function Submission() {
 
             <select
               id="track"
-              required
               value={track}
-              onChange={(e) =>
-                handleTrackChange(e.target.value)
-              }
-              disabled={loadingSubmission}
+              onChange={(e) => handleTrackChange(e.target.value)}
               className="
                 mt-[1%]
                 h-[38px]
@@ -742,22 +432,11 @@ export default function Submission() {
                 md:text-[clamp(1rem,1.3vw,1.5rem)]
               "
             >
-              <option
-                value=""
-                disabled
-                className="bg-white text-black"
-              >
+              <option value="" disabled className="bg-white text-black">
                 SELECT TRACK
               </option>
-
-              {Object.keys(
-                TRACK_SUBTRACKS_MAP
-              ).map((t) => (
-                <option
-                  key={t}
-                  value={t}
-                  className="bg-white text-black"
-                >
+              {Object.keys(TRACK_SUBTRACKS_MAP).map((t) => (
+                <option key={t} value={t} className="bg-white text-black">
                   {t}
                 </option>
               ))}
@@ -794,12 +473,8 @@ export default function Submission() {
 
             <select
               id="subtrack"
-              required
               value={subtrack}
-              disabled={
-                loadingSubmission ||
-                availableSubtracks.length === 0
-              }
+              disabled={availableSubtracks.length === 0}
               onChange={(e) => {
                 setSubtrack(e.target.value);
                 setSubmitted(false);
@@ -826,27 +501,14 @@ export default function Submission() {
                 md:text-[clamp(1rem,1.3vw,1.5rem)]
               "
             >
-              <option
-                value=""
-                disabled
-                className="bg-white text-black"
-              >
-                {track
-                  ? "SELECT SUBTRACK"
-                  : "SELECT A TRACK FIRST"}
+              <option value="" disabled className="bg-white text-black">
+                {track ? "SELECT SUBTRACK" : "SELECT A TRACK FIRST"}
               </option>
-
-              {availableSubtracks.map(
-                (st) => (
-                  <option
-                    key={st}
-                    value={st}
-                    className="bg-white text-black"
-                  >
-                    {st}
-                  </option>
-                )
-              )}
+              {availableSubtracks.map((st) => (
+                <option key={st} value={st} className="bg-white text-black">
+                  {st}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -881,14 +543,9 @@ export default function Submission() {
             <input
               id="github"
               type="url"
-              required
               value={github}
-              onChange={(e) => {
-                setGithub(e.target.value);
-                setSubmitted(false);
-              }}
+              onChange={(e) => setGithub(e.target.value)}
               placeholder="ENTER YOUR GITHUB LINK"
-              disabled={loadingSubmission}
               className="
                 mt-[1%]
                 h-[36px]
@@ -946,12 +603,8 @@ export default function Submission() {
               id="figma"
               type="url"
               value={figma}
-              onChange={(e) => {
-                setFigma(e.target.value);
-                setSubmitted(false);
-              }}
+              onChange={(e) => setFigma(e.target.value)}
               placeholder="ENTER YOUR FIGMA LINK"
-              disabled={loadingSubmission}
               className="
                 mt-[1%]
                 h-[36px]
@@ -1009,12 +662,8 @@ export default function Submission() {
               id="other-links"
               type="url"
               value={otherLinks}
-              onChange={(e) => {
-                setOtherLinks(e.target.value);
-                setSubmitted(false);
-              }}
+              onChange={(e) => setOtherLinks(e.target.value)}
               placeholder="ENTER ANY OTHER LINK"
-              disabled={loadingSubmission}
               className="
                 mt-[1%]
                 h-[36px]
@@ -1043,7 +692,6 @@ export default function Submission() {
           {/* SUBMIT BUTTON */}
           <button
             type="submit"
-            disabled={loadingSubmission}
             className="
               absolute
               left-[50%]
@@ -1057,14 +705,9 @@ export default function Submission() {
               text-[1rem]
               text-white
               transition
-
               hover:scale-[1.03]
               hover:bg-[#316b5b]
-
               active:scale-[0.98]
-
-              disabled:cursor-not-allowed
-              disabled:opacity-50
 
               md:left-[67%]
               md:top-[65%]
@@ -1074,9 +717,7 @@ export default function Submission() {
               md:text-[clamp(1rem,1.3vw,1.5rem)]
             "
           >
-            {loadingSubmission
-              ? "LOADING..."
-              : "SUBMIT"}
+            SUBMIT
           </button>
 
           {/* SUCCESS MESSAGE */}
@@ -1087,10 +728,6 @@ export default function Submission() {
                 bottom-[1.5%]
                 left-[50%]
                 -translate-x-1/2
-                rounded-md
-                bg-white/70
-                px-3
-                py-1
                 font-pixeboy
                 text-[0.9rem]
                 text-green-900
