@@ -1,7 +1,6 @@
 import { onAuthStateChanged, type Auth } from "firebase/auth";
 
 import { getFirebaseAuth } from "@/lib/firebase";
-import { withRequestActivity } from "@/lib/request-activity";
 
 const BASE_URL = (
   process.env.NEXT_PUBLIC_BACKEND_URL || "https://hackbattle26-backend.onrender.com"
@@ -32,13 +31,6 @@ function waitForAuthUser(
 }
 
 async function fetchWithAuth<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<{ data: T | null; status: number }> {
-  return withRequestActivity(() => requestWithAuth<T>(endpoint, options));
-}
-
-async function requestWithAuth<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<{ data: T | null; status: number }> {

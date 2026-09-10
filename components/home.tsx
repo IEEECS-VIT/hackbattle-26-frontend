@@ -50,15 +50,8 @@ const Hero = () => {
 
         <div className="relative z-30 mx-auto flex w-full flex-col items-center px-4 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:pb-12">
           <div className="flex w-full max-w-[38rem] flex-col items-start gap-0">
-            <p
-              className="text-[clamp(1.55rem,7vw,2.25rem)] leading-none tracking-normal text-white"
-              style={{
-                textShadow:
-                  "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60",
-              }}
-            >
-              PRESENTS
-            </p>
+         
+           
             <div className="relative w-full">
               <h1
                 className="hackbattle-title w-full whitespace-nowrap text-left text-[clamp(2.75rem,14.2vw,5.8rem)] font-bold leading-[0.8] tracking-[0.015em]"
@@ -107,7 +100,7 @@ const Hero = () => {
           aria-hidden="true"
           className="pointer-events-none absolute top-0 left-0 z-0 h-full w-full select-none object-cover"
         >
-          <source src="/hackbattle-new-video.webm" type="video/webm" />
+          <source src="/edit.webm" type="video/webm" />
           <div className="w-full h-full bg-cyan-600"></div>
         </video>
         <div className="absolute inset-0 bg-blue-900/10 z-10"></div>
@@ -117,15 +110,7 @@ const Hero = () => {
         
           </div>
 
-          <h2
-            className="ml-[clamp(.75rem,2vw,2.5rem)] text-[clamp(1.8rem,min(3.2vw,5.5svh),3.75rem)] leading-none tracking-normal text-white"
-            style={{
-              textShadow:
-                "2px 2px 0 #1a4a60, -1px -1px 0 #1a4a60, 1px -1px 0 #1a4a60, -1px 1px 0 #1a4a60, 1px 1px 0 #1a4a60, 0px 2px 0 #1a4a60, 2px 0px 0 #1a4a60",
-            }}
-          >
-            PRESENTS
-          </h2>
+         
           <div
             className="relative ml-[clamp(.75rem,2vw,2.5rem)] mt-[clamp(-2rem,-1.5vw,-.8rem)] max-w-full"
             data-text="HACKBATTLE"
