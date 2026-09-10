@@ -5,7 +5,6 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { ToastProvider } from "@/components/ToastProvider";
 import localFont from "next/font/local";
 import SiteLoader from "@/components/SiteLoader";
-import RequestActivity from "@/components/RequestActivity";
 
 export const metadata: Metadata = {
   title: "HackBattle 2026",
@@ -28,18 +27,10 @@ export default function RootLayout({
       lang="en"
       className={`${pixeboy.variable} antialiased`}
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem("hackbattle-intro-seen-v2")==="1")document.documentElement.dataset.hackbattleIntroSeen="true"}catch{}`,
-          }}
-        />
-      </head>
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>
             <SiteLoader>{children}</SiteLoader>
-            <RequestActivity />
           </ToastProvider>
         </AuthProvider>
       </body>
