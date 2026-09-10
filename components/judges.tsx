@@ -10,7 +10,7 @@ interface JudgeInfo {
   line1: string;
   line2: string;
   line3: string;
-  line4: string;
+  linkedinUrl: string;
 }
 
 const SINGLE_JUDGE: JudgeInfo = {
@@ -19,7 +19,7 @@ const SINGLE_JUDGE: JudgeInfo = {
   line1: "SOFTWARE ENGINEERING MTS @ SALESFORCE",
   line2: "GOOGLE WOMEN TECHMAKERS AMBASSADOR",
   line3: "LINKEDIN TOP 100 INFLUENTIAL VOICE IN AI",
-  line4: "MIT APPLIED AI & DATA SCIENCE",
+  linkedinUrl: "https://www.linkedin.com/in/palakawasthi/",
 };
 
 export default function PokedexJudge() {
@@ -88,7 +88,7 @@ export default function PokedexJudge() {
 
   return (
     <div
-      className="section-heading-inset relative w-full min-h-screen flex flex-col items-center justify-start px-2 pb-2 sm:px-4 sm:pb-4 select-none overflow-y-auto overflow-x-hidden portrait-section-container"
+      className="relative w-full min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 select-none overflow-y-auto overflow-x-hidden portrait-section-container"
       style={{
         backgroundImage: `url('/judgesbg.svg')`,
         backgroundSize: "cover",
@@ -99,14 +99,10 @@ export default function PokedexJudge() {
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
 
       {/* Outer Content Container */}
-      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pb-8 portrait-inner-wrapper">
-        
-        {/* HEADER */}
-        <div className="mb-2 z-20 portrait-header-box">
-          <h1
-            className="text-white text-[70px] leading-[80px] md:text-[111px] md:leading-none lg:text-[148px] xl:text-[185px] font-pixeboy tracking-normal drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)] filter transition-all duration-300 select-none text-center portrait-header-text"
-            style={{ fontWeight: 400 }}
-          >
+      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pt-1 md:pt-2 pb-8 portrait-inner-wrapper">
+        {/* HEADER MATCHED TO ABOUT & TRACKS */}
+        <div className="mb-6 z-20 portrait-header-box">
+          <h1 className="font-pixeboy font-normal text-center text-white text-3xl sm:text-4xl md:text-5xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54] filter transition-all duration-300 portrait-header-text">
             JUDGE
           </h1>
         </div>
@@ -275,7 +271,7 @@ export default function PokedexJudge() {
                     }}
                   >
                     <div
-                      className="bg-[#c2c2c2] w-full h-full p-3 sm:p-4 flex flex-col items-center justify-start font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] min-h-[200px] md:min-h-[270px]"
+                      className="bg-[#c2c2c2] w-full h-full p-3 sm:p-4 flex flex-col items-center justify-between font-pixeboy text-[#1d1d1d] relative shadow-[inset_0_2px_5px_rgba(0,0,0,0.25)] min-h-[200px] md:min-h-[270px]"
                       style={{
                         clipPath:
                           "polygon(7% 0, 100% 0, 100% 100%, 0 100%, 0 5%)",
@@ -290,27 +286,47 @@ export default function PokedexJudge() {
                       {currentJudge && (
                         <div
                           key={`info-${loadKey}`}
-                          className="flex flex-col items-center justify-start w-full flex-grow text-center pt-2 animate-text-slide"
+                          className="flex flex-col items-center justify-between w-full h-full flex-grow text-center pt-2 animate-text-slide"
                         >
-                          {/* Name at the Top */}
-                          <h2 className="text-3xl sm:text-4xl uppercase tracking-normal text-[#0c0c0c] font-pixeboy font-normal break-words border-b-2 border-black/20 pb-1.5 mb-2.5 w-full">
-                            {currentJudge.name}
-                          </h2>
+                          <div className="flex flex-col items-center w-full">
+                            {/* Name at the Top */}
+                            <h2 className="text-3xl sm:text-4xl uppercase tracking-normal text-[#0c0c0c] font-pixeboy font-normal break-words border-b-2 border-black/20 pb-1.5 mb-2.5 w-full">
+                              {currentJudge.name}
+                            </h2>
 
-                          {/* 4-Line Intro matching exact background color */}
-                          <div className="flex flex-col gap-1 w-full text-[#0c0c0c] text-base sm:text-lg font-normal leading-tight tracking-wide">
-                            <p className="bg-[#c2c2c2] py-0.5 px-1">
-                              {currentJudge.line1}
-                            </p>
-                            <p className="bg-[#c2c2c2] py-0.5 px-1">
-                              {currentJudge.line2}
-                            </p>
-                            <p className="bg-[#c2c2c2] py-0.5 px-1">
-                              {currentJudge.line3}
-                            </p>
-                            <p className="bg-[#c2c2c2] py-0.5 px-1">
-                              {currentJudge.line4}
-                            </p>
+                            {/* 3-Line Intro */}
+                            <div className="flex flex-col gap-1 w-full text-[#0c0c0c] text-base sm:text-lg font-normal leading-tight tracking-wide">
+                              <p className="bg-[#c2c2c2] py-0.5 px-1">
+                                {currentJudge.line1}
+                              </p>
+                              <p className="bg-[#c2c2c2] py-0.5 px-1">
+                                {currentJudge.line2}
+                              </p>
+                              <p className="bg-[#c2c2c2] py-0.5 px-1">
+                                {currentJudge.line3}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* LinkedIn Button with Font Isolation Fix */}
+                          <div className="mt-3 pt-2 pb-1 border-t border-black/10 w-full flex justify-center font-sans">
+                            <a
+                              href={currentJudge.linkedinUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0077b5] hover:bg-[#005582] text-white rounded-md border border-black transition-transform hover:scale-105 active:scale-95 shadow-md"
+                              aria-label="LinkedIn Profile"
+                            >
+                              <svg
+                                className="w-4 h-4 fill-current shrink-0"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-1.2.98-2.18 2.18-2.18s2.18.98 2.18 2.18v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+                              </svg>
+                              <span className="font-sans text-xs font-bold tracking-wide">
+                                LinkedIn
+                              </span>
+                            </a>
                           </div>
                         </div>
                       )}
@@ -330,9 +346,9 @@ export default function PokedexJudge() {
             min-height: 100vh !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
+            justify-between: space-between !important;
             overflow: hidden !important;
-            padding-top: var(--section-heading-inset) !important;
+            padding-top: 2rem !important;
             padding-bottom: 1.5rem !important;
             background-position: center bottom !important;
           }
@@ -341,7 +357,7 @@ export default function PokedexJudge() {
             padding-top: 0 !important;
             padding-bottom: 0 !important;
             height: 100% !important;
-            justify-content: space-between !important;
+            justify-between: space-between !important;
           }
 
           .portrait-header-box {
@@ -350,11 +366,7 @@ export default function PokedexJudge() {
 
           .portrait-card-scaler {
             transform: scale(
-              min(
-                calc(85vw / 600px),
-                calc(55vh / 430px),
-                1.0
-              )
+              min(calc(85vw / 600px), calc(55vh / 430px), 1)
             ) !important;
             transform-origin: center center !important;
             margin-top: auto !important;
