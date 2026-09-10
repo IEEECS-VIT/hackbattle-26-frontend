@@ -37,6 +37,23 @@ html {
   padding-top: var(--section-heading-inset);
 }
 
+/* Select the correct first-paint loader before React reads browser storage. */
+.first-visit-loader {
+  display: contents;
+}
+
+.repeat-visit-loader {
+  display: none;
+}
+
+html[data-hackbattle-intro-seen="true"] .first-visit-loader {
+  display: none;
+}
+
+html[data-hackbattle-intro-seen="true"] .repeat-visit-loader {
+  display: contents;
+}
+
 body {
   margin: 0;
   padding: 0;

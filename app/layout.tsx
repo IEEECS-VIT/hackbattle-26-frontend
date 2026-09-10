@@ -28,6 +28,13 @@ export default function RootLayout({
       lang="en"
       className={`${pixeboy.variable} antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem("hackbattle-intro-seen")==="1"||sessionStorage.getItem("hackbattle-intro-seen")==="1")document.documentElement.dataset.hackbattleIntroSeen="true"}catch{}`,
+          }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>

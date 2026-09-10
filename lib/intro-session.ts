@@ -3,7 +3,11 @@ let seenInMemory = false;
 const listeners = new Set<() => void>();
 
 export function getIntroSeen(): boolean {
-  try { return seenInMemory || sessionStorage.getItem(KEY) === "1"; }
+  try {
+    return seenInMemory
+      || localStorage.getItem(KEY) === "1"
+      || sessionStorage.getItem(KEY) === "1";
+  }
   catch { return seenInMemory; }
 }
 export const getServerIntroSeen = () => null;
@@ -13,6 +17,10 @@ export const subscribeToIntro = (listener: () => void) => {
 };
 export function markIntroSeen() {
   seenInMemory = true;
-  try { sessionStorage.setItem(KEY, "1"); } catch { /* Storage may be disabled. */ }
+  try {
+    localStorage.setItem(KEY, "1");
+    sessionStorage.setItem(KEY, "1");
+    document.documentElement.dataset.hackbattleIntroSeen = "true";
+  } catch { /* Storage may be disabled. */ }
   listeners.forEach((listener) => listener());
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { usePathname } from "next/navigation";
 import { getIntroSeen, getServerIntroSeen, markIntroSeen, subscribeToIntro } from "@/lib/intro-session";
+import { markSiteReady } from "@/lib/request-activity";
 import SimpleLoader from "./SimpleLoader";
 import styles from "./SiteLoader.module.css";
 
@@ -12,8 +13,18 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
   const seen = useSyncExternalStore<boolean | null>(subscribeToIntro, getIntroSeen, getServerIntroSeen);
   const pathname = usePathname();
   const content = useRef<HTMLDivElement>(null);
-  const showIntro = seen !== true && pathname === "/";
-  const blocked = seen !== true;
+  const [ready, setReady] = useState(false);
+  const showIntro = seen === false && pathname === "/";
+  const useSimpleLoader = seen !== null && !showIntro;
+  const finishIntro = useCallback(() => {
+    markIntroSeen();
+    markSiteReady();
+    setReady(true);
+  }, []);
+  const finishSimple = useCallback(() => {
+    markSiteReady();
+    setReady(true);
+  }, []);
 
   useEffect(() => {
     // Direct dashboard/login arrivals use plain loading too.
@@ -22,17 +33,34 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {seen === null && pathname !== "/" && <SimpleLoader fullScreen />}
-      {showIntro && <IntroLoader content={content} />}
-      <div ref={content} className="flex flex-1 flex-col" inert={blocked} aria-hidden={blocked || undefined}>
+      {seen === null && (
+        <>
+          <div className="first-visit-loader"><IntroArtwork progress={0} failed={false} /></div>
+          <div className="repeat-visit-loader"><SimpleLoader fullScreen /></div>
+        </>
+      )}
+      {!ready && showIntro && (
+        <AssetLoader content={content} onReady={finishIntro} />
+      )}
+      {!ready && useSimpleLoader && (
+        <AssetLoader content={content} simple onReady={finishSimple} />
+      )}
+      <div ref={content} className="flex flex-1 flex-col" inert={!ready} aria-hidden={!ready || undefined}>
         {children}
       </div>
     </>
   );
 }
 
-function IntroLoader({ content }: { content: RefObject<HTMLDivElement | null> }) {
-  const [ready, setReady] = useState(false);
+function AssetLoader({
+  content,
+  simple = false,
+  onReady,
+}: {
+  content: RefObject<HTMLDivElement | null>;
+  simple?: boolean;
+  onReady: () => void;
+}) {
   const [progress, setProgress] = useState(0);
   const [failed, setFailed] = useState(false);
 
@@ -57,8 +85,7 @@ function IntroLoader({ content }: { content: RefObject<HTMLDivElement | null> })
         revealTimer = setTimeout(() => {
           if (signal.aborted) return;
           document.body.style.overflow = previousOverflow;
-          setReady(true);
-          markIntroSeen();
+          onReady();
         }, 400);
       }
     }, LOADER_CYCLE_MS / 100);
@@ -134,12 +161,16 @@ function IntroLoader({ content }: { content: RefObject<HTMLDivElement | null> })
       clearTimeout(revealTimer);
       document.body.style.overflow = previousOverflow;
     };
-  }, [content]);
+  }, [content, onReady]);
 
+  if (simple) return <SimpleLoader fullScreen />;
+
+  return <IntroArtwork progress={progress} failed={failed} />;
+}
+
+function IntroArtwork({ progress, failed }: { progress: number; failed: boolean }) {
   return (
-    <>
-      {!ready && (
-        <div className={styles.screen} style={{ "--loader-cycle": `${LOADER_CYCLE_MS}ms` } as CSSProperties}>
+    <div className={styles.screen} style={{ "--loader-cycle": `${LOADER_CYCLE_MS}ms` } as CSSProperties}>
           <div className={styles.scenery} aria-hidden="true">
             <div className={styles.clouds}><i /><i /><i /></div>
             <div className={styles.hills} />
@@ -167,8 +198,6 @@ function IntroLoader({ content }: { content: RefObject<HTMLDivElement | null> })
             </div>
             {failed && <button className={styles.retry} onClick={() => window.location.reload()}>TRY AGAIN ↗</button>}
           </section>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
