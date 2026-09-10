@@ -149,7 +149,7 @@ export default function JoinTeamPage() {
             {/* X */}
             <button
               type="button"
-              onClick={() => setShowPopup(false)}
+              onClick={() => router.replace("/dashboard")}              
               className="
                 absolute right-3 top-2
                 cursor-pointer
@@ -255,7 +255,7 @@ export default function JoinTeamPage() {
             {/* CANCEL */}
             <button
               type="button"
-              onClick={() => setShowPopup(false)}
+              onClick={() => router.replace("/dashboard")}             
               className="
                 flex h-[50px] w-full
                 cursor-pointer

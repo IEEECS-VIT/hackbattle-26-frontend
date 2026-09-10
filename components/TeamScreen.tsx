@@ -215,25 +215,25 @@ export default function TeamScreen({
             <Link
               href="/login"
               className="
-        team-nav-btn
-        inline-flex
-        items-center
-        rounded-[5px]
-        border-2
-        border-black
-        bg-white
-        px-2.5 py-1
-        text-sm
-        sm:px-4 sm:py-1.5 sm:text-base
-        font-pixeboy
-        leading-none
-        text-black
-        shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-        transition-all
-        hover:brightness-95
-        active:translate-y-[1px]
-        active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
-      "
+                  team-nav-btn
+                  inline-flex
+                  items-center
+                  rounded-[5px]
+                  border-2
+                  border-black
+                  bg-white
+                  px-2.5 py-1
+                  text-sm
+                  sm:px-4 sm:py-1.5 sm:text-base
+                  font-pixeboy
+                  leading-none
+                  text-black
+                  shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                  transition-all
+                  hover:brightness-95
+                  active:translate-y-[1px]
+                  active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
+              "  
             >
               BACK
             </Link>
@@ -789,47 +789,6 @@ export default function TeamScreen({
           }
         }
 
-        @media (max-width: 1150px) {
-          .team-code-box {
-            width: 44px;
-            height: 44px;
-            padding: 0;
-            justify-content: center;
-            gap: 0;
-            overflow: hidden;
-            transition: width 0.15s ease, padding 0.15s ease, gap 0.15s ease;
-          }
-
-          .team-code-text {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-            white-space: nowrap;
-            transform: translateX(8px);
-            transition:
-              opacity 0.15s ease,
-              transform 0.15s ease;
-          }
-
-          .team-code-box:hover {
-            width: auto;
-            padding: 8px 16px;
-            gap: 10px;
-            overflow: visible;
-          }
-
-          .team-code-box:hover .team-code-text {
-            position: static;
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @media (max-width: 920px) and (min-width: 560px) {
-        .team-token {
-          top: 12%;
-        }
-      }
         @media (max-width: 400px) {
         .team-code-box {
           bottom: 2%;

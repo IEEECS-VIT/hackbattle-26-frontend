@@ -93,8 +93,11 @@ export default function LoginPage() {
     try {
       await signInWithGoogle(selectedType);
       showToast("Login successful!", "success");
-      router.push("/dashboard"); // <-- ADD THIS LINE (replace /test-ui with your target route)
-    } catch (signInError) {
+    if (hasTeam) {
+      router.push("/team");
+    } else {
+      router.push("/dashboard");
+    }    } catch (signInError) {
       setError(authErrorMessage(signInError));
       showToast("Login failed. Please try again.", "error");
     } finally {
