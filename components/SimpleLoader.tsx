@@ -9,8 +9,10 @@ export default function SimpleLoader({
 }) {
   return (
     <div className={fullScreen ? styles.screen : styles.inline} role="status" aria-live="polite">
-      <span className={styles.spinner} aria-hidden="true" />
-      <span>{label}</span>
+      <div className={styles.panel}>
+        <span className={styles.spinner} aria-hidden="true" />
+        <span>{label}</span>
+      </div>
     </div>
   );
 }
