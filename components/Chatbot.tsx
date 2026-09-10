@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { sendChatMessage } from "@/lib/chatbot";
+import SimpleLoader from "./SimpleLoader";
 
 type Message = {
   sender: "user" | "bot";
@@ -92,7 +93,7 @@ export default function Chatbot() {
             {loading && (
               <div className="flex justify-start">
                 <div className="bg-white/10 rounded-xl px-3 py-2 text-sm text-white/70 italic">
-                  Thinking...
+                  <SimpleLoader label="Thinking…" />
                 </div>
               </div>
             )}

@@ -1,12 +1,37 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { usePathname } from "next/navigation";
+import { getIntroSeen, getServerIntroSeen, markIntroSeen, subscribeToIntro } from "@/lib/intro-session";
+import SimpleLoader from "./SimpleLoader";
 import styles from "./SiteLoader.module.css";
 
 const LOADER_CYCLE_MS = 1700;
 
 export default function SiteLoader({ children }: { children: ReactNode }) {
+  const seen = useSyncExternalStore<boolean | null>(subscribeToIntro, getIntroSeen, getServerIntroSeen);
+  const pathname = usePathname();
   const content = useRef<HTMLDivElement>(null);
+  const showIntro = seen === false && pathname === "/";
+  const blocked = seen === null || showIntro;
+
+  useEffect(() => {
+    // Direct dashboard/login arrivals use plain loading too.
+    if (seen === false && pathname !== "/") markIntroSeen();
+  }, [seen, pathname]);
+
+  return (
+    <>
+      {seen === null && <SimpleLoader fullScreen />}
+      {showIntro && <IntroLoader content={content} />}
+      <div ref={content} className="flex flex-1 flex-col" inert={blocked} aria-hidden={blocked || undefined}>
+        {children}
+      </div>
+    </>
+  );
+}
+
+function IntroLoader({ content }: { content: RefObject<HTMLDivElement | null> }) {
   const [ready, setReady] = useState(false);
   const [progress, setProgress] = useState(0);
   const [failed, setFailed] = useState(false);
@@ -33,6 +58,7 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
           if (signal.aborted) return;
           document.body.style.overflow = previousOverflow;
           setReady(true);
+          markIntroSeen();
         }, 400);
       }
     }, LOADER_CYCLE_MS / 100);
@@ -108,7 +134,7 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
       clearTimeout(revealTimer);
       document.body.style.overflow = previousOverflow;
     };
-  }, []);
+  }, [content]);
 
   return (
     <>
@@ -143,7 +169,6 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
           </section>
         </div>
       )}
-      <div ref={content} className="flex flex-1 flex-col" inert={!ready} aria-hidden={!ready || undefined}>{children}</div>
     </>
   );
 }
