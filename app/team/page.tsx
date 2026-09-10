@@ -49,6 +49,10 @@ const handleCreateTeam = async () => {
     setError("PLEASE ENTER A TEAM NAME");
     return;
   }
+  if (name.length > 100) {
+  setError("TEAM NAME MUST BE 100 CHARACTERS OR LESS");
+  return;
+}
 
   setCreating(true);
   setError("");
@@ -135,7 +139,7 @@ const handleCreateTeam = async () => {
             {/* X */}
             <button
               type="button"
-              onClick={() => router.push("/join-team")}
+              onClick={() => router.replace("/dashboard")}           
               className="
                 absolute right-3 top-2
                 cursor-pointer
@@ -170,6 +174,7 @@ const handleCreateTeam = async () => {
             <input
               type="text"
               value={teamName}
+              maxLength={100}
               onChange={(e) => {
                 setTeamName(e.target.value);
                 setError("");
@@ -241,7 +246,7 @@ const handleCreateTeam = async () => {
             {/* CANCEL */}
             <button
               type="button"
-              onClick={() => router.push("/join-team")}
+              onClick={() => router.replace("/dashboard")}             
               className="
                 flex h-[50px] w-full
                 cursor-pointer

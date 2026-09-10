@@ -486,37 +486,36 @@ export default function Submission() {
         {/* BUG 1:
             Directly goes to the team page. */}
         <Link
-          href="/team"
-          className="
-            absolute
-            z-30
-            rounded-full
-            bg-[#397b68]
-            px-6
-            py-3
-            font-pixeboy
-            text-xl
-            text-white
-            transition
-            hover:scale-105
-            hover:bg-[#316b5b]
+  href="/team"
+  className="
+    absolute
+    z-30
+    rounded-full
+    bg-[#397b68]
+    px-6
+    py-3
+    font-pixeboy
+    text-xl
+    text-white
+    transition
+    hover:scale-105
+    hover:bg-[#316b5b]
 
-            right-[5%]
-            top-[17%]
+    right-[5%]
+    top-[17%]
 
-            max-md:left-1/2
-            max-md:right-auto
-            max-md:top-[94%]
-            max-md:-translate-x-1/2
-            max-md:px-5
-            max-md:py-2
-            max-md:text-base
-            max-md:whitespace-nowrap
-          "
-        >
-          GO TO TEAM PAGE
-        </Link>
-
+    max-md:left-1/2
+    max-md:right-auto
+    max-md:top-[94%]
+    max-md:-translate-x-1/2
+    max-md:px-5
+    max-md:py-2
+    max-md:text-base
+    max-md:whitespace-nowrap
+  "
+>
+  GO TO TEAM PAGE
+</Link>
         {/* FORM */}
         <form
           onSubmit={handleSubmit}

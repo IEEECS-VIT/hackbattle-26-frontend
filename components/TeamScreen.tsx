@@ -10,7 +10,6 @@ type Player = {
   id: number;
   filled: boolean;
   name: string;
-  teamName: string;
 };
 
 function SlotButton({
@@ -30,13 +29,12 @@ function SlotButton({
         h-full
         w-full
         items-center
-        justify-between
+        justify-center
         rounded-[5px]
         border-[2px]
         border-black
         bg-white
-        pl-3
-        pr-2
+        px-2
         shadow-[3px_3px_0_rgba(0,0,0,0.85)]
         transition-all
         hover:brightness-95
@@ -44,27 +42,8 @@ function SlotButton({
         active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
       "
     >
-      <span className="font-pixeboy whitespace-nowrap leading-none text-black">
+      <span className="font-pixeboy whitespace-nowrap leading-none text-black text-[clamp(11px,3.2vw,16px)]">
         PLAYER {label}
-      </span>
-
-      <span
-        className="
-          ml-2
-          grid
-          h-7
-          w-7
-          shrink-0
-          place-items-center
-          rounded
-          bg-black
-          text-[18px]
-          font-bold
-          leading-none
-          text-white
-        "
-      >
-        +
       </span>
     </button>
   );
@@ -88,14 +67,12 @@ export default function TeamScreen({
   const isLeader = teamData?.isLeader ?? false;
   const activeTeamCode = teamData?.code || teamCode;
 
-  // Fill up 5 slots using dynamic backend data
   const players: Player[] = Array.from({ length: 5 }, (_, idx) => {
     const member = members[idx];
     return {
       id: idx + 1,
       filled: Boolean(member),
       name: member?.name || "",
-      teamName: teamData?.name || "TEAM",
     };
   });
 
@@ -103,7 +80,11 @@ export default function TeamScreen({
     if (!activeTeamCode) return;
 
     try {
-      if (typeof navigator !== "undefined" && navigator.clipboard && window.isSecureContext) {
+      if (
+        typeof navigator !== "undefined" &&
+        navigator.clipboard &&
+        window.isSecureContext
+      ) {
         await navigator.clipboard.writeText(activeTeamCode);
       } else {
         const textarea = document.createElement("textarea");
@@ -159,11 +140,11 @@ export default function TeamScreen({
     }
   };
 
-  const displayHeading = mode === "join" ? "JOIN TEAM" : "BUILD YOUR TEAM";
+  const displayHeading = teamData?.name ? `TEAM: ${teamData.name}` : "MY TEAM";
 
   return (
     <div className="team-page-outer relative w-full overflow-hidden">
-      {/* FULL PAGE BACKGROUND */}
+      {/* BACKGROUND */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/team/team.svg"
@@ -172,313 +153,132 @@ export default function TeamScreen({
           priority
           sizes="100vw"
           className="object-cover"
-          style={{
-            objectPosition: "center center",
-          }}
+          style={{ objectPosition: "center center" }}
         />
       </div>
 
-      {/* BACKGROUND OVERLAY */}
       <div className="pointer-events-none absolute inset-0 z-[1] bg-black/75" />
-      <div
-        className="
-          flex relative 
-          z-10
-          h-[100dvh]
-          w-full
-          flex-col
-          items-center
-          px-2
-          pb-0
-          pt-2
-          sm:px-4
-          sm:pb-0
-          sm:pt-2
-          md:px-6
-          md:pb-0
-          md:pt-3
-          "
-      >
-        {/* NAVIGATION */}
-        <div
-          className="
-          team-nav-row
-          w-full
-          max-w-[1400px]
-          shrink-0
-          pb-0
-          sm:pb-3
-          md:pb-3
-        "
-        >
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/login"
-              className="
-        team-nav-btn
-        inline-flex
-        items-center
-        rounded-[5px]
-        border-2
-        border-black
-        bg-white
-        px-2.5 py-1
-        text-sm
-        sm:px-4 sm:py-1.5 sm:text-base
-        font-pixeboy
-        leading-none
-        text-black
-        shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-        transition-all
-        hover:brightness-95
-        active:translate-y-[1px]
-        active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
-      "
-            >
-              BACK
-            </Link>
 
-            {isLeader && (
+      <div className="flex relative z-10 h-[100dvh] w-full flex-col items-center px-3 pt-3 pb-2 sm:px-4 sm:pt-4 md:px-6">
+        {/* NAVIGATION & HEADER TOP ROW */}
+        <div className="w-full max-w-[1400px] shrink-0 pb-2 sm:pb-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
               <Link
-                href="/submission"
-                onClick={handleSubmissionClick}
+                href="/login"
                 className="
-          team-nav-btn
-          inline-flex
-          items-center
-          rounded-[5px]
-          border-2
-          border-black
-          bg-yellow-400
-          px-2.5 py-1
-          text-sm
-          sm:px-4 sm:py-1.5 sm:text-base
-          font-pixeboy
-          leading-none
-          text-black
-          shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-          transition-all
-          hover:brightness-95
-          active:translate-y-[1px]
-          active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
-        "
-              >
-                <span className="sm:hidden">SUBMIT</span>
-                <span className="hidden sm:inline">SUBMIT PROJECT</span>
-              </Link>
-            )}
-
-            <div className="ml-auto">
-              <button
-                type="button"
-                onClick={handleLeaveTeam}
-                className="
-          team-nav-btn
-          inline-flex
-          items-center
-          rounded-[5px]
-          border-2
-          border-black
-          bg-red-800
-          px-2.5 py-1
-          text-sm
-          sm:px-4 sm:py-1.5 sm:text-base
-          font-pixeboy
-          leading-none
-          text-white
-          shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-          transition-all
-          hover:brightness-95
-          active:translate-y-[1px]
-          active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
-        "
-              >
-                LEAVE TEAM
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* MAIN GAME AREA */}
-        <div
-          className="
-            team-game-container
-            relative
-            flex
-            w-full
-            max-w-[1400px]
-            flex-1
-            flex-col
-            overflow-hidden
-          "
-        >
-          {mode === "build" && (
-            <div
-              className="
-                team-token
-                absolute
-                right-2
-                top-10
-                z-50
-                pointer-events-auto
-                sm:right-4
-                sm:top-3
-                md:right-5
-                md:top-4
-              "
-            >
-              <div
-                className="
-                  team-code-box
-                  flex
-                  items-center
-                  gap-2.5
-                  rounded-[5px]
-                  border-2
-                  border-black
-                  bg-white/95
-                  px-4
-                  py-2
-                  shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                  team-nav-btn
+                  inline-flex items-center
+                  rounded-[5px] border-2 border-black
+                  bg-white px-2.5 py-1 text-xs sm:px-4 sm:py-1.5 sm:text-base
+                  font-pixeboy leading-none text-black
+                  shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                  transition-all hover:brightness-95 active:translate-y-[1px]
                 "
               >
-                {/* TEAM CODE */}
-                <span
-                  className="
-                    team-code-text
-                    font-pixeboy
-                    leading-none
-                    tracking-wider
-                    text-black
-                  "
-                  style={{ fontSize: "clamp(14px, 1.6vw, 22px)" }}
-                >
-                  {activeTeamCode ? (
-                    activeTeamCode
-                  ) : (
-                    <span className="opacity-50">----</span>
-                  )}
-                </span>
+                BACK
+              </Link>
 
-                {/* COPY BUTTON */}
+              {isLeader && (
+                <Link
+                  href="/submission"
+                  onClick={handleSubmissionClick}
+                  className="
+                    team-nav-btn
+                    inline-flex items-center
+                    rounded-[5px] border-2 border-black
+                    bg-yellow-400 px-2.5 py-1 text-xs sm:px-4 sm:py-1.5 sm:text-base
+                    font-pixeboy leading-none text-black
+                    shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                    transition-all hover:brightness-95 active:translate-y-[1px]
+                  "
+                >
+                  <span>SUBMIT</span>
+                </Link>
+              )}
+            </div>
+
+            {/* TEAM CODE (Inline on mobile header to save vertical space) */}
+            {mode === "build" && (
+              <div className="flex items-center gap-1.5 rounded-[5px] border-2 border-black bg-white/95 px-2 py-1 shadow-[2px_2px_0_rgba(0,0,0,0.85)]">
+                <span className="font-pixeboy text-sm sm:text-lg leading-none tracking-wider text-black">
+                  {activeTeamCode || "----"}
+                </span>
                 <button
                   type="button"
                   aria-label="Copy team code"
                   onClick={handleCopyTeamCode}
                   disabled={!activeTeamCode}
-                  className="
-                    grid
-                    h-7
-                    w-7
-                    shrink-0
-                    cursor-pointer
-                    place-items-center
-                    rounded
-                    bg-black
-                    text-white
-                    transition-colors
-                    hover:bg-black/80
-                    disabled:cursor-not-allowed
-                    disabled:opacity-40
-                  "
+                  className="grid h-5 w-5 sm:h-6 sm:w-6 shrink-0 place-items-center rounded bg-black text-white hover:bg-black/80 disabled:opacity-40"
                 >
                   <svg
-                    width="15"
-                    height="15"
+                    width="12"
+                    height="12"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    strokeWidth="2.5"
                   >
                     <rect x="9" y="9" width="13" height="13" rx="2" />
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                   </svg>
                 </button>
               </div>
-            </div>
-          )}
+            )}
 
+            <button
+              type="button"
+              onClick={handleLeaveTeam}
+              className="
+                team-nav-btn
+                inline-flex items-center
+                rounded-[5px] border-2 border-black
+                bg-red-800 px-2.5 py-1 text-xs sm:px-4 sm:py-1.5 sm:text-base
+                font-pixeboy leading-none text-white
+                shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                transition-all hover:brightness-95 active:translate-y-[1px]
+              "
+            >
+              LEAVE
+            </button>
+          </div>
+        </div>
+
+        {/* CONTAINER */}
+        <div className="team-game-container relative flex w-full max-w-[1400px] flex-1 flex-col overflow-hidden">
           {/* HEADING */}
-          <div
-            className="
-              relative
-              z-30
-              flex
-              shrink-0
-              justify-center
-              px-2
-              pt-0
-            "
-          >
+          <div className="relative z-30 flex shrink-0 justify-center px-2 pt-1">
             <h1
               className="
-                  font-pixeboy
-                  select-none
-                  text-center
-                  tracking-wider
-                  text-white
-                  pt-1
-                "
+                font-pixeboy select-none text-center tracking-wider text-white uppercase
+                truncate max-w-full px-2
+              "
               style={{
-                fontSize: "clamp(55px, 12vh, 140px)",
-                lineHeight: "0.9",
+                fontSize: "clamp(28px, 6.5vw, 90px)",
+                lineHeight: "1",
                 textShadow:
-                  "4px 4px 0 #0a2a3a, -2px -2px 0 #0a2a3a, 2px -2px 0 #0a2a3a, -2px 2px 0 #0a2a3a, 0 5px 0 rgba(0,0,0,0.6)",
-                letterSpacing: "0.05em",
+                  "2px 2px 0 #0a2a3a, -2px -2px 0 #0a2a3a, 2px -2px 0 #0a2a3a, -2px 2px 0 #0a2a3a, 0 4px 0 rgba(0,0,0,0.6)",
               }}
             >
               {displayHeading}
             </h1>
           </div>
 
-          {/* MAIN STAGE */}
-          <div
-            className="
-              team-stage
-              relative
-              z-10
-              mx-2
-              mt-1
-              mb-0
-              pb-0
-              flex-1
-              overflow-hidden
-              sm:mx-4
-              sm:mt-2
-              md:mx-6
-              "
-          >
-            {/* CHARACTERS  */}
-            <div
-              className="
-                team-characters
-                pointer-events-none
-                absolute
-                left-1/2
-                bottom-0
-                z-10
-                -translate-x-1/2
-                select-none
-              "
-            >
+          {/* STAGE */}
+          <div className="team-stage relative z-10 mx-1 mt-1 flex-1 overflow-hidden sm:mx-4">
+            {/* CHARACTERS */}
+            <div className="team-characters pointer-events-none absolute left-1/2 bottom-0 z-10 -translate-x-1/2 select-none">
               <Image
                 src="/team/team-characters.svg"
                 alt="Team characters"
                 width={1700}
                 height={900}
                 priority
-                className="
-                  h-auto
-                  w-full
-                  object-contain
-                  drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]
-                "
+                className="h-auto w-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]"
               />
             </div>
 
-            {/* PLAYER SLOTS 1 TO 5 */}
+            {/* PLAYER SLOTS */}
             {players.map((player) => (
               <div
                 key={player.id}
@@ -487,31 +287,21 @@ export default function TeamScreen({
                 {player.filled ? (
                   <div
                     className="
-      team-slot-filled
-      flex
-      h-auto
-      min-h-[48px]
-      w-full
-      flex-col
-      justify-center
-      rounded-[5px]
-      border-[2px]
-      border-black
-      bg-white
-      px-2.5
-      py-1.5
-      shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-    "
+                      team-slot-filled
+                      flex h-full w-full items-center justify-center gap-1
+                      rounded-[5px] border-[2px] border-black bg-white px-2
+                      shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                    "
                   >
-                    <span className="font-pixeboy leading-tight text-black break-all text-[clamp(11px,1.2vw,15px)]">
+                    <span className="font-pixeboy leading-tight text-black truncate text-[clamp(10px,2.8vw,15px)]">
                       {player.name}
                     </span>
 
-                    <span className="mt-0.5 font-pixeboy leading-tight text-[#c0392b] break-all text-[clamp(10px,1.1vw,14px)]">
-                      {player.id === 1
-                        ? `${player.teamName} (LEADER)`
-                        : player.teamName}
-                    </span>
+                    {player.id === 1 && (
+                      <span className="font-pixeboy leading-tight text-[#c0392b] text-[clamp(9px,2.5vw,13px)] shrink-0">
+                        (LEADER)
+                      </span>
+                    )}
                   </div>
                 ) : (
                   <SlotButton label={String(player.id)} />
@@ -522,323 +312,83 @@ export default function TeamScreen({
         </div>
       </div>
 
-      {/* RESPONSIVE CSS */}
       <style>{`
         .team-page-outer {
           height: 100dvh;
           overflow: hidden;
         }
 
-        .team-game-container {
-          border: none;
-        }
-
-        .team-nav-row {
-          height: auto;
-        }
-
-        .team-nav-btn {
-          font-size: clamp(14px, 1.6vw, 22px);
-          white-space: nowrap;
-        }
-
         .team-stage {
           min-height: 0;
         }
 
-        .team-slot {
-          width: min(24%, 230px);
-          height: clamp(38px, 6.5vh, 56px);
-          max-width: 230px;
+        .team-characters {
+          width: 95%;
+          max-width: 900px;
+          max-height: 55vh;
+          bottom: 0 !important;
+          display: flex;
+          justify-content: center;
+          align-items: flex-end;
         }
 
-        @media (max-width: 484px) {
-          .team-slot span:last-child {
-            width: 30px;
-            height: 36px;
-            font-size: 13px;
-          }
+        .team-characters img {
+          width: 100%;
+          height: 100%;
+          max-height: 55vh;
+          object-fit: contain;
+          object-position: bottom center;
         }
 
-        .team-slot-btn span:first-child,
-        .team-slot-filled span {
-          font-size: clamp(12px, 1.5vw, 17px);
-        }
-        @media (max-width: 484px) {
-          .team-slot-btn span:last-child {
-            width: 20px;
-            height: 30px;
-            font-size: 13px;
-          }
-        }
-        @media (max-width: 419px) {
-          .team-slot-btn span:last-child {
-            display: none;
-          }
-        }
-
-        /* CENTERED BOTTOM CHARACTERS - INCREASED SIZE */
-       /* CENTERED BOTTOM CHARACTERS - FIT TO BOTTOM WITHOUT CROPPING */
-    .team-characters {
-      width: 82%;
-      max-width: 900px;
-      max-height: 75vh; /* Prevents overflow/cropping on short viewports */
-      bottom: 0 !important;
-      margin-bottom: 0 !important;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-    }
-
-    .team-characters img {
-      width: 100%;
-      height: 100%;
-      max-height: 75vh;
-      object-fit: contain;
-      object-position: bottom center; /* Ensures base aligns flat with bottom */
-      display: block;
-    }
-
-@media (min-width: 1024px) {
-  .team-characters {
-    width: 84%;
-    max-width: 950px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .team-characters {
-    width: 85%;
-    max-width: 1000px;
-  }
-}
-
-@media (min-width: 1600px) {
-  .team-characters {
-    width: 88%;
-    max-width: 1080px;
-  }
-}
-
-@media (max-width: 640px) {
-  .team-characters {
-    width: 90%;
-    max-width: none;
-    max-height: 65vh;
-  }
-}
-
-/* BASE / TABLET SLOT POSITIONS */
-        .team-slot-1 {
-          left: 3%;
-          top: 25%;
-        }
-
-        .team-slot-2 {
-          left: 4%;
-          bottom: 8%;
-        }
-
-       .team-slot-3 {
-        left: 62%;
-        top: 20%;
-      }
-        .team-slot-4 {
-          right: 4%;
-          bottom: 8%;
-          left: auto;
-        }
-
-        .team-slot-5 {
-          right: 3%;
-          top: 25%;
-          left: auto;
-        }
-
-        @media (min-width: 1280px) {
-        
+        /* MOBILE POSITIONING (<= 640px) */
+        @media (max-width: 640px) {
           .team-slot {
-            width: min(22%, 240px);
+            width: 38%;
+            height: 38px;
           }
 
-          .team-slot-1 {
-            left: 5%;
-            top: 30%;
-          }
-
-          .team-slot-2 {
-            left: 6%;
-            bottom: 5%;
-          }
-
-         .team-slot-3 {
-            left: 55%;
-            top: 4%;
-          }
-
-          .team-slot-4 {
-            right: 6%;
-            bottom: 5%;
-          }
-
-          .team-slot-5 {
-            right: 5%;
-            top: 30%;
-          }
+          .team-slot-1 { left: 2%; top: 4%; }
+          .team-slot-2 { left: 2%; top: 48%; }
+          .team-slot-3 { left: 31%; top: 26%; }
+          .team-slot-4 { right: 2%; top: 48%; }
+          .team-slot-5 { right: 2%; top: 4%; }
         }
 
-
-        @media (min-width: 940px) and (max-width: 1279px) {
+        /* TABLET POSITIONING (641px - 1023px) */
+        @media (min-width: 641px) and (max-width: 1023px) {
           .team-slot {
-            width: 24%;
-            height: clamp(34px, 6vh, 46px);
-          }
-
-          .team-slot-1 {
-            left: 2%;
-            top: 30%;
-          }
-
-          .team-slot-2 {
-            left: 4%;
-            bottom: 22%;
-          }
-
-          .team-slot-3 {
-            left: 50%;
-            top: 15%;
-            transform: translateX(-50%);
-          }
-
-          .team-slot-4 {
-            right: 4%;
-            bottom: 22%;
-            left: auto;
-          }
-
-          .team-slot-5 {
-            right: 1%;
-            top: 25%;
-            left: auto;
-          }
-        }
-
-       @media (min-width: 540px) and (max-width: 939px) {
-          .team-slot {
-            width: 24%;
-            height: clamp(34px, 6vh, 46px);
-          }
-
-          .team-slot-1 {
-            left: 2%;
-            top: 10%;
-          }
-
-          .team-slot-2 {
-            left: 2%;
-            bottom: 47%;
-          }
-
-          .team-slot-3 {
-            left: 50%;
-            top: 25%;
-            transform: translateX(-50%);
-          }
-
-          .team-slot-4 {
-            right: 2%;
-            bottom: 47%;
-            left: auto;
-          }
-
-          .team-slot-5 {
-            right: 2%;
-            top: 10%;
-          }
-        }
-
-        @media (max-width: 539px) {
-        
-          .team-slot {
-            width: min(22%, 240px);
-          }
-
-          .team-slot-1 {
-            left: 5%;
-            top: 10%;
-          }
-
-          .team-slot-2 {
-            left: 6%;
-            bottom: 40%;
-          }
-
-         .team-slot-3 {
-            left: 42%;
-            top: 30%;
-          }
-
-          .team-slot-4 {
-            right: 6%;
-            bottom: 40%;
-          }
-
-          .team-slot-5 {
-            right: 5%;
-            top: 10%;
-          }
-        }
-
-        @media (max-width: 1150px) {
-          .team-code-box {
-            width: 44px;
+            width: 26%;
             height: 44px;
-            padding: 0;
-            justify-content: center;
-            gap: 0;
-            overflow: hidden;
-            transition: width 0.15s ease, padding 0.15s ease, gap 0.15s ease;
           }
 
-          .team-code-text {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-            white-space: nowrap;
-            transform: translateX(8px);
-            transition:
-              opacity 0.15s ease,
-              transform 0.15s ease;
-          }
-
-          .team-code-box:hover {
-            width: auto;
-            padding: 8px 16px;
-            gap: 10px;
-            overflow: visible;
-          }
-
-          .team-code-box:hover .team-code-text {
-            position: static;
-            opacity: 1;
-            transform: translateX(0);
-          }
+          .team-slot-1 { left: 3%; top: 12%; }
+          .team-slot-2 { left: 3%; bottom: 15%; }
+          .team-slot-3 { left: 50%; top: 4%; transform: translateX(-50%); }
+          .team-slot-4 { right: 3%; bottom: 15%; }
+          .team-slot-5 { right: 3%; top: 12%; }
         }
 
-        @media (max-width: 920px) and (min-width: 560px) {
-        .team-token {
-          top: 12%;
-        }
-      }
-        @media (max-width: 400px) {
-        .team-code-box {
-          bottom: 2%;
-        }
-        .team-token {
-        bottom: 2%;
-        top: auto;}
-      }
+        /* DESKTOP POSITIONING (>= 1024px) */
+        @media (min-width: 1024px) {
+          .team-slot {
+            width: min(22%, 240px);
+            height: 50px;
+          }
 
+          .team-characters {
+            max-height: 70vh;
+          }
+
+          .team-characters img {
+            max-height: 70vh;
+          }
+
+          .team-slot-1 { left: 5%; top: 25%; }
+          .team-slot-2 { left: 6%; bottom: 8%; }
+          .team-slot-3 { left: 50%; top: 5%; transform: translateX(-50%); }
+          .team-slot-4 { right: 6%; bottom: 8%; }
+          .team-slot-5 { right: 5%; top: 25%; }
+        }
       `}</style>
     </div>
   );

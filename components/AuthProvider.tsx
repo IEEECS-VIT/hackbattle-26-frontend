@@ -1,3 +1,5 @@
+// authprovider.tsx — finalized code
+
 "use client";
 
 import {
@@ -47,7 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [teamData, setTeamData] = useState<GetTeamResponse | null>(null);
   const [loading, setLoading] = useState(isFirebaseConfigured);
 
-  // Only use this when authentication is genuinely invalid.
   const handleUnauthorized = async (auth = getFirebaseAuth()) => {
     if (auth) {
       await firebaseSignOut(auth);
@@ -61,16 +62,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTeamData(null);
   };
 
-  /**
-   * Fetch the current user's team status.
-   *
-   * 200 = user is in a team
-   * 204/403/404 = authenticated user has no team
-   * 401 = authentication is invalid
-   *
-   * IMPORTANT:
-   * Never sign the user out just because they do not have a team.
-   */
   const fetchTeamStatus = async (): Promise<boolean> => {
     try {
       const res = await api.getTeam();
@@ -85,14 +76,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("UNAUTHENTICATED");
       }
 
-      // No team is a valid authenticated state.
       if (res.status === 204 || res.status === 403 || res.status === 404) {
         setHasTeam(false);
         setTeamData(null);
         return false;
       }
 
-      // Don't turn an unexpected/network/server response into a logout.
       console.error("Unexpected team status response:", res.status);
 
       setHasTeam(false);
@@ -103,8 +92,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw err;
       }
 
-      // Network/server failure.
-      // Keep the Firebase session alive instead of logging the user out.
       console.error("Failed to check team status:", err);
 
       setHasTeam(false);
@@ -115,11 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const auth = getFirebaseAuth();
-
-    if (!auth) {
-      setLoading(false);
-      return;
-    }
+    if (!auth) return;
 
     return onAuthStateChanged(auth, async (nextUser) => {
       if (nextUser) {
@@ -135,18 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         try {
           await fetchTeamStatus();
-
           setUser(nextUser);
         } catch (err) {
-          // Only sign out when authentication is genuinely invalid.
-          console.error("Authentication validation failed:", err);
           await handleUnauthorized(auth);
         }
       } else {
-        setUser(null);
-        setParticipantType(null);
-        setHasTeam(false);
-        setTeamData(null);
+        await handleUnauthorized(auth);
       }
 
       setLoading(false);
@@ -182,7 +159,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const credential = await signInWithPopup(auth, provider);
 
-        // VIT users must use their VIT account.
         if (
           selectedType === "vit" &&
           !credential.user.email
@@ -193,7 +169,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error("VIT_EMAIL_REQUIRED");
         }
 
-        // Verify backend registration.
         try {
           await fetchTeamStatus();
         } catch (err) {
