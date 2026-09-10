@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import SimpleLoader from "./SimpleLoader";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthProvider";
 interface SubmissionGuardProps {
@@ -40,13 +41,7 @@ export default function SubmissionGuard({ children }: SubmissionGuardProps) {
 
   // Show a loading screen while auth/team status resolves
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#070e04] text-white">
-        <p className="font-mono text-lg animate-pulse">
-          Verifying submission permissions...
-        </p>
-      </div>
-    );
+    return <SimpleLoader fullScreen label="Checking your team…" />;
   }
 
   // Calculate authorized status
@@ -59,7 +54,7 @@ export default function SubmissionGuard({ children }: SubmissionGuardProps) {
 
   // Prevent flash of guarded content before redirect occurs
   if (!isAuthorized) {
-    return null;
+    return <SimpleLoader fullScreen label="Opening your dashboard…" />;
   }
 
   return <>{children}</>;
