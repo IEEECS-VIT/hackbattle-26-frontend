@@ -7,6 +7,7 @@ import {
   signOut as firebaseSignOut,
   type User,
 } from "firebase/auth";
+
 import {
   createContext,
   useContext,
@@ -15,6 +16,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+
 import { api, type GetTeamResponse } from "@/lib/api";
 import { getFirebaseAuth, isFirebaseConfigured } from "@/lib/firebase";
 
@@ -45,40 +47,66 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [teamData, setTeamData] = useState<GetTeamResponse | null>(null);
   const [loading, setLoading] = useState(isFirebaseConfigured);
 
-  // Helper to clear local state and sign out
+  // Only use this when authentication is genuinely invalid.
   const handleUnauthorized = async (auth = getFirebaseAuth()) => {
-    if (auth) await firebaseSignOut(auth);
+    if (auth) {
+      await firebaseSignOut(auth);
+    }
+
     window.localStorage.removeItem(PARTICIPANT_TYPE_KEY);
+
     setUser(null);
     setParticipantType(null);
     setHasTeam(false);
     setTeamData(null);
   };
 
-  // Fetch team status and verify user exists in backend DB
+  /**
+   * Fetch the current user's team status.
+   *
+   * 200 = user is in a team
+   * 204/403/404 = authenticated user has no team
+   * 401 = authentication is invalid
+   *
+   * IMPORTANT:
+   * Never sign the user out just because they do not have a team.
+   */
   const fetchTeamStatus = async (): Promise<boolean> => {
     try {
       const res = await api.getTeam();
 
-      // If backend responds with status 404/401/403 or specific user error
-      if (res.status === 404 || res.status === 401 || res.status === 403) {
-        throw new Error("USER_NOT_REGISTERED");
-      }
-
-      if (res.status === 200 && res.data && res.data.id) {
+      if (res.status === 200 && res.data?.id) {
         setHasTeam(true);
         setTeamData(res.data);
         return true;
       }
 
+      if (res.status === 401) {
+        throw new Error("UNAUTHENTICATED");
+      }
+
+      // No team is a valid authenticated state.
+      if (res.status === 204 || res.status === 403 || res.status === 404) {
+        setHasTeam(false);
+        setTeamData(null);
+        return false;
+      }
+
+      // Don't turn an unexpected/network/server response into a logout.
+      console.error("Unexpected team status response:", res.status);
+
       setHasTeam(false);
       setTeamData(null);
       return false;
     } catch (err: unknown) {
-      if (err instanceof Error && err.message === "USER_NOT_REGISTERED") {
+      if (err instanceof Error && err.message === "UNAUTHENTICATED") {
         throw err;
       }
+
+      // Network/server failure.
+      // Keep the Firebase session alive instead of logging the user out.
       console.error("Failed to check team status:", err);
+
       setHasTeam(false);
       setTeamData(null);
       return false;
@@ -87,25 +115,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const auth = getFirebaseAuth();
-    if (!auth) return;
+
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
 
     return onAuthStateChanged(auth, async (nextUser) => {
       if (nextUser) {
-        const savedType = window.localStorage.getItem(PARTICIPANT_TYPE_KEY);
+        const savedType = window.localStorage.getItem(
+          PARTICIPANT_TYPE_KEY
+        );
+
         setParticipantType(
-          savedType === "vit" || savedType === "external" ? savedType : null
+          savedType === "vit" || savedType === "external"
+            ? savedType
+            : null
         );
 
         try {
           await fetchTeamStatus();
+
           setUser(nextUser);
         } catch (err) {
-          // If backend check fails (e.g., user not seeded/registered), boot them
+          // Only sign out when authentication is genuinely invalid.
+          console.error("Authentication validation failed:", err);
           await handleUnauthorized(auth);
         }
       } else {
-        await handleUnauthorized(auth);
+        setUser(null);
+        setParticipantType(null);
+        setHasTeam(false);
+        setTeamData(null);
       }
+
       setLoading(false);
     });
   }, []);
@@ -118,8 +161,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       participantType,
       hasTeam,
       teamData,
+
       signInWithGoogle: async (selectedType) => {
         const auth = getFirebaseAuth();
+
         if (!auth) {
           throw new Error(
             "Firebase is not configured. Add the NEXT_PUBLIC_FIREBASE_* values to .env.local."
@@ -127,23 +172,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         const provider = new GoogleAuthProvider();
+
         provider.setCustomParameters({
           prompt: "select_account",
-          ...(selectedType === "vit" ? { hd: "vitstudent.ac.in" } : {}),
+          ...(selectedType === "vit"
+            ? { hd: "vitstudent.ac.in" }
+            : {}),
         });
 
         const credential = await signInWithPopup(auth, provider);
 
-        // 1. Verify VIT domain restriction
+        // VIT users must use their VIT account.
         if (
           selectedType === "vit" &&
-          !credential.user.email?.toLowerCase().endsWith("@vitstudent.ac.in")
+          !credential.user.email
+            ?.toLowerCase()
+            .endsWith("@vitstudent.ac.in")
         ) {
           await handleUnauthorized(auth);
           throw new Error("VIT_EMAIL_REQUIRED");
         }
 
-        // 2. Verify backend registration / seeded data
+        // Verify backend registration.
         try {
           await fetchTeamStatus();
         } catch (err) {
@@ -151,27 +201,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error("USER_NOT_REGISTERED");
         }
 
-        window.localStorage.setItem(PARTICIPANT_TYPE_KEY, selectedType);
+        window.localStorage.setItem(
+          PARTICIPANT_TYPE_KEY,
+          selectedType
+        );
+
         setParticipantType(selectedType);
         setUser(credential.user);
 
         return credential.user;
       },
+
       signOut: async () => {
         const auth = getFirebaseAuth();
         await handleUnauthorized(auth);
       },
-      getIdToken: () => user?.getIdToken() ?? Promise.resolve(null),
+
+      getIdToken: () =>
+        user?.getIdToken() ?? Promise.resolve(null),
+
       checkTeamStatus: fetchTeamStatus,
     }),
     [loading, participantType, user, hasTeam, teamData]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used inside AuthProvider.");
+
+  if (!context) {
+    throw new Error("useAuth must be used inside AuthProvider.");
+  }
+
   return context;
 }
