@@ -88,7 +88,7 @@ export default function PokedexJudge() {
 
   return (
     <div
-      className="relative w-full min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 select-none overflow-y-auto overflow-x-hidden portrait-section-container"
+      className="section-heading-inset relative w-full min-h-screen flex flex-col items-center justify-start px-2 pb-2 sm:px-4 sm:pb-4 select-none overflow-y-auto overflow-x-hidden portrait-section-container"
       style={{
         backgroundImage: `url('/judgesbg.svg')`,
         backgroundSize: "cover",
@@ -99,10 +99,14 @@ export default function PokedexJudge() {
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
 
       {/* Outer Content Container */}
-      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pt-1 md:pt-2 pb-8 portrait-inner-wrapper">
-        {/* HEADER MATCHED TO ABOUT & TRACKS */}
-        <div className="mb-6 z-20 portrait-header-box">
-          <h1 className="font-pixeboy font-normal text-center text-white text-3xl sm:text-4xl md:text-5xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54] filter transition-all duration-300 portrait-header-text">
+      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pb-8 portrait-inner-wrapper">
+        
+        {/* HEADER */}
+        <div className="mb-2 z-20 portrait-header-box">
+          <h1
+            className="text-white text-[70px] leading-[80px] md:text-[111px] md:leading-none lg:text-[148px] xl:text-[185px] font-pixeboy tracking-normal drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)] filter transition-all duration-300 select-none text-center portrait-header-text"
+            style={{ fontWeight: 400 }}
+          >
             JUDGE
           </h1>
         </div>
@@ -326,9 +330,9 @@ export default function PokedexJudge() {
             min-height: 100vh !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-between: space-between !important;
+            justify-content: space-between !important;
             overflow: hidden !important;
-            padding-top: 2rem !important;
+            padding-top: var(--section-heading-inset) !important;
             padding-bottom: 1.5rem !important;
             background-position: center bottom !important;
           }
@@ -337,7 +341,7 @@ export default function PokedexJudge() {
             padding-top: 0 !important;
             padding-bottom: 0 !important;
             height: 100% !important;
-            justify-between: space-between !important;
+            justify-content: space-between !important;
           }
 
           .portrait-header-box {
@@ -346,7 +350,11 @@ export default function PokedexJudge() {
 
           .portrait-card-scaler {
             transform: scale(
-              min(calc(85vw / 600px), calc(55vh / 430px), 1)
+              min(
+                calc(85vw / 600px),
+                calc(55vh / 430px),
+                1.0
+              )
             ) !important;
             transform-origin: center center !important;
             margin-top: auto !important;

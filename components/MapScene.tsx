@@ -22,39 +22,32 @@ export default function MapScene() {
     <section
       id="problems"
       aria-labelledby="problems-heading"
-      className={`${styles.section} w-full overflow-x-hidden min-h-screen py-6 px-3 sm:px-6`}
+      className={styles.section}
     >
       <div className={styles.landscape} />
 
-      {/* Clean Flow Header */}
-      <header className="relative flex flex-col md:flex-row items-center justify-between mb-8 px-4 w-full max-w-5xl mx-auto gap-4 pt-4">
-        {/* Left Spacer for Desktop Visual Centering */}
-        <div className="hidden md:block w-[180px]" />
-
-        {/* Clean Flex Title (No CSS Module overlaps) */}
+      {/* Centered Header with adjusted button offset */}
+      <header className="section-heading-inset relative flex flex-col md:flex-row items-center justify-center mb-8 px-4 w-full">
         <h2
           id="problems-heading"
-          className="font-pixeboy text-center text-white text-3xl sm:text-5xl md:text-6xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54]"
+          className={`${styles.tracksTitle} text-center`}
         >
           TRACKS
         </h2>
 
-        {/* Scaled Mobile-Friendly Button */}
         <a
           href="/HB-26-Tracks.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-1.5 rounded-lg border-2 border-[#163e54] bg-[#ffdb37] px-3.5 py-1.5 font-pixeboy text-xs sm:text-sm md:text-base text-[#153e53] shadow-[0_3px_0_#163e54] transition-all active:translate-y-0.5 hover:bg-[#ffe156] whitespace-nowrap shrink-0 z-20"
+          className="mt-6 md:mt-0 md:absolute md:right-4 md:top-8 inline-flex items-center gap-2 rounded-xl border-2 border-[#163e54] bg-[#ffdb37] px-5 py-2.5 font-pixeboy text-xl text-[#153e53] shadow-[0_4px_0_#163e54] transition-transform active:translate-y-0.5 hover:bg-[#ffe156]"
         >
-          DOWNLOAD TRACKS PDF
+           DOWNLOAD TRACKS PDF
         </a>
       </header>
 
-      <div
-        className={`${styles.scene} flex flex-col items-center w-full max-w-5xl mx-auto`}
-      >
+      <div className={styles.scene}>
         <div
-          className={`${styles.islands} w-full`}
+          className={styles.islands}
           role="group"
           aria-label="Choose a problem statement"
         >
@@ -67,7 +60,6 @@ export default function MapScene() {
             />
           ))}
         </div>
-
         <RevealPanel
           replay={replay}
           problem={selected}
