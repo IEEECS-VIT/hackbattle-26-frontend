@@ -15,7 +15,7 @@ const PokedexJudgeMobile: React.FC = () => {
 
   return (
     <div
-      className="relative w-full min-h-screen flex flex-col items-center justify-center p-4 select-none overflow-y-auto overflow-x-hidden"
+      className="section-heading-inset relative w-full min-h-screen flex flex-col items-center justify-start px-4 pb-4 select-none overflow-y-auto overflow-x-hidden"
       style={{
         backgroundImage: `url('/judgesbg.svg')`,
         backgroundSize: "cover",

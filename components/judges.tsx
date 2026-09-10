@@ -86,7 +86,7 @@ export default function PokedexJudge() {
 
   return (
     <div
-      className="relative w-full min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 select-none overflow-y-auto overflow-x-hidden portrait-section-container"
+      className="section-heading-inset relative w-full min-h-screen flex flex-col items-center justify-start px-2 pb-2 sm:px-4 sm:pb-4 select-none overflow-y-auto overflow-x-hidden portrait-section-container"
       style={{
         backgroundImage: `url('/judgesbg.svg')`,
         backgroundSize: "cover",
@@ -97,7 +97,7 @@ export default function PokedexJudge() {
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
 
       {/* Outer Content Container */}
-      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pt-1 md:pt-2 pb-8 portrait-inner-wrapper">
+      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pb-8 portrait-inner-wrapper">
         
         {/* HEADER */}
         <div className="mb-2 z-20 portrait-header-box">
@@ -327,7 +327,7 @@ export default function PokedexJudge() {
             flex-direction: column !important;
             justify-content: space-between !important;
             overflow: hidden !important;
-            padding-top: 2rem !important;
+            padding-top: var(--section-heading-inset) !important;
             padding-bottom: 1.5rem !important;
             background-position: center bottom !important;
           }

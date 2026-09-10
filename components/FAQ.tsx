@@ -11,7 +11,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="relative w-full overflow-hidden flex flex-col max-md:min-h-0 max-md:h-auto max-md:py-0"
+      className="landing-section relative w-full overflow-hidden flex flex-col max-md:min-h-0 max-md:h-auto max-md:py-0"
     >
       {/* Desktop background - unchanged */}
       <Image
@@ -32,7 +32,7 @@ export default function FAQ() {
         className="block md:hidden object-cover object-top"
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[130rem] flex-col gap-[clamp(1rem,2vw,2rem)] px-[clamp(1rem,3vw,3rem)] pt-[clamp(1rem,2vw,2rem)] pb-[clamp(2rem,6vw,5rem)] max-md:max-w-none max-md:w-full max-md:h-auto max-md:px-4 max-md:pt-6 max-md:pb-6 max-md:gap-0 max-md:items-center">
+      <div className="section-heading-inset relative z-10 mx-auto flex w-full max-w-[130rem] flex-col gap-[clamp(1rem,2vw,2rem)] px-[clamp(1rem,3vw,3rem)] pb-[clamp(2rem,6vw,5rem)] max-md:max-w-none max-md:w-full max-md:h-auto max-md:px-4 max-md:pb-6 max-md:gap-0 max-md:items-center">
         {/* FAQ Title */}
         <h1 className="font-pixeboy text-center text-white text-[70px] leading-[80px] drop-shadow-[0_6px_8px_rgba(0,0,0,0.9)] md:text-[111px] md:leading-none lg:text-[148px] xl:text-[185px] max-md:relative max-md:inset-auto max-md:w-full max-md:h-auto max-md:text-center max-md:tracking-[2px] max-md:drop-shadow-[0_3px_6px_rgba(0,30,40,0.85)] max-md:pt-0">
           FAQ

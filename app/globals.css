@@ -11,6 +11,32 @@ html {
   overflow-x: hidden;
 }
 
+:root {
+  /* Mobile bar plus its two borders; desktop includes its border in 84px. */
+  --site-nav-height: 66px;
+  --section-heading-inset: 24px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --site-nav-height: 74px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --site-nav-height: 84px;
+  }
+}
+
+.landing-section {
+  scroll-margin-top: var(--site-nav-height);
+}
+
+.section-heading-inset {
+  padding-top: var(--section-heading-inset);
+}
+
 body {
   margin: 0;
   padding: 0;
