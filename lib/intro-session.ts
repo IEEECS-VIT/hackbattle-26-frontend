@@ -1,11 +1,11 @@
-const KEY = "hackbattle-intro-seen";
+// A tab gets the full intro once. Refreshes in that tab use the simple loader.
+const KEY = "hackbattle-intro-seen-v2";
 let seenInMemory = false;
 const listeners = new Set<() => void>();
 
 export function getIntroSeen(): boolean {
   try {
     return seenInMemory
-      || localStorage.getItem(KEY) === "1"
       || sessionStorage.getItem(KEY) === "1";
   }
   catch { return seenInMemory; }
@@ -18,7 +18,6 @@ export const subscribeToIntro = (listener: () => void) => {
 export function markIntroSeen() {
   seenInMemory = true;
   try {
-    localStorage.setItem(KEY, "1");
     sessionStorage.setItem(KEY, "1");
     document.documentElement.dataset.hackbattleIntroSeen = "true";
   } catch { /* Storage may be disabled. */ }

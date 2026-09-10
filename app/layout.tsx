@@ -31,7 +31,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem("hackbattle-intro-seen")==="1"||sessionStorage.getItem("hackbattle-intro-seen")==="1")document.documentElement.dataset.hackbattleIntroSeen="true"}catch{}`,
+            __html: `try{if(sessionStorage.getItem("hackbattle-intro-seen-v2")==="1")document.documentElement.dataset.hackbattleIntroSeen="true"}catch{}`,
           }}
         />
       </head>
