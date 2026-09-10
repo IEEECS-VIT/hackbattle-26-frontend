@@ -1,6 +1,8 @@
+import { beginApiActivity } from "@/lib/apiActivity";
+
 const CHATBOT_API_URL = process.env.NEXT_PUBLIC_CHATBOT_API_URL;
 
-export async function sendChatMessage(message: string): Promise<string> {
+async function performChatRequest(message: string): Promise<string> {
   if (!CHATBOT_API_URL) {
     throw new Error(
       "PokéCenter Link Error: NEXT_PUBLIC_CHATBOT_API_URL is missing!"
@@ -36,5 +38,15 @@ export async function sendChatMessage(message: string): Promise<string> {
     throw new Error(
       "Connection Lost! Check your PokéNav connection and try again."
     );
+  }
+}
+
+export async function sendChatMessage(message: string): Promise<string> {
+  const endActivity = beginApiActivity();
+
+  try {
+    return await performChatRequest(message);
+  } finally {
+    endActivity();
   }
 }

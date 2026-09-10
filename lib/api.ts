@@ -1,5 +1,6 @@
 import { onAuthStateChanged, type Auth } from "firebase/auth";
 
+import { beginApiActivity } from "@/lib/apiActivity";
 import { getFirebaseAuth } from "@/lib/firebase";
 
 const BASE_URL = (
@@ -30,7 +31,7 @@ function waitForAuthUser(
   });
 }
 
-async function fetchWithAuth<T>(
+async function performAuthenticatedFetch<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<{ data: T | null; status: number }> {
@@ -100,6 +101,19 @@ async function fetchWithAuth<T>(
       data: null,
       status: 0,
     };
+  }
+}
+
+async function fetchWithAuth<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<{ data: T | null; status: number }> {
+  const endActivity = beginApiActivity();
+
+  try {
+    return await performAuthenticatedFetch<T>(endpoint, options);
+  } finally {
+    endActivity();
   }
 }
 
