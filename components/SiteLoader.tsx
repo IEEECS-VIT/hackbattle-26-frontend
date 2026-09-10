@@ -1,17 +1,57 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import SimpleLoader from "./SimpleLoader";
+import simpleStyles from "./SimpleLoader.module.css";
 import styles from "./SiteLoader.module.css";
+import { subscribeToApiActivity } from "@/lib/apiActivity";
 
 const LOADER_CYCLE_MS = 1700;
+const FANCY_LOADER_SEEN_KEY = "hackbattle-fancy-loader-seen-this-tab";
+type InitialLoader = "checking" | "fancy" | "simple";
+
+const subscribeToVisitState = () => () => undefined;
+const getServerVisitState = (): InitialLoader => "checking";
+let browserVisitState: InitialLoader | undefined;
+const getBrowserVisitState = (): InitialLoader => {
+  if (!browserVisitState) {
+    browserVisitState = window.sessionStorage.getItem(FANCY_LOADER_SEEN_KEY)
+      ? "simple"
+      : "fancy";
+  }
+  return browserVisitState;
+};
 
 export default function SiteLoader({ children }: { children: ReactNode }) {
   const content = useRef<HTMLDivElement>(null);
+  const initialLoader = useSyncExternalStore(
+    subscribeToVisitState,
+    getBrowserVisitState,
+    getServerVisitState
+  );
   const [ready, setReady] = useState(false);
   const [progress, setProgress] = useState(0);
   const [failed, setFailed] = useState(false);
+  const [activeRequests, setActiveRequests] = useState(0);
 
   useEffect(() => {
+    if (initialLoader === "fancy") {
+      window.sessionStorage.setItem(FANCY_LOADER_SEEN_KEY, "true");
+    }
+  }, [initialLoader]);
+
+  useEffect(() => subscribeToApiActivity(setActiveRequests), []);
+
+  useEffect(() => {
+    if (initialLoader === "checking") return;
+
     const root = content.current;
     if (!root) return;
     const controller = new AbortController();
@@ -95,7 +135,10 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
 
       const results = await Promise.allSettled(tasks);
       if (signal.aborted) return;
-      if (results.some((result) => result.status === "rejected")) {
+      if (
+        initialLoader === "fancy" &&
+        results.some((result) => result.status === "rejected")
+      ) {
         setFailed(true);
         return;
       }
@@ -108,11 +151,11 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
       clearTimeout(revealTimer);
       document.body.style.overflow = previousOverflow;
     };
-  }, []);
+  }, [initialLoader]);
 
   return (
     <>
-      {!ready && (
+      {!ready && initialLoader === "fancy" && (
         <div className={styles.screen} style={{ "--loader-cycle": `${LOADER_CYCLE_MS}ms` } as CSSProperties}>
           <div className={styles.scenery} aria-hidden="true">
             <div className={styles.clouds}><i /><i /><i /></div>
@@ -143,7 +186,21 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
           </section>
         </div>
       )}
-      <div ref={content} className="flex flex-1 flex-col" inert={!ready} aria-hidden={!ready || undefined}>{children}</div>
+      {!ready && initialLoader === "simple" && <SimpleLoader fullScreen />}
+      {ready && activeRequests > 0 && (
+        <div className={simpleStyles.activity}>
+          <SimpleLoader label="Loading…" />
+        </div>
+      )}
+      <div
+        ref={content}
+        className="flex flex-1 flex-col"
+        inert={!ready}
+        aria-hidden={!ready || undefined}
+        style={{ visibility: initialLoader === "checking" ? "hidden" : undefined }}
+      >
+        {children}
+      </div>
     </>
   );
 }

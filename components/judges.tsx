@@ -102,7 +102,7 @@ export default function PokedexJudge() {
       <div className="relative z-10 flex flex-col items-center w-full max-w-4xl h-full pt-1 md:pt-2 pb-8 portrait-inner-wrapper">
         {/* HEADER MATCHED TO ABOUT & TRACKS */}
         <div className="mb-6 z-20 portrait-header-box">
-          <h1 className="font-pixeboy font-normal text-center text-white text-3xl sm:text-4xl md:text-5xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54] filter transition-all duration-300 portrait-header-text">
+          <h1 className="font-pixeboy font-normal text-center text-white text-4xl sm:text-6xl md:text-7xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54] filter transition-all duration-300 portrait-header-text">
             JUDGE
           </h1>
         </div>
