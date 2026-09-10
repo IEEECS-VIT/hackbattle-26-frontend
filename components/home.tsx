@@ -107,7 +107,7 @@ const Hero = () => {
           aria-hidden="true"
           className="pointer-events-none absolute top-0 left-0 z-0 h-full w-full select-none object-cover"
         >
-          <source src="/edit.webm" type="video/webm" />
+          <source src="/hackbattle-new-video.mp4" type="video/mp4" />
           <div className="w-full h-full bg-cyan-600"></div>
         </video>
         <div className="absolute inset-0 bg-blue-900/10 z-10"></div>
