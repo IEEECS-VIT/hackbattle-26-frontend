@@ -86,29 +86,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    const auth = getFirebaseAuth();
-    if (!auth) return;
+  const auth = getFirebaseAuth();
+  if (!auth) return;
 
-    return onAuthStateChanged(auth, async (nextUser) => {
-      if (nextUser) {
-        const savedType = window.localStorage.getItem(PARTICIPANT_TYPE_KEY);
-        setParticipantType(
-          savedType === "vit" || savedType === "external" ? savedType : null
-        );
+  return onAuthStateChanged(auth, async (nextUser) => {
+    if (nextUser) {
+      const savedType = window.localStorage.getItem(
+        PARTICIPANT_TYPE_KEY
+      );
 
-        try {
-          await fetchTeamStatus();
-          setUser(nextUser);
-        } catch (err) {
-          // If backend check fails (e.g., user not seeded/registered), boot them
+      setParticipantType(
+        savedType === "vit" || savedType === "external"
+          ? savedType
+          : null
+      );
+
+      try {
+        await fetchTeamStatus();
+        setUser(nextUser);
+      } catch (err) {
+        if (
+          err instanceof Error &&
+          err.message === "AUTH_UNAUTHORIZED"
+        ) {
           await handleUnauthorized(auth);
+        } else {
+          console.error(
+            "Failed to initialize authenticated user:",
+            err
+          );
+          setUser(nextUser);
         }
-      } else {
-        await handleUnauthorized(auth);
       }
-      setLoading(false);
-    });
-  }, []);
+    } else {
+      window.localStorage.removeItem(PARTICIPANT_TYPE_KEY);
+      setUser(null);
+      setParticipantType(null);
+      setHasTeam(false);
+      setTeamData(null);
+    }
+
+    setLoading(false);
+  });
+}, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({

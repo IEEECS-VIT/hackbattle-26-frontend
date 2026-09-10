@@ -185,36 +185,36 @@ export default function Submission() {
           "
         />
         <Link
-  href="/dashboard"
-  className="
-    absolute
-    z-30
-    rounded-full
-    bg-[#397b68]
-    px-6
-    py-3
-    font-pixeboy
-    text-xl
-    text-white
-    transition
-    hover:scale-105
+          href="/team"
+          className="
+            absolute
+            z-30
+            rounded-full
+            bg-[#397b68]
+            px-6
+            py-3
+            font-pixeboy
+            text-xl
+            text-white
+            transition
+            hover:scale-105
 
-    /* Desktop */
-    right-[5%]
-    top-[17%]
+            /* Desktop */
+            right-[5%]
+            top-[17%]
 
-    /* Mobile */
-    max-md:left-1/2
-    max-md:right-auto
-    max-md:top-[94%]
-    max-md:-translate-x-1/2
-    max-md:px-5
-    max-md:py-2
-    max-md:text-base
-    max-md:whitespace-nowrap
-  "
->
-  GO TO TEAM PAGE
+            /* Mobile */
+            max-md:left-1/2
+            max-md:right-auto
+            max-md:top-[94%]
+            max-md:-translate-x-1/2
+            max-md:px-5
+            max-md:py-2
+            max-md:text-base
+            max-md:whitespace-nowrap
+        "
+      >
+        GO TO TEAM PAGE
 </Link>
         {/* FORM */}
         <form onSubmit={handleSubmit} className="absolute inset-0 z-10">
