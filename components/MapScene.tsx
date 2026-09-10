@@ -27,7 +27,7 @@ export default function MapScene() {
       <div className={styles.landscape} />
 
       {/* Centered Header with adjusted button offset */}
-      <header className="relative flex flex-col md:flex-row items-center justify-center mb-8 px-4 w-full">
+      <header className="section-heading-inset relative flex flex-col md:flex-row items-center justify-center mb-8 px-4 w-full">
         <h2
           id="problems-heading"
           className={`${styles.tracksTitle} text-center`}

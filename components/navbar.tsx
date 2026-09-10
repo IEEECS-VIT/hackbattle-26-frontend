@@ -43,7 +43,7 @@ export default function Navbar() {
         aria-label="Mobile navigation"
         className="site-navigation fixed inset-x-0 top-0 z-50 select-none border-b border-white/30 bg-gradient-to-b from-[#167f91]/90 to-[#095d70]/85 shadow-[0_8px_30px_rgba(4,45,61,0.18)] backdrop-blur-xl lg:hidden"
       >
-        <div className="flex h-16 items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6">
+        <div className="flex h-[calc(var(--site-nav-height)-2px)] items-center justify-between gap-2 px-3 sm:px-6">
           <Link
             href="/"
             aria-label="HackBattle home"
@@ -147,7 +147,7 @@ export default function Navbar() {
           right-0
           z-50
 
-          h-[84px]
+          h-[var(--site-nav-height)]
 
           border-b
           border-white/40

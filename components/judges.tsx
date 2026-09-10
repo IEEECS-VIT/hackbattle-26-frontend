@@ -330,7 +330,7 @@ export default function PokedexJudge() {
             min-height: 100vh !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-between: space-between !important;
+            justify-content: space-between !important;
             overflow: hidden !important;
             padding-top: var(--section-heading-inset) !important;
             padding-bottom: 1.5rem !important;
