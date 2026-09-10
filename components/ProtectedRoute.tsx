@@ -3,7 +3,6 @@
 import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
-import SimpleLoader from "./SimpleLoader";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -16,7 +15,11 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   }, [loading, user, router]);
 
   if (loading || !user) {
-    return <SimpleLoader fullScreen label={loading ? "Checking your account…" : "Opening sign in…"} />;
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-black">
+        <p className="font-pixeboy text-xl text-white">Loading...</p>
+      </div>
+    );
   }
 
   return <>{children}</>;

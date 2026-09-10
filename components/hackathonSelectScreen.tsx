@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import SimpleLoader from "./SimpleLoader";
 
 interface TypewriterTextProps {
   text: string;
@@ -130,35 +129,8 @@ export const HackathonSelectionScreen: React.FC<{
   onBuildTeam?: () => void;
   onJoinTeam?: () => void;
 }> = ({ onBuildTeam, onJoinTeam }) => {
-  const screen = useRef<HTMLElement>(null);
-  const [artReady, setArtReady] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    const images = Array.from(screen.current?.querySelectorAll("img") ?? []);
-    const cleanups: (() => void)[] = [];
-    const tasks = images.map((img) => new Promise<void>((resolve) => {
-      if (img.complete) { resolve(); return; }
-      const done = () => resolve();
-      img.addEventListener("load", done, { once: true });
-      img.addEventListener("error", done, { once: true });
-      cleanups.push(() => {
-        img.removeEventListener("load", done);
-        img.removeEventListener("error", done);
-      });
-    }));
-    // A failed or stalled decorative image must not block dashboard actions.
-    const timeout = setTimeout(() => { if (!cancelled) setArtReady(true); }, 8000);
-    void Promise.all(tasks).then(() => {
-      if (!cancelled) { clearTimeout(timeout); setArtReady(true); }
-    });
-    return () => { cancelled = true; clearTimeout(timeout); cleanups.forEach((cleanup) => cleanup()); };
-  }, []);
-
   return (
     <main
-      ref={screen}
-      aria-busy={!artReady}
       className="
         relative
         w-screen
@@ -166,11 +138,10 @@ export const HackathonSelectionScreen: React.FC<{
         min-h-[100vh]
         overflow-hidden
         select-none
-        bg-[#254f54]
+        bg-black
         md:block
       "
     >
-      {!artReady && <SimpleLoader fullScreen label="Loading dashboard…" />}
       {/* ================================================= */}
       {/* BACK TO LOGIN LINK */}
       {/* ================================================= */}
