@@ -5,6 +5,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { ToastProvider } from "@/components/ToastProvider";
 import localFont from "next/font/local";
 import SiteLoader from "@/components/SiteLoader";
+import RequestActivity from "@/components/RequestActivity";
 
 export const metadata: Metadata = {
   title: "HackBattle 2026",
@@ -31,6 +32,7 @@ export default function RootLayout({
         <AuthProvider>
           <ToastProvider>
             <SiteLoader>{children}</SiteLoader>
+            <RequestActivity />
           </ToastProvider>
         </AuthProvider>
       </body>

@@ -10,6 +10,7 @@ import {
   useAuth,
 } from "@/components/AuthProvider";
 import { useToast } from "@/components/ToastProvider";
+import SimpleLoader from "@/components/SimpleLoader";
 
 const participantOptions: Array<{
   id: ParticipantType;
@@ -142,10 +143,8 @@ export default function LoginPage() {
 
         <div className="mx-auto mt-4 rounded-2xl border-2 border-white/30 p-4 shadow-[0_24px_70px_rgba(0,22,31,.45)] sm:mt-7 sm:p-6">
           {loading ? (
-            <div className="grid min-h-56 place-items-center" role="status">
-              <p className="font-pixeboy animate-pulse text-4xl text-[#ffdf50]">
-                CHECKING TRAINER PASS...
-              </p>
+            <div className="grid min-h-56 place-items-center text-white">
+              <SimpleLoader label="Checking your account…" />
             </div>
           ) : user ? (
             <div className="mx-auto max-w-xl py-4 sm:py-7">
