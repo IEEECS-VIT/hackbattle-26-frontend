@@ -26,27 +26,30 @@ export default function MapScene() {
     >
       <div className={styles.landscape} />
 
-      {/* Header Container - Fixed Overlap on Mobile */}
-      {/* Header Container */}
-      <header className="relative z-30 flex flex-col items-center justify-center gap-2 mb-6 px-4 w-full max-w-5xl mx-auto pt-4">
-        {/* Heading without absolute positioning constraints */}
+      {/* Clean Flow Header */}
+      <header className="relative flex flex-col md:flex-row items-center justify-between mb-8 px-4 w-full max-w-5xl mx-auto gap-4 pt-4">
+        {/* Left Spacer for Desktop Visual Centering */}
+        <div className="hidden md:block w-[180px]" />
+
+        {/* Clean Flex Title (No CSS Module overlaps) */}
         <h2
           id="problems-heading"
-          className="font-pixeboy text-center text-4xl sm:text-6xl text-[#ffdf50] tracking-widest drop-shadow-[0_4px_0_#163e54] m-0 p-0 leading-none"
+          className="font-pixeboy text-center text-white text-3xl sm:text-5xl md:text-6xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54]"
         >
           TRACKS
         </h2>
 
-        {/* Downscaled, stacked Download Button */}
+        {/* Scaled Mobile-Friendly Button */}
         <a
           href="/HB-26-Tracks.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="md:absolute md:right-4 md:top-1/2 md:-translate-y-1/2 inline-flex items-center justify-center rounded-md border-2 border-[#163e54] bg-[#ffdb37] px-3 py-1 font-pixeboy text-xs sm:text-sm text-[#153e53] shadow-[0_2.5px_0_#163e54] transition-transform active:translate-y-0.5 hover:bg-[#ffe156] whitespace-nowrap"
+          className="inline-flex items-center justify-center gap-1.5 rounded-lg border-2 border-[#163e54] bg-[#ffdb37] px-3.5 py-1.5 font-pixeboy text-xs sm:text-sm md:text-base text-[#153e53] shadow-[0_3px_0_#163e54] transition-all active:translate-y-0.5 hover:bg-[#ffe156] whitespace-nowrap shrink-0 z-20"
         >
           DOWNLOAD TRACKS PDF
         </a>
       </header>
+
       <div
         className={`${styles.scene} flex flex-col items-center w-full max-w-5xl mx-auto`}
       >
