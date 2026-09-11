@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { useToast } from "@/components/ToastProvider";
 import { useSimpleLoading } from "@/components/NavigationLoader";
 import { LoadingLink as Link } from "@/components/NavigationLoader";
+import { useEffect } from "react";
 
 export const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
   "AI & AUTOMATION": [
@@ -40,8 +41,41 @@ export default function Submission() {
   const [otherLinks, setOtherLinks] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  useSimpleLoading(submitting);
+  const [fetching, setFetching] = useState(true);
+  const [isRejected, setIsRejected] = useState(false);
+  useSimpleLoading(submitting || fetching);
   const { showToast } = useToast();
+
+  useEffect(() => {
+    let active = true;
+    const fetchTeamData = async () => {
+      try {
+        const { data, status } = await api.getTeam();
+        if (status === 200 && data && active) {
+          setProjectName(data.name || "");
+          setDescription(data.project_desc || "");
+          setTrack(data.track || "");
+          setSubtrack(data.subtrack || "");
+          setGithub(data.github_link || "");
+          setFigma(data.figma_link || "");
+          setOtherLinks(data.other_files || "");
+
+          if (data.isQualifiedForFinalRound === false || data.isQualifiedForR3 === false) {
+            setIsRejected(true);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch team data:", err);
+      } finally {
+        if (active) setFetching(false);
+      }
+    };
+    void fetchTeamData();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Get dynamic subtrack options according to selected track
   const availableSubtracks = useMemo(() => {
@@ -284,6 +318,7 @@ export default function Submission() {
             <input
               id="project-name"
               value={projectName}
+              disabled={isRejected}
               onChange={(e) => {
                 setProjectName(e.target.value);
                 setSubmitted(false);
@@ -342,6 +377,7 @@ export default function Submission() {
             <textarea
               id="project-description"
               value={description}
+              disabled={isRejected}
               onChange={(e) => {
                 setDescription(e.target.value);
                 setSubmitted(false);
@@ -404,6 +440,7 @@ export default function Submission() {
             <select
               id="track"
               value={track}
+              disabled={isRejected}
               onChange={(e) => handleTrackChange(e.target.value)}
               className="
                 mt-[1%]
@@ -468,7 +505,7 @@ export default function Submission() {
             <select
               id="subtrack"
               value={subtrack}
-              disabled={availableSubtracks.length === 0}
+              disabled={isRejected || availableSubtracks.length === 0}
               onChange={(e) => {
                 setSubtrack(e.target.value);
                 setSubmitted(false);
@@ -542,6 +579,7 @@ export default function Submission() {
               id="github"
               type="url"
               value={github}
+              disabled={isRejected}
               onChange={(e) => setGithub(e.target.value)}
               placeholder="ENTER YOUR GITHUB LINK"
               className="
@@ -601,6 +639,7 @@ export default function Submission() {
               id="figma"
               type="url"
               value={figma}
+              disabled={isRejected}
               onChange={(e) => setFigma(e.target.value)}
               placeholder="ENTER YOUR FIGMA LINK"
               className="
@@ -660,6 +699,7 @@ export default function Submission() {
               id="other-links"
               type="url"
               value={otherLinks}
+              disabled={isRejected}
               onChange={(e) => setOtherLinks(e.target.value)}
               placeholder="ENTER ANY OTHER LINK"
               className="
@@ -690,7 +730,8 @@ export default function Submission() {
           {/* SUBMIT BUTTON */}
           <button
             type="submit"
-            className="
+            disabled={isRejected}
+            className={`
               absolute
               left-[50%]
               top-[89%]
@@ -713,7 +754,8 @@ export default function Submission() {
               md:translate-x-0
               md:py-[0.8%]
               md:text-[clamp(1rem,1.3vw,1.5rem)]
-            "
+              ${isRejected ? "opacity-50 cursor-not-allowed hover:scale-100 hover:bg-[#397b68] active:scale-100" : ""}
+            `}
           >
             SUBMIT
           </button>

@@ -153,6 +153,18 @@ export default function TeamScreen({
     transition-all hover:brightness-95 active:translate-y-[1px]
   `;
 
+  let qualificationMessage: string | null = null;
+  let isRejected = false;
+
+  if (teamData?.isQualifiedForFinalRound === true) {
+    qualificationMessage = "Congratulations, you have been qualified for the Final Round! All the best!";
+  } else if (teamData?.isQualifiedForR3 === true) {
+    qualificationMessage = "Congratulations, you have been qualified for the Round-3";
+  } else if (teamData?.isQualifiedForFinalRound === false || teamData?.isQualifiedForR3 === false) {
+    qualificationMessage = "We regret to inform you haven't been qualifed for the next round";
+    isRejected = true;
+  }
+
   return (
     <div className="team-page-outer relative w-full overflow-hidden">
       {/* BACKGROUND */}
@@ -236,7 +248,7 @@ export default function TeamScreen({
         {/* CONTAINER */}
         <div className="team-game-container relative flex w-full max-w-[1400px] flex-1 flex-col overflow-hidden">
           {/* HEADING */}
-          <div className="relative z-30 flex shrink-0 justify-center px-2 pt-1">
+          <div className="relative z-30 flex shrink-0 flex-col items-center justify-center px-2 pt-1">
             <h1
               className="
                 font-pixeboy select-none text-center tracking-wider text-white uppercase
@@ -251,6 +263,11 @@ export default function TeamScreen({
             >
               {displayHeading}
             </h1>
+            {qualificationMessage && (
+              <div className={`mt-2 font-pixeboy text-center text-[clamp(16px,4vw,32px)] ${isRejected ? 'text-red-400' : 'text-green-400'} drop-shadow-[2px_2px_0_#000]`}>
+                {qualificationMessage}
+              </div>
+            )}
           </div>
 
           {/* STAGE */}

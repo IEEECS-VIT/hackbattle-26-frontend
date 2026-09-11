@@ -137,6 +137,14 @@ export interface GetTeamResponse {
     name: string;
   }[];
   isLeader: boolean;
+  isQualifiedForFinalRound?: boolean;
+  isQualifiedForR3?: boolean;
+  project_desc?: string;
+  github_link?: string;
+  figma_link?: string;
+  other_files?: string;
+  track?: string;
+  subtrack?: string;
 }
 
 export interface SubmitProjectPayload {
