@@ -106,12 +106,13 @@ async function performAuthenticatedFetch<T>(
 
 async function fetchWithAuth<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  signal?: AbortSignal
 ): Promise<{ data: T | null; status: number }> {
   const endActivity = beginApiActivity();
 
   try {
-    return await performAuthenticatedFetch<T>(endpoint, options);
+    return await performAuthenticatedFetch<T>(endpoint, { ...options, signal });
   } finally {
     endActivity();
   }
@@ -173,10 +174,8 @@ export const api = {
       method: "DELETE",
     }),
 
-  getTeam: () =>
-    fetchWithAuth<GetTeamResponse>("/teams/get", {
-      method: "GET",
-    }),
+  getTeam: (signal?: AbortSignal) =>
+    fetchWithAuth<GetTeamResponse>("/teams/get", { method: "GET" }, signal),
 
   submitProject: (payload: SubmitProjectPayload) =>
     fetchWithAuth<SubmitProjectResponse>("/teams/project/submit", {
