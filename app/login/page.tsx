@@ -17,21 +17,29 @@ const participantOptions: Array<{
   title: string;
   description: string;
 }> = [
-  {
-    id: "vit",
-    title: "VIT STUDENT",
-    description: "Use your @vitstudent.ac.in Google account",
-  },
-  {
-    id: "external",
-    title: "EXTERNAL PARTICIPANT",
-    description: "Use your regular Google account",
-  },
-];
+    {
+      id: "vit",
+      title: "VIT STUDENT",
+      description: "Use your @vitstudent.ac.in Google account",
+    },
+    {
+      id: "external",
+      title: "EXTERNAL PARTICIPANT",
+      description: "Use Google Account used for Event Registration",
+    },
+  ];
 
 function authErrorMessage(error: unknown) {
   if (error instanceof Error && error.message === "VIT_EMAIL_REQUIRED") {
     return "Choose a @vitstudent.ac.in Google account for the VIT student portal.";
+  }
+
+  if (error instanceof Error && error.message === "USER_NOT_REGISTERED") {
+    return "Your account is not registered for HackBattle. Contact the organizers if you believe this is a mistake.";
+  }
+
+  if (error instanceof Error && error.message === "BACKEND_UNAVAILABLE") {
+    return "Server is currently unreachable. Please try again in a moment.";
   }
 
   if (!(error instanceof FirebaseError)) {
@@ -79,29 +87,27 @@ export default function LoginPage() {
   const [selectedType, setSelectedType] = useState<ParticipantType | null>(null);
   const [pending, setPending] = useState(false);
   useSimpleLoading(pending);
-  const [error, setError] = useState("");
 
   const handleGoToTeam = () => {
     if (hasTeam) {
-      router.push("/team"); 
+      router.push("/team");
     } else {
-      router.push("/dashboard"); 
+      router.push("/dashboard");
     }
   };
   const handleSignIn = async () => {
     if (!selectedType) return;
     setPending(true);
-    setError("");
     try {
       await signInWithGoogle(selectedType);
       showToast("Login successful!", "success");
-    if (hasTeam) {
-      router.push("/team");
-    } else {
-      router.push("/dashboard");
-    }    } catch (signInError) {
-      setError(authErrorMessage(signInError));
-      showToast("Login failed. Please try again.", "error");
+      if (hasTeam) {
+        router.push("/team");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (signInError) {
+      showToast(authErrorMessage(signInError), "error");
     } finally {
       setPending(false);
     }
@@ -109,21 +115,19 @@ export default function LoginPage() {
 
   const handleSignOut = async () => {
     setPending(true);
-    setError("");
     try {
       await signOut();
       setSelectedType(null);
       showToast("Signed out successfully!", "success");
     } catch (signOutError) {
-      setError(authErrorMessage(signOutError));
-      showToast("Failed to sign out. Please try again.", "error");
+      showToast(authErrorMessage(signOutError), "error");
     } finally {
       setPending(false);
     }
   };
 
   return (
-    <main className="font-pixeboy relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[#082f3d] px-4 pb-4 pt-20 text-white sm:px-6 md:pb-10 md:pt-28">
+    <main className="font-pixeboy relative isolate flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#082f3d] px-4 py-10 text-white sm:px-6 md:py-20">
       <Image
         src="/sleep.webp"
         alt=""
@@ -133,13 +137,13 @@ export default function LoginPage() {
         className="-z-30 object-cover object-center"
       />
       <div
-  className="pointer-events-none absolute inset-0 -z-20 bg-black/40"
-  aria-hidden="true"
-/>
+        className="pointer-events-none absolute inset-0 -z-20 bg-black/40"
+        aria-hidden="true"
+      />
 
       <div className="pointer-events-none absolute bottom-[-8rem] right-[-4rem] h-80 w-80 rounded-full blur-5xl" />
 
-      <section className="w-full max-w-4xl text-center">
+      <section className="flex w-full max-w-4xl flex-col items-center text-center">
         {!user && (
           <p className="mt-2 text-2xl leading-none text-white/75 sm:mt-4 sm:text-3xl">
             Choose your participant type to enter the arena.
@@ -150,13 +154,13 @@ export default function LoginPage() {
           {loading ? (
             <div className="grid min-h-56 place-items-center" role="status">
               <p className="font-pixeboy animate-pulse text-4xl text-[#ffdf50]">
-                CHECKING TRAINER PASS...
+                CHECKING USER STATUS..
               </p>
             </div>
           ) : user ? (
-            <div className="mx-auto max-w-xl py-4 sm:py-7">
+            <div className="py-4 sm:py-7">
               <div className="text-center">
-                <div className="min-w-0"> 
+                <div className="min-w-0">
                   <p className="text-2xl leading-none tracking-[0.12em] text-white">
                     {participantType === "vit"
                       ? "VIT STUDENT"
@@ -184,7 +188,7 @@ export default function LoginPage() {
                   onClick={handleGoToTeam}
                   className="w-full rounded-2xl border-2 border-[#173c50] bg-[#ffdf50] px-5 py-3 text-3xl text-[#153e53] shadow-[0_5px_0_#173c50] transition hover:bg-[#ffe873] active:translate-y-1 active:shadow-none"
                 >
-                  GO TO TEAM PAGE
+                  GO TO TEAM DASHBOARD
                 </button>
 
                 {/* SIGN OUT BUTTON */}
@@ -213,31 +217,25 @@ export default function LoginPage() {
                       type="button"
                       role="radio"
                       aria-checked={selected}
-                      onClick={() => {
-                        setSelectedType(option.id);
-                        setError("");
-                      }}
-                      className={`group relative h-full min-h-36 rounded-2xl border-2 p-5 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffdf50] sm:min-h-40 sm:p-6 ${
-                        selected
+                      onClick={() => setSelectedType(option.id)}
+                      className={`group relative h-full min-h-36 rounded-2xl border-2 p-5 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffdf50] sm:min-h-40 sm:p-6 ${selected
                           ? "border-[#ffdf50] bg-[#0b6575] shadow-[0_4px_0_#d2a900,0_12px_28px_rgba(0,0,0,.25)]"
                           : "border-white/35 bg-[#062f3d]/70 hover:border-[#8ee9ee] hover:bg-[#08495a]"
-                      }`}
+                        }`}
                     >
                       <span className="block pr-8 text-4xl leading-none text-white sm:text-[2.7rem]">
                         {option.title}
                       </span>
-                      <span className="mt-3 block max-w-xs text-2xl leading-none text-white/65 sm:text-[1.7rem]">
+                      <span className="mt-3 block max-w-xs text-base leading-snug text-white/65 sm:text-lg">
                         {option.description}
                       </span>
                       <span
-                        className={`absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full border-2 text-sm font-bold transition ${
-                          selected
-                            ? "border-[#ffdf50] bg-[#ffdf50] text-[#153e53]"
-                            : "border-white/35 text-transparent"
-                        }`}
-                      >
-                        ✓
-                      </span>
+                        className={`absolute right-4 top-4 h-6 w-6 rounded-full border-2 transition ${selected
+                            ? "border-[#ffdf50] bg-[#ffdf50]"
+                            : "border-white/35"
+                          }`}
+                        aria-hidden="true"
+                      />
                     </button>
                   );
                 })}
@@ -265,22 +263,16 @@ export default function LoginPage() {
               Firebase browser configuration is missing from this environment.
             </p>
           )}
-          {error && (
-            <p
-              role="alert"
-              className="mt-4 rounded-2xl border-2 border-[#ff8b87]/40 bg-[#501d26]/75 px-4 py-3 text-2xl leading-none text-[#ffd1cf]"
-            >
-              {error}
-            </p>
-          )}
         </div>
 
-        <Link
-          href="/"
-          className="font-pixeboy mt-4 inline-flex items-center gap-2 text-2xl text-black transition hover:text-[#ffdf50] sm:mt-6"
-        >
-          <span aria-hidden="true">←</span> BACK TO HOME
-        </Link>
+        <div className="mt-6 flex justify-center sm:mt-8">
+          <Link
+            href="/"
+            className="font-pixeboy inline-flex items-center gap-2 text-2xl text-white/70 transition hover:text-[#ffdf50]"
+          >
+            <span aria-hidden="true">←</span> BACK TO HOME
+          </Link>
+        </div>
       </section>
     </main>
   );

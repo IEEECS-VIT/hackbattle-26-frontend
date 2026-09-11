@@ -18,6 +18,11 @@ import {
 import { api, type GetTeamResponse } from "@/lib/api";
 import { getFirebaseAuth, isFirebaseConfigured } from "@/lib/firebase";
 
+/** Pages where we intentionally skip the backend getTeam call on load. */
+const PUBLIC_PATHS = new Set(["/", "/login"]);
+
+const REQUEST_TIMEOUT_MS = 10_000;
+
 export type ParticipantType = "vit" | "external";
 
 const PARTICIPANT_TYPE_KEY = "hackbattle-participant-type";
@@ -55,12 +60,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTeamData(null);
   };
 
-  // Fetch team status and verify user exists in backend DB
-  const fetchTeamStatus = async (): Promise<boolean> => {
-    try {
-      const res = await api.getTeam();
+  // Fetch team status and verify user exists in backend DB.
+  // ALWAYS throws on any failure — timeout, network error, or 4xx.
+  // A user must NEVER be set without an explicit backend 200 confirmation.
+  const fetchTeamStatus = async (signal?: AbortSignal): Promise<boolean> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    // Allow an externally provided signal to also cancel the request
+    signal?.addEventListener("abort", () => controller.abort());
 
-      // If backend responds with status 404/401/403 or specific user error
+    try {
+      const res = await api.getTeam(controller.signal);
+
       if (res.status === 404 || res.status === 401 || res.status === 403) {
         throw new Error("USER_NOT_REGISTERED");
       }
@@ -71,64 +82,75 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return true;
       }
 
-      setHasTeam(false);
-      setTeamData(null);
-      return false;
+      // 204 = user is registered but not on any team yet
+      if (res.status === 204) {
+        setHasTeam(false);
+        setTeamData(null);
+        return false;
+      }
+
+      // Any other response (500, 0 = network failure, unexpected shape)
+      // is treated as the backend being unavailable.
+      throw new Error("BACKEND_UNAVAILABLE");
     } catch (err: unknown) {
       if (err instanceof Error && err.message === "USER_NOT_REGISTERED") {
-        throw err;
+        throw err; // propagate as-is
       }
-      console.error("Failed to check team status:", err);
-      setHasTeam(false);
-      setTeamData(null);
-      return false;
+      if (err instanceof Error && err.name === "AbortError") {
+        throw new Error("BACKEND_UNAVAILABLE"); // timeout → same treatment
+      }
+      if (err instanceof Error && err.message === "BACKEND_UNAVAILABLE") {
+        throw err; // propagate as-is
+      }
+      // Unknown network / JS error → treat as backend unavailable
+      throw new Error("BACKEND_UNAVAILABLE");
+    } finally {
+      clearTimeout(timeoutId);
     }
   };
 
   useEffect(() => {
-  const auth = getFirebaseAuth();
-  if (!auth) return;
+    const auth = getFirebaseAuth();
+    if (!auth) return;
 
-  return onAuthStateChanged(auth, async (nextUser) => {
-    if (nextUser) {
-      const savedType = window.localStorage.getItem(
-        PARTICIPANT_TYPE_KEY
-      );
+    return onAuthStateChanged(auth, async (nextUser) => {
+      if (nextUser) {
+        const savedType = window.localStorage.getItem(PARTICIPANT_TYPE_KEY);
 
-      setParticipantType(
-        savedType === "vit" || savedType === "external"
-          ? savedType
-          : null
-      );
+        setParticipantType(
+          savedType === "vit" || savedType === "external" ? savedType : null
+        );
 
-      try {
-        await fetchTeamStatus();
-        setUser(nextUser);
-      } catch (err) {
-        if (
-          err instanceof Error &&
-          err.message === "AUTH_UNAUTHORIZED"
-        ) {
-          await handleUnauthorized(auth);
-        } else {
-          console.error(
-            "Failed to initialize authenticated user:",
-            err
-          );
+        // On public pages (landing, login) skip the backend call entirely.
+        // Team data will be fetched lazily when the user navigates to a
+        // protected page or explicitly signs in.
+        const isPublicPage = PUBLIC_PATHS.has(window.location.pathname);
+        if (isPublicPage) {
           setUser(nextUser);
+          setLoading(false);
+          return;
         }
-      }
-    } else {
-      window.localStorage.removeItem(PARTICIPANT_TYPE_KEY);
-      setUser(null);
-      setParticipantType(null);
-      setHasTeam(false);
-      setTeamData(null);
-    }
 
-    setLoading(false);
-  });
-}, []);
+        try {
+          await fetchTeamStatus();
+          setUser(nextUser);
+        } catch (err) {
+          // ANY fetchTeamStatus failure (user not registered OR backend down)
+          // means the session is invalid — sign the user out silently.
+          console.error("Backend did not confirm user on session restore:", err);
+          await handleUnauthorized(auth);
+        }
+      } else {
+        window.localStorage.removeItem(PARTICIPANT_TYPE_KEY);
+        setUser(null);
+        setParticipantType(null);
+        setHasTeam(false);
+        setTeamData(null);
+      }
+
+      setLoading(false);
+    });
+  }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -163,11 +185,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error("VIT_EMAIL_REQUIRED");
         }
 
-        // 2. Verify backend registration / seeded data
+        // 2. Verify backend registration — this MUST succeed before the user
+        //    is considered logged in. Any failure signs the user back out.
         try {
           await fetchTeamStatus();
         } catch (err) {
           await handleUnauthorized(auth);
+          // Re-throw with a message the login page can display distinctly
+          if (err instanceof Error && err.message === "BACKEND_UNAVAILABLE") {
+            throw new Error("BACKEND_UNAVAILABLE");
+          }
           throw new Error("USER_NOT_REGISTERED");
         }
 

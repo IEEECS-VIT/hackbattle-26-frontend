@@ -19,10 +19,9 @@ export default function Footer() {
         className="
           flex
           h-full
-          items-end
+          items-center
           justify-between
           px-8
-          pb-5
           md:px-12
           lg:px-8
         "
