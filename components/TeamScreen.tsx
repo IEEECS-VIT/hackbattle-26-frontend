@@ -105,33 +105,34 @@ export default function TeamScreen({
     }
   };
 
- const handleLeaveTeam = async () => {
-   if (leaving) return;
-   setLeaving(true);
-   try {
-     const { data, status } = await api.leaveTeam();
+  const handleLeaveTeam = async () => {
+    if (leaving) return;
+    setLeaving(true);
+    try {
+      const { data, status } = await api.leaveTeam();
 
-     if (status === 200) {
-       showToast("You left the team.", "success");
-       router.push("/dashboard");
-       return;
-     }
+      if (status === 200) {
+        showToast("You left the team.", "success");
+        router.push("/dashboard");
+        return;
+      }
 
-     if (status === 401) {
-       showToast("PLEASE LOG IN FIRST", "error");
-     } else if (status === 403) {
-       showToast("YOUR TEAM HAS ALREADY SUBMITTED, YOU CANNOT LEAVE", "error");
-     } else if (status === 404) {
-       showToast("TEAM NOT FOUND", "error");
-     } else {
-       showToast(data?.message || "Failed to leave team.", "error");
-     }
-   } catch {
-     showToast("Failed to leave team.", "error");
-   } finally {
-     setLeaving(false);
-   }
- };
+      if (status === 401) {
+        showToast("PLEASE LOG IN FIRST", "error");
+      } else if (status === 403) {
+        showToast("YOUR TEAM HAS ALREADY SUBMITTED, YOU CANNOT LEAVE", "error");
+      } else if (status === 404) {
+        showToast("TEAM NOT FOUND", "error");
+      } else {
+        showToast(data?.message || "Failed to leave team.", "error");
+      }
+    } catch {
+      showToast("Failed to leave team.", "error");
+    } finally {
+      setLeaving(false);
+    }
+  };
+
   const handleSubmissionClick = (e: React.MouseEvent) => {
     const size = members.length;
     if (size < 2 || size > 5) {
@@ -140,7 +141,7 @@ export default function TeamScreen({
     }
   };
 
-  const displayHeading = teamData?.name ? `TEAM: ${teamData.name}` : "MY TEAM";
+  const displayHeading = teamData?.name || "MY TEAM";
 
   // Base class to ensure uniform button heights and padding across the header
   const navBtnBase = `
