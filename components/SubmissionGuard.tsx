@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthProvider";
+import SimpleLoader from "./SimpleLoader";
 interface SubmissionGuardProps {
   children: React.ReactNode;
 }
@@ -40,13 +41,7 @@ export default function SubmissionGuard({ children }: SubmissionGuardProps) {
 
   // Show a loading screen while auth/team status resolves
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#070e04] text-white">
-        <p className="font-mono text-lg animate-pulse">
-          Verifying submission permissions...
-        </p>
-      </div>
-    );
+    return <SimpleLoader fullScreen label="Verifying submission permissions…" />;
   }
 
   // Calculate authorized status

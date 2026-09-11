@@ -12,10 +12,13 @@ export default function SimpleLoader({
       className={fullScreen ? styles.screen : styles.inline}
       role="status"
       aria-live="polite"
+      aria-label={label}
     >
-      <div className={styles.panel}>
-        <span className={styles.spinner} aria-hidden="true" />
-        <span>{label}</span>
+      <div className={styles.loader}>
+        <span className={styles.ball} aria-hidden="true">
+          <span />
+        </span>
+        <span className={styles.visuallyHidden}>{label}</span>
       </div>
     </div>
   );
