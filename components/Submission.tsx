@@ -6,36 +6,28 @@ import { useToast } from "@/components/ToastProvider";
 import { useSimpleLoading } from "@/components/NavigationLoader";
 import { LoadingLink as Link } from "@/components/NavigationLoader";
 
-const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
-  "AI / ML": [
-    "Computer Vision & Pattern Recognition",
-    "Natural Language Processing (NLP)",
-    "Generative AI & LLM Applications",
-    "Predictive Analytics & Forecasting",
+export const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
+  "AI & AUTOMATION": [
+    "Agentic Workflows",
+    "Self-Learning & Adaptation",
+    "Guardrails & Trust",
   ],
-  Web3: [
-    "DeFi (Decentralized Finance)",
-    "NFTs & Gaming",
-    "DAO & Governance",
-    "Smart Contract Infrastructure",
+  "SYSTEMS & INFRASTRUCTURE": [
+    "Cloud & Deployment Automation",
+    "Decentralization & Protocols",
+    "Core Systems & Data Engines",
   ],
-  Healthcare: [
-    "Remote Patient Monitoring",
-    "AI Diagnostics",
-    "Mental Health & Wellness",
-    "Medical Records & Privacy",
+  "DEVELOPER TOOLING": [
+    "Terminal & Shell Tooling",
+    "Codebase Intelligence & Navigation",
+    "Workflow & Context Management",
   ],
-  FinTech: [
-    "Micro-investing & Wealthtech",
-    "Fraud Detection",
-    "Payment Gateway Innovations",
-    "Personal Finance Management",
+  "CYBERSECURITY & PRIVACY": [
+    "Local-First Privacy",
+    "Defense & Sandboxing",
+    "Surveillance Transparency",
   ],
-  OpenInnovation: [
-    "General Problem Solving",
-    "Social Good & Sustainability",
-    "EduTech & E-learning",
-  ],
+  "OPEN INNOVATION": [],
 };
 
 export default function Submission() {
@@ -95,9 +87,7 @@ export default function Submission() {
         return;
       }
 
-      throw new Error(
-        data?.message || `Submission failed (${status})`
-      );
+      throw new Error(data?.message || `Submission failed (${status})`);
     } catch (error) {
       console.error("Submission error:", error);
 
@@ -145,10 +135,7 @@ export default function Submission() {
             object-center
           "
         >
-          <source
-            src="/submission/video/pikachu_motion.mp4"
-            type="video/mp4"
-          />
+          <source src="/submission/video/pikachu_motion.mp4" type="video/mp4" />
         </video>
 
         <div className="absolute inset-0 z-[1] bg-white/[0.06]" />
@@ -220,9 +207,9 @@ export default function Submission() {
             max-md:text-base
             max-md:whitespace-nowrap
         "
-      >
-        GO TO TEAM PAGE
-</Link>
+        >
+          GO TO TEAM PAGE
+        </Link>
         {/* FORM */}
         <form onSubmit={handleSubmit} className="absolute inset-0 z-10">
           {/* TITLE */}
@@ -509,7 +496,11 @@ export default function Submission() {
               "
             >
               <option value="" disabled className="bg-white text-black">
-                {track ? "SELECT SUBTRACK" : "SELECT A TRACK FIRST"}
+                {track
+                  ? availableSubtracks.length > 0
+                    ? "SELECT SUBTRACK"
+                    : "NO SUBTRACKS FOR THIS TRACK"
+                  : "SELECT A TRACK FIRST"}
               </option>
               {availableSubtracks.map((st) => (
                 <option key={st} value={st} className="bg-white text-black">
