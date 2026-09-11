@@ -73,11 +73,9 @@ export default function Chatbot() {
             <div className="flex items-center gap-2">
               <div className="h-3.5 w-3.5 rounded-full border border-black bg-[#38bdf8] animate-pulse" />
               <span className="font-bold text-sm tracking-widest text-[#fef08a] uppercase drop-shadow-[1px_1px_0_#000]">
-                P
+                POKéCHAT
               </span>
-              <span className="font-bold text-sm tracking-wider text-white uppercase drop-shadow-[1px_1px_0_#000]">
-                OKéCHAT
-              </span>
+            
             </div>
             <button
               onClick={() => setIsOpen(false)}
