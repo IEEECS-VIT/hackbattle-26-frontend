@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useLoadingRouter as useRouter } from "@/components/NavigationLoader";
 import TeamScreen from "@/components/TeamScreen";
 import { api, GetTeamResponse } from "@/lib/api";
 import { useToast } from "@/components/ToastProvider";
+import { useSimpleLoading } from "@/components/NavigationLoader";
 
 export default function TeamPage() {
   const router = useRouter();
@@ -15,6 +16,8 @@ export default function TeamPage() {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  useSimpleLoading(fetching || creating);
 
   const fetchTeam = useCallback(async () => {
     try {
@@ -28,11 +31,16 @@ export default function TeamPage() {
         setShowPopup(true);
       } else if (status === 401) {
         router.replace("/login");
+      } else {
+        showToast("Unable to load your team. Please refresh to try again.", "error");
       }
     } catch (err) {
       console.error("Failed to fetch team:", err);
+      showToast("Unable to load your team. Please refresh to try again.", "error");
+    } finally {
+      setFetching(false);
     }
-  }, [router]);
+  }, [router, showToast]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {

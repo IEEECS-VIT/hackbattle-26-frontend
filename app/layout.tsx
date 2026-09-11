@@ -5,6 +5,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { ToastProvider } from "@/components/ToastProvider";
 import localFont from "next/font/local";
 import SiteLoader from "@/components/SiteLoader";
+import { NavigationLoaderProvider } from "@/components/NavigationLoader";
 
 const INITIAL_LOADER_SCRIPT = `
   (() => {
@@ -46,7 +47,9 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>
-            <SiteLoader>{children}</SiteLoader>
+            <NavigationLoaderProvider>
+              <SiteLoader>{children}</SiteLoader>
+            </NavigationLoaderProvider>
           </ToastProvider>
         </AuthProvider>
       </body>

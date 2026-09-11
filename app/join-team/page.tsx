@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useLoadingRouter as useRouter } from "@/components/NavigationLoader";
 
 import TeamScreen from "@/components/TeamScreen";
 import { api } from "@/lib/api";
 import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/components/ToastProvider";
+import { useSimpleLoading } from "@/components/NavigationLoader";
 
 export default function JoinTeamPage() {
   const router = useRouter();
@@ -17,6 +18,8 @@ export default function JoinTeamPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPopup, setShowPopup] = useState(true);
+  const [checkingTeam, setCheckingTeam] = useState(true);
+  useSimpleLoading(authLoading || checkingTeam || loading);
 
   // Check whether the logged-in user is already in a team
   useEffect(() => {
@@ -55,6 +58,8 @@ export default function JoinTeamPage() {
         }
       } catch (err) {
         console.error("Unable to determine team status:", err);
+      } finally {
+        setCheckingTeam(false);
       }
     };
 

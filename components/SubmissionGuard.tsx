@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useLoadingRouter as useRouter } from "@/components/NavigationLoader";
 import { useAuth } from "./AuthProvider";
-import SimpleLoader from "./SimpleLoader";
+import { useSimpleLoading } from "./NavigationLoader";
 interface SubmissionGuardProps {
   children: React.ReactNode;
 }
@@ -11,6 +11,12 @@ interface SubmissionGuardProps {
 export default function SubmissionGuard({ children }: SubmissionGuardProps) {
   const router = useRouter();
   const { user, loading, hasTeam, teamData } = useAuth();
+  const isAuthorized = Boolean(
+    user && hasTeam && teamData &&
+    (teamData.isLeader ??
+      (teamData.leaderId === user.uid || teamData.leaderId === user.email))
+  );
+  useSimpleLoading(loading || !isAuthorized);
 
   useEffect(() => {
     // Wait until AuthProvider completes loading user and team data
@@ -41,16 +47,10 @@ export default function SubmissionGuard({ children }: SubmissionGuardProps) {
 
   // Show a loading screen while auth/team status resolves
   if (loading) {
-    return <SimpleLoader fullScreen label="Verifying submission permissions…" />;
+    return null;
   }
 
   // Calculate authorized status
-  const isAuthorized =
-    user &&
-    hasTeam &&
-    teamData &&
-    (teamData.isLeader ??
-      (teamData.leaderId === user.uid || teamData.leaderId === user.email));
 
   // Prevent flash of guarded content before redirect occurs
   if (!isAuthorized) {

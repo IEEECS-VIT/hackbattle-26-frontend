@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useLoadingRouter as useRouter } from '@/components/NavigationLoader';
 import HackathonSelectionScreen from '@/components/hackathonSelectScreen';
 
 export default function TestUIPage() {
