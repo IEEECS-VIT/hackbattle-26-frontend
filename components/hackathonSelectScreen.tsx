@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import { LoadingLink as Link } from "@/components/NavigationLoader";
 
 interface TypewriterTextProps {
   text: string;

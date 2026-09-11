@@ -11,6 +11,7 @@ import FancyLoader from "./FancyLoader";
 import SimpleLoader from "./SimpleLoader";
 import { useAuth } from "./AuthProvider";
 import styles from "./SiteLoader.module.css";
+import { RouteArtwork, useNavigationLoading } from "./NavigationLoader";
 
 const FANCY_LOADER_SEEN_KEY = "hackbattle-fancy-loader-seen-this-tab";
 const FANCY_LOADER_TIME_MS = 1700;
@@ -37,6 +38,9 @@ function getBrowserLoaderKind(): LoaderKind {
 }
 
 export default function SiteLoader({ children }: { children: ReactNode }) {
+  const { busy } = useNavigationLoading();
+  const busyRef = useRef(busy);
+  useEffect(() => { busyRef.current = busy; }, [busy]);
   const { loading: authLoading } = useAuth();
   const authLoadingRef = useRef(authLoading);
   const loaderKind = useSyncExternalStore(
@@ -46,6 +50,13 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
   );
   const [ready, setReady] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (!ready || !busy) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [ready, busy]);
 
   useEffect(() => {
     authLoadingRef.current = authLoading;
@@ -94,7 +105,7 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
 
     const authReady = new Promise<void>((resolve) => {
       const checkAuth = () => {
-        if (!authLoadingRef.current) {
+        if (!authLoadingRef.current && !busyRef.current) {
           resolve();
           return;
         }
@@ -142,16 +153,16 @@ export default function SiteLoader({ children }: { children: ReactNode }) {
     <>
       <div
         className={`flex flex-1 flex-col ${styles.content} ${
-          ready ? "" : styles.contentLoading
+          ready && !busy ? "" : styles.contentLoading
         }`}
-        inert={!ready}
-        aria-hidden={!ready || undefined}
+        inert={!ready || busy}
+        aria-hidden={!ready || busy || undefined}
       >
-        {children}
+        <RouteArtwork>{children}</RouteArtwork>
       </div>
 
       {!ready && loaderKind === "fancy" && <FancyLoader progress={progress} />}
-      {!ready && loaderKind === "simple" && (
+      {((!ready && loaderKind === "simple") || (ready && busy)) && (
         <SimpleLoader fullScreen label="Loading…" />
       )}
       {!ready && loaderKind === "checking" && (

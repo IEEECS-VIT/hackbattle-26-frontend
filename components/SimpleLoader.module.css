@@ -14,7 +14,7 @@
 .screen {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 1000001;
   padding: 24px;
   isolation: isolate;
   overflow: hidden;

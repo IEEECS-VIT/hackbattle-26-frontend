@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useLoadingRouter as useRouter } from "@/components/NavigationLoader";
 import { useAuth } from "@/components/AuthProvider";
-import SimpleLoader from "@/components/SimpleLoader";
+import { useSimpleLoading } from "@/components/NavigationLoader";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  useSimpleLoading(loading || !user);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -16,7 +17,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   }, [loading, user, router]);
 
   if (loading || !user) {
-    return <SimpleLoader fullScreen label="Checking your account…" />;
+    return null;
   }
 
   return <>{children}</>;

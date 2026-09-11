@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { LoadingLink as Link } from "@/components/NavigationLoader";
+import { useLoadingRouter as useRouter } from "@/components/NavigationLoader";
 import { api, GetTeamResponse } from "@/lib/api";
 import { useToast } from "@/components/ToastProvider";
+import { useState } from "react";
+import { useSimpleLoading } from "@/components/NavigationLoader";
 
 type Player = {
   id: number;
@@ -62,6 +64,8 @@ export default function TeamScreen({
 }: TeamScreenProps) {
   const router = useRouter();
   const { showToast } = useToast();
+  const [leaving, setLeaving] = useState(false);
+  useSimpleLoading(leaving);
 
   const members = teamData?.members || [];
   const isLeader = teamData?.isLeader ?? false;
@@ -109,6 +113,8 @@ export default function TeamScreen({
   };
 
   const handleLeaveTeam = async () => {
+    if (leaving) return;
+    setLeaving(true);
     try {
       const { data, status } = await api.leaveTeam();
 
@@ -129,6 +135,8 @@ export default function TeamScreen({
       }
     } catch {
       showToast("Failed to leave team.", "error");
+    } finally {
+      setLeaving(false);
     }
   };
 

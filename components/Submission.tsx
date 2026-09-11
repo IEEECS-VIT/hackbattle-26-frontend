@@ -3,7 +3,8 @@
 import { FormEvent, useState, useMemo } from "react";
 import { api } from "@/lib/api";
 import { useToast } from "@/components/ToastProvider";
-import Link from "next/link";
+import { useSimpleLoading } from "@/components/NavigationLoader";
+import { LoadingLink as Link } from "@/components/NavigationLoader";
 
 const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
   "AI / ML": [
@@ -46,6 +47,8 @@ export default function Submission() {
   const [figma, setFigma] = useState("");
   const [otherLinks, setOtherLinks] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  useSimpleLoading(submitting);
   const { showToast } = useToast();
 
   // Get dynamic subtrack options according to selected track
@@ -61,12 +64,14 @@ export default function Submission() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
 
     if (!description.trim() || !github.trim()) {
       showToast("Project Description and GitHub Link are required.", "error");
       return;
     }
 
+    setSubmitting(true);
     try {
       setSubmitted(false);
 
@@ -102,6 +107,8 @@ export default function Submission() {
           : "Failed to submit project. Please try again.",
         "error"
       );
+    } finally {
+      setSubmitting(false);
     }
   }
 

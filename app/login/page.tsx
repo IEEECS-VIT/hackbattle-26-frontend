@@ -1,15 +1,16 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useLoadingRouter as useRouter } from "@/components/NavigationLoader";
 
 import { FirebaseError } from "firebase/app";
 import Image from "next/image";
-import Link from "next/link";
+import { LoadingLink as Link } from "@/components/NavigationLoader";
 import { useState } from "react";
 import {
   type ParticipantType,
   useAuth,
 } from "@/components/AuthProvider";
 import { useToast } from "@/components/ToastProvider";
+import { useSimpleLoading } from "@/components/NavigationLoader";
 
 const participantOptions: Array<{
   id: ParticipantType;
@@ -77,6 +78,7 @@ export default function LoginPage() {
   } = useAuth();
   const [selectedType, setSelectedType] = useState<ParticipantType | null>(null);
   const [pending, setPending] = useState(false);
+  useSimpleLoading(pending);
   const [error, setError] = useState("");
 
   const handleGoToTeam = () => {
