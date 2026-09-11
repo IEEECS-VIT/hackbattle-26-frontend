@@ -127,6 +127,7 @@ export default function LoginPage() {
         sizes="100vw"
         className="-z-30 object-cover object-center"
       />
+      <div className="pointer-events-none absolute inset-0 -z-20 bg-black/40" />
 
       <div className="pointer-events-none absolute bottom-[-8rem] right-[-4rem] h-80 w-80 rounded-full blur-5xl" />
 
@@ -160,8 +161,8 @@ export default function LoginPage() {
                   </h2>
                   <div className="mt-3">
                     <p
-                      style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}
-                      className="inline-block max-w-full truncate rounded-xl border-2 border-white/30 bg-black px-4 py-2.5 text-sm font-medium leading-none text-white shadow-[3px_3px_0_rgba(0,0,0,0.4)] sm:px-6 sm:text-base"
+                      style={{ fontFamily: "system-ui, -apple-system, sans-serif", textTransform: "lowercase" }}
+                      className="lowercase max-w-full truncate text-xl font-semibold leading-none text-black sm:text-2xl"
                     >
                       {user.email?.toLowerCase()}
                     </p>

@@ -74,8 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setHasTeam(false);
       setTeamData(null);
       return false;
-    } catch (err: any) {
-      if (err?.message === "USER_NOT_REGISTERED") {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message === "USER_NOT_REGISTERED") {
         throw err;
       }
       console.error("Failed to check team status:", err);
@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           await fetchTeamStatus();
           setUser(nextUser);
-        } catch (err) {
+        } catch {
           // If backend check fails (e.g., user not seeded/registered), boot them
           await handleUnauthorized(auth);
         }
@@ -146,7 +146,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // 2. Verify backend registration / seeded data
         try {
           await fetchTeamStatus();
-        } catch (err) {
+        } catch {
           await handleUnauthorized(auth);
           throw new Error("USER_NOT_REGISTERED");
         }
