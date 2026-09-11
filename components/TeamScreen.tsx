@@ -128,14 +128,34 @@ export default function TeamScreen({
         return;
       }
 
+      let rawMsg = "";
+      if (typeof data === "string") {
+        rawMsg = data;
+      } else if (data && typeof data === "object") {
+        const obj = data as Record<string, unknown>;
+        if (typeof obj.message === "string") rawMsg = obj.message;
+        else if (typeof obj.error === "string") rawMsg = obj.error;
+        else if (typeof obj.detail === "string") rawMsg = obj.detail;
+      }
+
+      const lowerMsg = rawMsg.toLowerCase();
+      const isSubmitted =
+        lowerMsg.includes("submit") ||
+        lowerMsg.includes("submitted") ||
+        lowerMsg.includes("submission") ||
+        lowerMsg.includes("submitting") ||
+        status === 409;
+
       if (status === 401) {
         showToast("PLEASE LOG IN FIRST", "error");
+      } else if (isSubmitted) {
+        showToast("You can't leave the team after submitting.", "error");
       } else if (status === 403) {
         showToast("YOU ARE NOT IN A TEAM", "error");
       } else if (status === 404) {
         showToast("TEAM NOT FOUND", "error");
       } else {
-        showToast(data?.message || "Failed to leave team.", "error");
+        showToast(rawMsg || "Failed to leave team.", "error");
       }
     } catch {
       showToast("Failed to leave team.", "error");
