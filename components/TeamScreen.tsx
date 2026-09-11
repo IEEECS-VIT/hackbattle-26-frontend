@@ -194,15 +194,17 @@ export default function TeamScreen({
                 BACK
               </Link>
 
-              {isLeader && (
-                <Link
-                  href="/submission"
-                  onClick={handleSubmissionClick}
-                  className={`${navBtnBase} bg-yellow-400 text-black`}
-                >
-                  SUBMISSION
-                </Link>
-              )}
+              {/* 
+{isLeader && (
+  <Link
+    href="/submission"
+    onClick={handleSubmissionClick}
+    className={`${navBtnBase} bg-yellow-400 text-black`}
+  >
+    SUBMISSION
+  </Link>
+)} 
+*/}
             </div>
 
             <div className="flex items-center gap-2">
@@ -264,7 +266,11 @@ export default function TeamScreen({
               {displayHeading}
             </h1>
             {qualificationMessage && (
-              <div className={`mt-2 font-pixeboy text-center text-[clamp(16px,4vw,32px)] ${isRejected ? 'text-red-400' : 'text-green-400'} drop-shadow-[2px_2px_0_#000]`}>
+              <div
+                className={`mt-2 font-pixeboy text-center text-[clamp(16px,4vw,32px)] ${
+                  isRejected ? "text-red-400" : "text-green-400"
+                } drop-shadow-[2px_2px_0_#000]`}
+              >
                 {qualificationMessage}
               </div>
             )}

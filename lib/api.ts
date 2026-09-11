@@ -185,9 +185,9 @@ export const api = {
   getTeam: (signal?: AbortSignal) =>
     fetchWithAuth<GetTeamResponse>("/teams/get", { method: "GET" }, signal),
 
-  submitProject: (payload: SubmitProjectPayload) =>
+   /*submitProject: (payload: SubmitProjectPayload) =>
     fetchWithAuth<SubmitProjectResponse>("/teams/project/submit", {
       method: "POST",
       body: JSON.stringify(payload),
-    }),
+    }), */
 };
