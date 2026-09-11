@@ -7,6 +7,15 @@
   font-family: var(--font-pixeboy), 'Pixeboy', monospace;
   overflow-x: hidden;
   padding-bottom: 2rem;
+
+  
+  scroll-margin-top: 80px; 
+}
+
+@media (max-width: 767px) {
+  .section {
+    scroll-margin-top: 64px;
+  }
 }
 
 .landscape {
