@@ -17,9 +17,11 @@ export default function TeamPage() {
   const [error, setError] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [fetching, setFetching] = useState(true);
+
   useSimpleLoading(fetching || creating);
 
   const fetchTeam = useCallback(async () => {
+    setFetching(true);
     try {
       const { data, status } = await api.getTeam();
 
@@ -32,11 +34,17 @@ export default function TeamPage() {
       } else if (status === 401) {
         router.replace("/login");
       } else {
-        showToast("Unable to load your team. Please refresh to try again.", "error");
+        showToast(
+          "Unable to load your team. Please refresh to try again.",
+          "error"
+        );
       }
     } catch (err) {
       console.error("Failed to fetch team:", err);
-      showToast("Unable to load your team. Please refresh to try again.", "error");
+      showToast(
+        "Unable to load your team. Please refresh to try again.",
+        "error"
+      );
     } finally {
       setFetching(false);
     }
@@ -50,78 +58,74 @@ export default function TeamPage() {
     return () => window.clearTimeout(timer);
   }, [fetchTeam]);
 
-const handleCreateTeam = async () => {
-  const name = teamName.trim();
+  const handleCreateTeam = async () => {
+    const name = teamName.trim();
 
-  if (!name) {
-    setError("PLEASE ENTER A TEAM NAME");
-    return;
-  }
-  if (name.length > 100) {
-  setError("TEAM NAME MUST BE 100 CHARACTERS OR LESS");
-  return;
-}
-
-  setCreating(true);
-  setError("");
-
-  try {
-    const { data, status } = await api.createTeam(name);
-
-    // Successfully created team
-    if ((status === 200 || status === 201) && data) {
-      setTeamCode(data.code ?? null);
-      setShowPopup(false);
-      showToast("Team created successfully!", "success");
-
-      // Fetch the complete team including members
-      await fetchTeam();
-
+    if (!name) {
+      setError("PLEASE ENTER A TEAM NAME");
+      return;
+    }
+    if (name.length > 100) {
+      setError("TEAM NAME MUST BE 100 CHARACTERS OR LESS");
       return;
     }
 
-    showToast("Failed to create team.", "error");
+    setCreating(true);
+    setError("");
 
-    // User is already in a team
-    if (status === 409) {
-      router.replace("/team");
-      return;
+    try {
+      const { data, status } = await api.createTeam(name);
+
+      if ((status === 200 || status === 201) && data) {
+        setTeamCode(data.code ?? null);
+        setShowPopup(false);
+        showToast("Team created successfully!", "success");
+
+        await fetchTeam();
+        return;
+      }
+
+      showToast("Failed to create team.", "error");
+
+      if (status === 409 || status === 208) {
+        router.replace("/team");
+        return;
+      }
+
+      if (status === 400) {
+        setError("INVALID TEAM NAME");
+        return;
+      }
+
+      if (status === 401) {
+        router.replace("/login");
+        return;
+      }
+
+      if (status === 404) {
+        setError("USER PROFILE NOT FOUND");
+        return;
+      }
+
+      setError(data?.message || "UNABLE TO CREATE TEAM");
+    } catch (err) {
+      console.error("Create team error:", err);
+      setError("UNABLE TO CONNECT TO SERVER");
+      showToast("Failed to create team.", "error");
+    } finally {
+      setCreating(false);
     }
-
-    if (status === 208) {
-      router.replace("/team");
-      return;
-    }
-
-    if (status === 400) {
-      setError("INVALID TEAM NAME");
-      return;
-    }
-
-    if (status === 401) {
-      router.replace("/login");
-      return;
-    }
-
-    if (status === 404) {
-      setError("USER PROFILE NOT FOUND");
-      return;
-    }
-
-    setError(data?.message || "UNABLE TO CREATE TEAM");
-  } catch (err) {
-    console.error("Create team error:", err);
-    setError("UNABLE TO CONNECT TO SERVER");
-    showToast("Failed to create team.", "error");
-  } finally {
-    setCreating(false);
-  }
-};
-
+  };
 
   return (
     <>
-      <TeamScreen mode="build" teamCode={teamCode} teamData={teamData} />
+      <TeamScreen
+        mode="build"
+        teamCode={teamCode}
+        teamData={teamData}
+        onFetchTeam={fetchTeam}
+        isLoading={fetching}
+      />
 
       {showPopup && (
         <div
@@ -147,7 +151,7 @@ const handleCreateTeam = async () => {
             {/* X */}
             <button
               type="button"
-              onClick={() => router.replace("/dashboard")}           
+              onClick={() => router.replace("/dashboard")}
               className="
                 absolute right-3 top-2
                 cursor-pointer
@@ -254,7 +258,7 @@ const handleCreateTeam = async () => {
             {/* CANCEL */}
             <button
               type="button"
-              onClick={() => router.replace("/dashboard")}             
+              onClick={() => router.replace("/dashboard")}
               className="
                 flex h-[50px] w-full
                 cursor-pointer

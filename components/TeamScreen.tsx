@@ -51,16 +51,20 @@ function SlotButton({
   );
 }
 
-type TeamScreenProps = {
+export type TeamScreenProps = {
   mode?: "build" | "join";
   teamCode?: string | null;
   teamData?: GetTeamResponse | null;
+  onFetchTeam?: () => Promise<void>;
+  isLoading?: boolean;
 };
 
 export default function TeamScreen({
   mode = "build",
   teamCode = null,
   teamData = null,
+  onFetchTeam,
+  isLoading = false,
 }: TeamScreenProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -187,6 +191,29 @@ export default function TeamScreen({
                 BACK
               </Link>
 
+              {/* REFRESH TEAM BUTTON */}
+              {onFetchTeam && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    void onFetchTeam();
+                  }}
+                  disabled={isLoading}
+                  className="
+                    team-nav-btn
+                    inline-flex items-center
+                    rounded-[5px] border-2 border-black
+                    bg-cyan-400 px-2.5 py-1 text-xs sm:px-4 sm:py-1.5 sm:text-base
+                    font-pixeboy leading-none text-black
+                    shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+                    transition-all hover:brightness-95 active:translate-y-[1px]
+                    disabled:opacity-60
+                  "
+                >
+                  {isLoading ? "REFRESHING..." : "REFRESH TEAM"}
+                </button>
+              )}
+
               {isLeader && (
                 <Link
                   href="/submission"
@@ -206,7 +233,7 @@ export default function TeamScreen({
               )}
             </div>
 
-            {/* TEAM CODE (Inline on mobile header to save vertical space) */}
+            {/* TEAM CODE */}
             {mode === "build" && (
               <div className="flex items-center gap-1.5 rounded-[5px] border-2 border-black bg-white/95 px-2 py-1 shadow-[2px_2px_0_rgba(0,0,0,0.85)]">
                 <span className="font-pixeboy text-sm sm:text-lg leading-none tracking-wider text-black">
@@ -312,7 +339,12 @@ export default function TeamScreen({
                     )}
                   </div>
                 ) : (
-                  <SlotButton label={String(player.id)} />
+                  <SlotButton
+                    label={String(player.id)}
+                    onClick={() => {
+                      if (onFetchTeam) void onFetchTeam();
+                    }}
+                  />
                 )}
               </div>
             ))}
