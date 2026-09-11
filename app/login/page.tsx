@@ -168,10 +168,13 @@ export default function LoginPage() {
                       "TRAINER"}
                   </h2>
                   <div className="mt-3">
-  <p className="max-w-full truncate text-sm leading-none text-white sm:text-base">
-    {user.email?.toLowerCase()}
-  </p>
-</div>
+                    <p
+                      style={{ fontFamily: "system-ui, -apple-system, sans-serif", textTransform: "lowercase" }}
+                      className="lowercase max-w-full truncate text-lg font-semibold leading-none text-black sm:text-xl"
+                    >
+                      {user.email?.toLowerCase()}
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="mt-7 flex flex-col gap-3">
