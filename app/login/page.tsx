@@ -99,9 +99,9 @@ export default function LoginPage() {
     if (!selectedType) return;
     setPending(true);
     try {
-      await signInWithGoogle(selectedType);
+      const result = await signInWithGoogle(selectedType);
       showToast("Login successful!", "success");
-      if (hasTeam) {
+      if (result.hasTeam) {
         router.push("/team");
       } else {
         router.push("/dashboard");

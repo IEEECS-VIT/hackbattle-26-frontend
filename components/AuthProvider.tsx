@@ -34,7 +34,7 @@ type AuthContextValue = {
   participantType: ParticipantType | null;
   hasTeam: boolean;
   teamData: GetTeamResponse | null;
-  signInWithGoogle: (participantType: ParticipantType) => Promise<User>;
+  signInWithGoogle: (participantType: ParticipantType) => Promise<{ user: User; hasTeam: boolean }>;
   signOut: () => Promise<void>;
   getIdToken: () => Promise<string | null>;
   checkTeamStatus: () => Promise<boolean>;
@@ -187,8 +187,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // 2. Verify backend registration — this MUST succeed before the user
         //    is considered logged in. Any failure signs the user back out.
+        let teamStatus = false;
         try {
-          await fetchTeamStatus();
+          teamStatus = await fetchTeamStatus();
         } catch (err) {
           await handleUnauthorized(auth);
           // Re-throw with a message the login page can display distinctly
@@ -202,7 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setParticipantType(selectedType);
         setUser(credential.user);
 
-        return credential.user;
+        return { user: credential.user, hasTeam: teamStatus };
       },
       signOut: async () => {
         const auth = getFirebaseAuth();
