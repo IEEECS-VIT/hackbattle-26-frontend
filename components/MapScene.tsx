@@ -22,16 +22,14 @@ export default function MapScene() {
     <section
       id="problems"
       aria-labelledby="problems-heading"
-      className={`${styles.section} w-full overflow-x-hidden min-h-screen py-6 px-3 sm:px-6`}
+      className={`${styles.section} w-full min-h-screen py-4 px-3 sm:px-6 flex flex-col items-center`}
     >
       <div className={styles.landscape} />
 
-      {/* Clean Flow Header */}
-      <header className="relative flex flex-col md:flex-row items-center justify-between mb-8 px-4 w-full max-w-5xl mx-auto gap-4 pt-4">
-        {/* Left Spacer for Desktop Visual Centering */}
+      {/* Header Container */}
+      <header className="relative flex flex-col md:flex-row items-center justify-between mb-4 px-4 w-full max-w-5xl mx-auto gap-3 pt-2 z-10">
         <div className="hidden md:block w-[180px]" />
 
-        {/* Clean Flex Title (No CSS Module overlaps) */}
         <h2
           id="problems-heading"
           className="font-pixeboy text-center text-white text-4xl sm:text-6xl md:text-7xl tracking-wider select-none drop-shadow-[0_4px_0_#163e54]"
@@ -39,7 +37,6 @@ export default function MapScene() {
           TRACKS
         </h2>
 
-        {/* Scaled Mobile-Friendly Button */}
         <a
           href="/HB-26-Tracks.pdf"
           target="_blank"
@@ -50,8 +47,9 @@ export default function MapScene() {
         </a>
       </header>
 
+      {/* Main Grid Viewport */}
       <div
-        className={`${styles.scene} flex flex-col items-center w-full max-w-5xl mx-auto`}
+        className={`${styles.scene} w-full max-w-5xl mx-auto flex flex-col items-center gap-4`}
       >
         <div
           className={`${styles.islands} w-full`}

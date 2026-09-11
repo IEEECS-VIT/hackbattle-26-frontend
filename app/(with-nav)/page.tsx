@@ -33,12 +33,11 @@ export default function Home() {
             direction: "right",
             opacity: 0.85,
           },
-         
         ]}
       />
 
       <MapScene />
-     
+
       <MarqueeDivider
         layers={[
           {
@@ -68,11 +67,21 @@ export default function Home() {
       <section className="w-full">
         <FAQ />
       </section>
+      <MarqueeDivider
+        layers={[
+          {
+            src: "/vine-marquee-thick.png",
+            height: 140,
+            speed: 34,
+            direction: "right",
+            opacity: 0.85,
+          },
+        ]}
+      />
 
       <Footer />
 
-    
-      <Chatbot /> 
+      <Chatbot />
     </main>
   );
 }

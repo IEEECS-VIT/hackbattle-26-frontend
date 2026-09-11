@@ -96,13 +96,12 @@ export default function RevealPanel({
     <div
       ref={revealRef}
       id="problem-reveal"
-      className={`${styles.reveal} flex flex-col items-center w-full px-2 mt-4`}
+      className={`${styles.reveal} flex flex-col items-center w-full px-2 mt-2`}
       style={{ "--track-color": problem.smokeColor } as CSSProperties}
     >
-      <div className={styles.groundShadow} />
-
-      {/* Pokéball Graphic */}
-      <div className={`${styles.artwork} max-w-[280px] sm:max-w-none`}>
+      {/* Pokeball Art Graphic */}
+      <div className={styles.artwork}>
+        <div className={styles.groundShadow} />
         {!reducedMotion && (
           <motion.img
             key={`closed-${sequence}`}
@@ -137,8 +136,8 @@ export default function RevealPanel({
         >
           <Image
             src={openArt}
-            width={400}
-            height={400}
+            width={240}
+            height={240}
             className={`${styles.shell} ${styles.shellBowl}`}
             alt=""
             draggable={false}
@@ -156,8 +155,8 @@ export default function RevealPanel({
           >
             <Image
               src={openArt}
-              width={400}
-              height={400}
+              width={240}
+              height={240}
               className={`${styles.shell} ${styles.shellLid}`}
               alt=""
               draggable={false}
@@ -178,8 +177,8 @@ export default function RevealPanel({
         >
           <Image
             src={openArt}
-            width={400}
-            height={400}
+            width={240}
+            height={240}
             className={styles.frontShell}
             alt=""
             draggable={false}
@@ -187,10 +186,10 @@ export default function RevealPanel({
         </motion.div>
       </div>
 
-      {/* Styled Card Container */}
+      {/* Structured Card Content with Constrained Height & Y-Scroll */}
       <motion.div
         key={`copy-${sequence}`}
-        className="relative z-30 w-full max-w-md rounded-2xl border-2 border-[#163e54] bg-[#075568]/95 p-4 sm:p-5 shadow-[0_6px_0_#163e54] sm:shadow-[0_8px_0_#163e54] backdrop-blur-lg my-2 max-h-[55vh] sm:max-h-none overflow-y-auto"
+        className="relative z-30 w-full max-w-md rounded-2xl border-2 border-[#163e54] bg-[#075568]/95 p-4 sm:p-5 shadow-[0_6px_0_#163e54] backdrop-blur-lg my-2 max-h-[380px] sm:max-h-[460px] flex flex-col"
         initial={
           reducedMotion ? false : { opacity: 0, y: 10, filter: "blur(5px)" }
         }
@@ -199,20 +198,20 @@ export default function RevealPanel({
         role="region"
         aria-label={`Problem statement ${problem.index}: ${problem.title}`}
       >
-        {/* Header Header Bar */}
-        <div className="flex items-center justify-between border-b border-white/20 pb-2 mb-2 sm:mb-3">
-          <span className="font-pixeboy text-lg sm:text-2xl text-[#ffdf50] tracking-wide break-words">
+        {/* Track Title */}
+        <div className="flex-shrink-0 items-center justify-between border-b border-white/20 pb-2 mb-2">
+          <span className="font-pixeboy text-base sm:text-xl md:text-2xl text-[#ffdf50] tracking-wide block break-words">
             TRACK {String(problem.index).padStart(2, "0")}: {problem.title}
           </span>
         </div>
 
-        {/* Readable Content Area */}
-        <div className="text-left font-sans">
+        {/* Scrollable Container */}
+        <div className="text-left font-sans overflow-y-auto pr-1 flex-1">
           {renderFormattedDescription(problem.description)}
         </div>
       </motion.div>
 
-      <p className={`${styles.hint} mt-2 text-xs sm:text-sm`}>
+      <p className={`${styles.hint} mt-1 text-[11px] sm:text-xs text-white/80`}>
         SELECT A POKÉBALL TO EXPLORE
       </p>
     </div>
