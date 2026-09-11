@@ -130,6 +130,10 @@ export default function LoginPage() {
         sizes="100vw"
         className="-z-30 object-cover object-center"
       />
+      <div
+  className="pointer-events-none absolute inset-0 -z-20 bg-black/40"
+  aria-hidden="true"
+/>
 
       <div className="pointer-events-none absolute bottom-[-8rem] right-[-4rem] h-80 w-80 rounded-full blur-5xl" />
 
@@ -150,25 +154,22 @@ export default function LoginPage() {
           ) : user ? (
             <div className="mx-auto max-w-xl py-4 sm:py-7">
               <div className="text-center">
-                <div className="min-w-0">
-                  <p className="text-2xl leading-none tracking-[0.12em] text-black">
+                <div className="min-w-0"> 
+                  <p className="text-2xl leading-none tracking-[0.12em] text-white">
                     {participantType === "vit"
                       ? "VIT STUDENT"
                       : "EXTERNAL PARTICIPANT"}
                   </p>
-                  <h2 className="mt-2 break-words text-4xl leading-[0.95] text-black sm:text-5xl">
+                  <h2 className="mt-2 break-words text-4xl leading-[0.95] text-white sm:text-5xl">
                     WELCOME,{" "}
                     {user.displayName?.split(" ")[0]?.toUpperCase() ||
                       "TRAINER"}
                   </h2>
                   <div className="mt-3">
-                    <p
-                      style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}
-                      className="inline-block max-w-full truncate rounded-xl border-2 border-white/30 bg-black px-4 py-2.5 text-sm font-medium leading-none text-white shadow-[3px_3px_0_rgba(0,0,0,0.4)] sm:px-6 sm:text-base"
-                    >
-                      {user.email?.toLowerCase()}
-                    </p>
-                  </div>
+  <p className="max-w-full truncate text-sm leading-none text-white sm:text-base">
+    {user.email?.toLowerCase()}
+  </p>
+</div>
                 </div>
               </div>
               <div className="mt-7 flex flex-col gap-3">
