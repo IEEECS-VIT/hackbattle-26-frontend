@@ -1,11 +1,10 @@
 "use client";
 
-import { FormEvent, useState, useMemo } from "react";
+import { FormEvent, useState, useMemo, useEffect, useRef } from "react";
 import { api } from "@/lib/api";
 import { useToast } from "@/components/ToastProvider";
 import { useSimpleLoading } from "@/components/NavigationLoader";
 import { LoadingLink as Link } from "@/components/NavigationLoader";
-import { useEffect } from "react";
 
 export const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
   "AI & AUTOMATION": [
@@ -31,11 +30,22 @@ export const TRACK_SUBTRACKS_MAP: Record<string, string[]> = {
   "OPEN INNOVATION": [],
 };
 
+const DRAFT_KEY = "hackbattle_submission_draft";
+
+// Strict validation regex for GitHub URLs
+const GITHUB_REGEX =
+  /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_.-]+\/?$/i;
+
 export default function Submission() {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
-  const [track, setTrack] = useState("");
-  const [subtrack, setSubtrack] = useState("");
+
+  const [track, setTrack] = useState<string>("");
+  const [selectedSubtracks, setSelectedSubtracks] = useState<string[]>([]);
+
+  const [isTrackOpen, setIsTrackOpen] = useState(false);
+  const [isSubtrackOpen, setIsSubtrackOpen] = useState(false);
+
   const [github, setGithub] = useState("");
   const [figma, setFigma] = useState("");
   const [otherLinks, setOtherLinks] = useState("");
@@ -43,24 +53,82 @@ export default function Submission() {
   const [submitting, setSubmitting] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [isRejected, setIsRejected] = useState(false);
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const subtrackRef = useRef<HTMLDivElement>(null);
+
   useSimpleLoading(submitting || fetching);
   const { showToast } = useToast();
 
+  // Close dropdowns on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        trackRef.current &&
+        !trackRef.current.contains(event.target as Node)
+      ) {
+        setIsTrackOpen(false);
+      }
+      if (
+        subtrackRef.current &&
+        !subtrackRef.current.contains(event.target as Node)
+      ) {
+        setIsSubtrackOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Fetch submitted team data & hydrate draft backup
   useEffect(() => {
     let active = true;
+
+    const savedDraft = localStorage.getItem(DRAFT_KEY);
+    if (savedDraft) {
+      try {
+        const parsed = JSON.parse(savedDraft);
+        setProjectName(parsed.projectName || "");
+        setDescription(parsed.description || "");
+        setTrack(parsed.track || "");
+        setSelectedSubtracks(parsed.selectedSubtracks || []);
+        setGithub(parsed.github || "");
+        setFigma(parsed.figma || "");
+        setOtherLinks(parsed.otherLinks || "");
+      } catch (err) {
+        console.error(
+          "Failed to parse submission draft from local storage:",
+          err
+        );
+      }
+    }
+
     const fetchTeamData = async () => {
       try {
         const { data, status } = await api.getTeam();
         if (status === 200 && data && active) {
-          setProjectName(data.name || "");
-          setDescription(data.project_desc || "");
-          setTrack(data.track || "");
-          setSubtrack(data.subtrack || "");
-          setGithub(data.github_link || "");
-          setFigma(data.figma_link || "");
-          setOtherLinks(data.other_files || "");
+          if (data.name) setProjectName(data.name);
+          if (data.project_desc) setDescription(data.project_desc);
+          if (data.track) setTrack(data.track);
 
-          if (data.isQualifiedForFinalRound === false || data.isQualifiedForR3 === false) {
+          if (data.subtrack) {
+            const subtracksArr = Array.isArray(data.subtrack)
+              ? data.subtrack
+              : data.subtrack
+                  .split(",")
+                  .map((st: string) => st.trim())
+                  .filter(Boolean);
+            setSelectedSubtracks(subtracksArr);
+          }
+
+          if (data.github_link) setGithub(data.github_link);
+          if (data.figma_link) setFigma(data.figma_link);
+          if (data.other_files) setOtherLinks(data.other_files);
+
+          if (
+            data.isQualifiedForFinalRound === false ||
+            data.isQualifiedForR3 === false
+          ) {
             setIsRejected(true);
           }
         }
@@ -70,6 +138,7 @@ export default function Submission() {
         if (active) setFetching(false);
       }
     };
+
     void fetchTeamData();
 
     return () => {
@@ -77,23 +146,76 @@ export default function Submission() {
     };
   }, []);
 
-  // Get dynamic subtrack options according to selected track
+  // Sync state to local storage backup
+  useEffect(() => {
+    const draftData = {
+      projectName,
+      description,
+      track,
+      selectedSubtracks,
+      github,
+      figma,
+      otherLinks,
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
+  }, [
+    projectName,
+    description,
+    track,
+    selectedSubtracks,
+    github,
+    figma,
+    otherLinks,
+  ]);
+
+  // Dynamic subtracks for single track
   const availableSubtracks = useMemo(() => {
     return TRACK_SUBTRACKS_MAP[track] || [];
   }, [track]);
 
-  const handleTrackChange = (selectedTrack: string) => {
-    setTrack(selectedTrack);
-    setSubtrack(""); // Reset subtrack when main track changes
+  // Handle single track selection
+  const selectTrack = (trackName: string) => {
+    if (isRejected) return;
     setSubmitted(false);
+    setTrack(trackName);
+    setSelectedSubtracks([]);
+    setIsTrackOpen(false);
+  };
+
+  // Toggle Subtrack Selection
+  const toggleSubtrack = (subtrackName: string) => {
+    if (isRejected) return;
+    setSubmitted(false);
+
+    if (selectedSubtracks.includes(subtrackName)) {
+      setSelectedSubtracks(
+        selectedSubtracks.filter((st) => st !== subtrackName)
+      );
+    } else {
+      setSelectedSubtracks([...selectedSubtracks, subtrackName]);
+    }
   };
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submitting) return;
 
-    if (!description.trim() || !github.trim()) {
-      showToast("Project Description and GitHub Link are required.", "error");
+    if (!description.trim()) {
+      showToast("Project Description is required.", "error");
+      return;
+    }
+
+    if (!github.trim()) {
+      showToast("GitHub Link is required.", "error");
+      return;
+    }
+
+    // GitHub Link Validation
+    if (!GITHUB_REGEX.test(github.trim())) {
+      showToast(
+        "Please enter a valid GitHub repository URL (e.g. https://github.com/username/repository).",
+        "error"
+      );
       return;
     }
 
@@ -104,7 +226,7 @@ export default function Submission() {
       const { data, status } = await api.submitProject({
         project_desc: description.trim(),
         track: track.trim(),
-        subtrack: subtrack.trim(),
+        subtrack: selectedSubtracks.join(", "),
         github_link: github.trim(),
         figma_link: figma.trim(),
         other_files: otherLinks.trim(),
@@ -113,6 +235,19 @@ export default function Submission() {
       if (status === 200 || status === 201) {
         setSubmitted(true);
         showToast("Project submitted successfully!", "success");
+
+        localStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({
+            projectName,
+            description,
+            track,
+            selectedSubtracks,
+            github,
+            figma,
+            otherLinks,
+          })
+        );
         return;
       }
 
@@ -124,7 +259,6 @@ export default function Submission() {
       throw new Error(data?.message || `Submission failed (${status})`);
     } catch (error) {
       console.error("Submission error:", error);
-
       showToast(
         error instanceof Error
           ? error.message
@@ -138,19 +272,7 @@ export default function Submission() {
 
   return (
     <main className="w-full min-h-screen bg-black p-0">
-      <section
-        className="
-          relative
-          mx-auto
-          w-full
-          min-h-screen
-          overflow-hidden
-          bg-black
-
-          md:aspect-[1305/734]
-          md:min-h-0
-        "
-      >
+      <section className="relative mx-auto w-full min-h-screen overflow-hidden bg-black">
         {/* BACKGROUND VIDEO */}
         <video
           autoPlay
@@ -159,15 +281,7 @@ export default function Submission() {
           playsInline
           preload="auto"
           aria-hidden="true"
-          className="
-            absolute
-            inset-0
-            z-0
-            h-full
-            w-full
-            object-cover
-            object-center
-          "
+          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
         >
           <source src="/submission/video/pikachu_motion.mp4" type="video/mp4" />
         </video>
@@ -178,610 +292,243 @@ export default function Submission() {
         <img
           src="/submission/HTML UI/IEEE_CS_logo.svg"
           alt="IEEE Computer Society"
-          className="
-            absolute
-            left-[4%]
-            top-[2.5%]
-            z-20
-            h-auto
-            w-[22%]
-            max-w-[115px]
-
-            md:left-[3%]
-            md:top-[3%]
-            md:w-[12%]
-            md:max-w-[160px]
-          "
+          className="absolute left-[4%] top-[2.5%] z-20 h-auto w-[22%] max-w-[115px] md:left-[3%] md:top-[3%] md:w-[12%] md:max-w-[160px]"
         />
 
         <img
           src="/submission/HTML UI/HACKBATTLE.svg"
           alt="HackBattle"
-          className="
-            absolute
-            right-[4%]
-            top-[2.5%]
-            z-20
-            h-auto
-            w-[12%]
-            max-w-[65px]
-
-            md:right-[3%]
-            md:top-[3%]
-            md:w-[8%]
-            md:max-w-[105px]
-          "
+          className="absolute right-[4%] top-[2.5%] z-20 h-auto w-[12%] max-w-[65px] md:right-[3%] md:top-[3%] md:w-[8%] md:max-w-[105px]"
         />
+
         <Link
           href="/team"
-          className="
-            absolute
-            z-30
-            rounded-full
-            bg-[#397b68]
-            px-6
-            py-3
-            font-pixeboy
-            text-xl
-            text-white
-            transition
-            hover:scale-105
-
-            /* Desktop */
-            right-[5%]
-            top-[17%]
-
-            /* Mobile */
-            max-md:left-1/2
-            max-md:right-auto
-            max-md:top-[94%]
-            max-md:-translate-x-1/2
-            max-md:px-5
-            max-md:py-2
-            max-md:text-base
-            max-md:whitespace-nowrap
-        "
+          className="absolute right-[5%] top-[17%] z-30 rounded-full bg-[#107050] px-6 py-3 font-pixeboy text-xl text-white shadow-[2px_2px_0_#000] transition hover:scale-105 hover:bg-[#138861] active:scale-95 max-md:left-1/2 max-md:right-auto max-md:top-[94%] max-md:-translate-x-1/2 max-md:px-5 max-md:py-2 max-md:text-base max-md:whitespace-nowrap"
         >
           GO TO TEAM PAGE
         </Link>
-        {/* FORM */}
-        <form onSubmit={handleSubmit} className="absolute inset-0 z-10">
-          {/* TITLE */}
-          <h1
-            className="
-              absolute
-              left-[7%]
-              top-[5%]
-              whitespace-nowrap
-              font-pixeboy
-              text-[clamp(3.5rem,14vw,5rem)]
-              leading-none
-              tracking-wide
-              text-[#f4c51e]
-              [-webkit-text-stroke:3px_#111]
-              drop-shadow-[4px_4px_0_#111]
 
-              md:left-[5%]
-              md:top-[8%]
-              md:text-[clamp(4rem,7vw,7.5rem)]
-              md:[-webkit-text-stroke:4px_#111]
-              md:drop-shadow-[5px_5px_0_#111]
-            "
-          >
+        {/* FORM */}
+        <form
+          onSubmit={handleSubmit}
+          className="relative z-10 min-h-screen w-full p-6 md:p-12"
+        >
+          {/* TITLE */}
+          <h1 className="mt-12 font-pixeboy text-[clamp(3.5rem,8vw,6.5rem)] leading-none tracking-wide text-[#f4c51e] [-webkit-text-stroke:3px_#111] drop-shadow-[4px_4px_0_#111]">
             SUBMISSION
           </h1>
 
-          {/* DESKTOP DIVIDER */}
-          <div
-            className="
-              absolute
-              left-[52%]
-              top-[17%]
-              hidden
-              h-[76%]
-              w-[3px]
-              -translate-x-1/2
-              bg-black
+          <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-2">
+            {/* LEFT COLUMN */}
+            <div className="flex flex-col gap-5">
+              {/* PROJECT NAME */}
+              <div>
+                <label
+                  htmlFor="project-name"
+                  className="block font-pixeboy text-xl text-black md:text-2xl"
+                >
+                  PROJECT NAME
+                </label>
+                <input
+                  id="project-name"
+                  value={projectName}
+                  disabled={isRejected}
+                  onChange={(e) => {
+                    setProjectName(e.target.value);
+                    setSubmitted(false);
+                  }}
+                  className="mt-1 h-12 w-full border-[3px] border-black bg-[#fbf7ee] px-4 font-pixeboy text-lg text-black outline-none focus:bg-white md:border-[4px]"
+                />
+              </div>
 
-              md:block
-            "
-          />
+              {/* PROJECT DESCRIPTION */}
+              <div>
+                <label
+                  htmlFor="project-description"
+                  className="block font-pixeboy text-xl text-black md:text-2xl"
+                >
+                  PROJECT DESCRIPTION
+                </label>
+                <textarea
+                  id="project-description"
+                  value={description}
+                  disabled={isRejected}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    setSubmitted(false);
+                  }}
+                  className="mt-1 h-32 w-full resize-none border-[3px] border-black bg-[#fbf7ee] p-4 font-pixeboy text-lg leading-tight text-black outline-none focus:bg-white md:border-[4px]"
+                />
+              </div>
 
-          {/* PROJECT NAME */}
-          <div
-            className="
-              absolute
-              left-[8%]
-              top-[15%]
-              w-[84%]
+              {/* TRACK DROPDOWN */}
+              <div ref={trackRef} className="relative">
+                <label className="block font-pixeboy text-xl text-black md:text-2xl">
+                  TRACK (SELECT ONE)
+                </label>
+                <button
+                  type="button"
+                  disabled={isRejected}
+                  onClick={() => setIsTrackOpen(!isTrackOpen)}
+                  className="mt-1 flex h-12 w-full items-center justify-between border-[3px] border-black bg-[#fbf7ee] px-4 font-pixeboy text-lg text-black outline-none transition hover:bg-[#f3d973] focus:bg-white md:border-[4px]"
+                >
+                  <span className="truncate">{track || "SELECT TRACK"}</span>
+                  <span className="ml-2 text-xs">▼</span>
+                </button>
 
-              md:left-[7%]
-              md:top-[22%]
-              md:w-[44%]
-            "
-          >
-            <label
-              htmlFor="project-name"
-              className="
-                block
-                font-pixeboy
-                text-[clamp(1rem,3.8vw,1.3rem)]
-                leading-none
-                text-black
+                {isTrackOpen && (
+                  <div className="absolute left-0 top-full z-50 mt-1 max-h-48 w-full overflow-y-auto border-[3px] border-black bg-[#fffdf5] shadow-[4px_4px_0_#000] md:border-[4px]">
+                    {Object.keys(TRACK_SUBTRACKS_MAP).map((t) => {
+                      const isSelected = track === t;
+                      return (
+                        <div
+                          key={t}
+                          onClick={() => selectTrack(t)}
+                          className={`flex cursor-pointer items-center justify-between border-b border-black/10 px-4 py-2 font-pixeboy text-base transition-colors hover:bg-[#f7d046] hover:text-black ${
+                            isSelected
+                              ? "bg-[#2d7d6f] text-white"
+                              : "text-black"
+                          }`}
+                        >
+                          <span>{t}</span>
+                          {isSelected && <span className="font-bold">✓</span>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
-                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
-              "
-            >
-              PROJECT NAME
-            </label>
+              {/* SUBTRACK DROPDOWN */}
+              <div ref={subtrackRef} className="relative">
+                <label className="block font-pixeboy text-xl text-black md:text-2xl">
+                  SUBTRACK (SELECT ONE OR MORE)
+                </label>
+                <button
+                  type="button"
+                  disabled={
+                    isRejected || !track || availableSubtracks.length === 0
+                  }
+                  onClick={() => setIsSubtrackOpen(!isSubtrackOpen)}
+                  className="mt-1 flex h-12 w-full items-center justify-between border-[3px] border-black bg-[#fbf7ee] px-4 font-pixeboy text-lg text-black outline-none transition hover:bg-[#f3d973] focus:bg-white disabled:opacity-50 md:border-[4px]"
+                >
+                  <span className="truncate">
+                    {!track
+                      ? "SELECT A TRACK FIRST"
+                      : availableSubtracks.length === 0
+                      ? "NO SUBTRACKS AVAILABLE"
+                      : selectedSubtracks.length > 0
+                      ? selectedSubtracks.join(", ")
+                      : "SELECT SUBTRACKS"}
+                  </span>
+                  <span className="ml-2 text-xs">▼</span>
+                </button>
 
-            <input
-              id="project-name"
-              value={projectName}
-              disabled={isRejected}
-              onChange={(e) => {
-                setProjectName(e.target.value);
-                setSubmitted(false);
-              }}
-              className="
-                mt-[1%]
-                h-[38px]
-                w-full
-                border-[3px]
-                border-black
-                bg-white/20
-                px-3
-                font-pixeboy
-                text-[1rem]
-                text-black
-                outline-none
-                focus:bg-white/40
-
-                md:mt-[1%]
-                md:h-[clamp(40px,3vw,52px)]
-                md:border-[4px]
-                md:px-5
-                md:text-[clamp(1.1rem,1.4vw,1.6rem)]
-              "
-            />
-          </div>
-
-          {/* PROJECT DESCRIPTION */}
-          <div
-            className="
-              absolute
-              left-[8%]
-              top-[25%]
-              w-[84%]
-
-              md:left-[7%]
-              md:top-[38%]
-              md:w-[44%]
-            "
-          >
-            <label
-              htmlFor="project-description"
-              className="
-                block
-                font-pixeboy
-                text-[clamp(1rem,3.8vw,1.3rem)]
-                leading-none
-                text-black
-
-                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
-              "
-            >
-              PROJECT DESCRIPTION
-            </label>
-
-            <textarea
-              id="project-description"
-              value={description}
-              disabled={isRejected}
-              onChange={(e) => {
-                setDescription(e.target.value);
-                setSubmitted(false);
-              }}
-              className="
-                mt-[1%]
-                h-[85px]
-                w-full
-                resize-none
-                border-[3px]
-                border-black
-                bg-white/20
-                px-3
-                py-2
-                font-pixeboy
-                text-[0.95rem]
-                leading-tight
-                text-black
-                outline-none
-                focus:bg-white/40
-
-                md:mt-[1%]
-                md:h-[clamp(115px,11vw,150px)]
-                md:border-[4px]
-                md:px-5
-                md:py-3
-                md:text-[clamp(1rem,1.3vw,1.5rem)]
-              "
-            />
-          </div>
-
-          {/* TRACK */}
-          <div
-            className="
-              absolute
-              left-[8%]
-              top-[40%]
-              w-[84%]
-
-              md:left-[7%]
-              md:top-[64%]
-              md:w-[44%]
-            "
-          >
-            <label
-              htmlFor="track"
-              className="
-                block
-                font-pixeboy
-                text-[clamp(1rem,3.8vw,1.3rem)]
-                leading-none
-                text-black
-
-                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
-              "
-            >
-              TRACK
-            </label>
-
-            <select
-              id="track"
-              value={track}
-              disabled={isRejected}
-              onChange={(e) => handleTrackChange(e.target.value)}
-              className="
-                mt-[1%]
-                h-[38px]
-                w-full
-                border-[3px]
-                border-black
-                bg-white/20
-                px-3
-                font-pixeboy
-                text-[0.95rem]
-                text-black
-                outline-none
-                focus:bg-white/40
-
-                md:mt-[1%]
-                md:h-[clamp(40px,3vw,52px)]
-                md:border-[4px]
-                md:px-5
-                md:text-[clamp(1rem,1.3vw,1.5rem)]
-              "
-            >
-              <option value="" disabled className="bg-white text-black">
-                SELECT TRACK
-              </option>
-              {Object.keys(TRACK_SUBTRACKS_MAP).map((t) => (
-                <option key={t} value={t} className="bg-white text-black">
-                  {t}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* SUBTRACK */}
-          <div
-            className="
-              absolute
-              left-[8%]
-              top-[50%]
-              w-[84%]
-
-              md:left-[7%]
-              md:top-[79%]
-              md:w-[44%]
-            "
-          >
-            <label
-              htmlFor="subtrack"
-              className="
-                block
-                font-pixeboy
-                text-[clamp(1rem,3.8vw,1.3rem)]
-                leading-none
-                text-black
-
-                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
-              "
-            >
-              SUBTRACK
-            </label>
-
-            <select
-              id="subtrack"
-              value={subtrack}
-              disabled={isRejected || availableSubtracks.length === 0}
-              onChange={(e) => {
-                setSubtrack(e.target.value);
-                setSubmitted(false);
-              }}
-              className="
-                mt-[1%]
-                h-[38px]
-                w-full
-                border-[3px]
-                border-black
-                bg-white/20
-                px-3
-                font-pixeboy
-                text-[0.95rem]
-                text-black
-                outline-none
-                focus:bg-white/40
-                disabled:opacity-50
-
-                md:mt-[1%]
-                md:h-[clamp(40px,3vw,52px)]
-                md:border-[4px]
-                md:px-5
-                md:text-[clamp(1rem,1.3vw,1.5rem)]
-              "
-            >
-              <option value="" disabled className="bg-white text-black">
-                {track
-                  ? availableSubtracks.length > 0
-                    ? "SELECT SUBTRACK"
-                    : "NO SUBTRACKS FOR THIS TRACK"
-                  : "SELECT A TRACK FIRST"}
-              </option>
-              {availableSubtracks.map((st) => (
-                <option key={st} value={st} className="bg-white text-black">
-                  {st}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* GITHUB LINK */}
-          <div
-            className="
-              absolute
-              left-[8%]
-              top-[60%]
-              w-[84%]
-
-              md:left-[53.5%]
-              md:top-[22%]
-              md:w-[39%]
-            "
-          >
-            <label
-              htmlFor="github"
-              className="
-                block
-                font-pixeboy
-                text-[clamp(1rem,3.8vw,1.3rem)]
-                leading-none
-                text-black
-
-                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
-              "
-            >
-              GITHUB LINK
-            </label>
-
-            <input
-              id="github"
-              type="url"
-              value={github}
-              disabled={isRejected}
-              onChange={(e) => setGithub(e.target.value)}
-              placeholder="ENTER YOUR GITHUB LINK"
-              className="
-                mt-[1%]
-                h-[36px]
-                w-full
-                border-[3px]
-                border-black
-                bg-white/20
-                px-3
-                font-pixeboy
-                text-[0.8rem]
-                text-black
-                placeholder:text-black
-                focus:placeholder-transparent
-                outline-none
-                focus:bg-white/40
-
-                md:mt-[1%]
-                md:h-[clamp(38px,2.8vw,48px)]
-                md:border-[4px]
-                md:px-5
-                md:text-[clamp(0.9rem,1.1vw,1.2rem)]
-              "
-            />
-          </div>
-
-          {/* FIGMA LINK */}
-          <div
-            className="
-              absolute
-              left-[8%]
-              top-[69%]
-              w-[84%]
-
-              md:left-[53.5%]
-              md:top-[36%]
-              md:w-[39%]
-            "
-          >
-            <label
-              htmlFor="figma"
-              className="
-                block
-                font-pixeboy
-                text-[clamp(1rem,3.8vw,1.3rem)]
-                leading-none
-                text-black
-
-                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
-              "
-            >
-              FIGMA LINK
-            </label>
-
-            <input
-              id="figma"
-              type="url"
-              value={figma}
-              disabled={isRejected}
-              onChange={(e) => setFigma(e.target.value)}
-              placeholder="ENTER YOUR FIGMA LINK"
-              className="
-                mt-[1%]
-                h-[36px]
-                w-full
-                border-[3px]
-                border-black
-                bg-white/20
-                px-3
-                font-pixeboy
-                text-[0.8rem]
-                text-black
-                placeholder:text-black
-                focus:placeholder-transparent
-                outline-none
-                focus:bg-white/40
-
-                md:mt-[1%]
-                md:h-[clamp(38px,2.8vw,48px)]
-                md:border-[4px]
-                md:px-5
-                md:text-[clamp(0.9rem,1.1vw,1.2rem)]
-              "
-            />
-          </div>
-
-          {/* OTHER LINKS */}
-          <div
-            className="
-              absolute
-              left-[8%]
-              top-[78%]
-              w-[84%]
-
-              md:left-[53.5%]
-              md:top-[50%]
-              md:w-[39%]
-            "
-          >
-            <label
-              htmlFor="other-links"
-              className="
-                block
-                font-pixeboy
-                text-[clamp(1rem,3.8vw,1.3rem)]
-                leading-none
-                text-black
-
-                md:text-[clamp(1.5rem,2.2vw,2.5rem)]
-              "
-            >
-              OTHER LINKS
-            </label>
-
-            <input
-              id="other-links"
-              type="url"
-              value={otherLinks}
-              disabled={isRejected}
-              onChange={(e) => setOtherLinks(e.target.value)}
-              placeholder="ENTER ANY OTHER LINK"
-              className="
-                mt-[1%]
-                h-[36px]
-                w-full
-                border-[3px]
-                border-black
-                bg-white/20
-                px-3
-                font-pixeboy
-                text-[0.8rem]
-                text-black
-                placeholder:text-black
-                focus:placeholder-transparent
-                outline-none
-                focus:bg-white/40
-
-                md:mt-[1%]
-                md:h-[clamp(38px,2.8vw,48px)]
-                md:border-[4px]
-                md:px-5
-                md:text-[clamp(0.9rem,1.1vw,1.2rem)]
-              "
-            />
-          </div>
-
-          {/* SUBMIT BUTTON */}
-          <button
-            type="submit"
-            disabled={isRejected}
-            className={`
-              absolute
-              left-[50%]
-              top-[89%]
-              w-[32%]
-              -translate-x-1/2
-              rounded-full
-              bg-[#397b68]
-              py-[1.5%]
-              font-pixeboy
-              text-[1rem]
-              text-white
-              transition
-              hover:scale-[1.03]
-              hover:bg-[#316b5b]
-              active:scale-[0.98]
-
-              md:left-[67%]
-              md:top-[65%]
-              md:w-[13%]
-              md:translate-x-0
-              md:py-[0.8%]
-              md:text-[clamp(1rem,1.3vw,1.5rem)]
-              ${isRejected ? "opacity-50 cursor-not-allowed hover:scale-100 hover:bg-[#397b68] active:scale-100" : ""}
-            `}
-          >
-            SUBMIT
-          </button>
-
-          {/* SUCCESS MESSAGE */}
-          {submitted && (
-            <div
-              className="
-                absolute
-                bottom-[1.5%]
-                left-[50%]
-                -translate-x-1/2
-                font-pixeboy
-                text-[0.9rem]
-                text-green-900
-
-                md:bottom-[3%]
-                md:left-auto
-                md:right-[3%]
-                md:translate-x-0
-                md:text-[clamp(0.9rem,1.1vw,1.3rem)]
-              "
-            >
-              SUBMISSION SAVED
+                {isSubtrackOpen && availableSubtracks.length > 0 && (
+                  <div className="absolute left-0 top-full z-50 mt-1 max-h-48 w-full overflow-y-auto border-[3px] border-black bg-[#fffdf5] shadow-[4px_4px_0_#000] md:border-[4px]">
+                    {availableSubtracks.map((st) => {
+                      const isSelected = selectedSubtracks.includes(st);
+                      return (
+                        <div
+                          key={st}
+                          onClick={() => toggleSubtrack(st)}
+                          className={`flex cursor-pointer items-center justify-between border-b border-black/10 px-4 py-2 font-pixeboy text-base transition-colors hover:bg-[#f7d046] hover:text-black ${
+                            isSelected
+                              ? "bg-[#2d7d6f] text-white"
+                              : "text-black"
+                          }`}
+                        >
+                          <span>{st}</span>
+                          {isSelected && <span className="font-bold">✓</span>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+
+            {/* RIGHT COLUMN */}
+            <div className="flex flex-col gap-5">
+              {/* GITHUB LINK */}
+              <div>
+                <label
+                  htmlFor="github"
+                  className="block font-pixeboy text-xl text-black md:text-2xl"
+                >
+                  GITHUB LINK
+                </label>
+                <input
+                  id="github"
+                  type="url"
+                  value={github}
+                  disabled={isRejected}
+                  onChange={(e) => setGithub(e.target.value)}
+                  placeholder="HTTPS://GITHUB.COM/USER/REPO"
+                  className="mt-1 h-12 w-full border-[3px] border-black bg-[#fbf7ee] px-4 font-pixeboy text-base text-black outline-none placeholder:text-black/50 focus:bg-white md:border-[4px]"
+                />
+              </div>
+
+              {/* FIGMA LINK */}
+              <div>
+                <label
+                  htmlFor="figma"
+                  className="block font-pixeboy text-xl text-black md:text-2xl"
+                >
+                  FIGMA LINK
+                </label>
+                <input
+                  id="figma"
+                  type="url"
+                  value={figma}
+                  disabled={isRejected}
+                  onChange={(e) => setFigma(e.target.value)}
+                  placeholder="ENTER YOUR FIGMA LINK"
+                  className="mt-1 h-12 w-full border-[3px] border-black bg-[#fbf7ee] px-4 font-pixeboy text-base text-black outline-none placeholder:text-black/50 focus:bg-white md:border-[4px]"
+                />
+              </div>
+
+              {/* OTHER LINKS */}
+              <div>
+                <label
+                  htmlFor="other-links"
+                  className="block font-pixeboy text-xl text-black md:text-2xl"
+                >
+                  OTHER LINKS
+                </label>
+                <input
+                  id="other-links"
+                  type="url"
+                  value={otherLinks}
+                  disabled={isRejected}
+                  onChange={(e) => setOtherLinks(e.target.value)}
+                  placeholder="ENTER ANY OTHER LINK"
+                  className="mt-1 h-12 w-full border-[3px] border-black bg-[#fbf7ee] px-4 font-pixeboy text-base text-black outline-none placeholder:text-black/50 focus:bg-white md:border-[4px]"
+                />
+              </div>
+
+              {/* SUBMIT BUTTON */}
+              <div className="mt-4 flex flex-col items-start gap-2">
+                <button
+                  type="submit"
+                  disabled={isRejected}
+                  className={`w-full rounded-full bg-[#107050] py-3 font-pixeboy text-xl text-white shadow-[2px_2px_0_#000] transition hover:scale-[1.02] hover:bg-[#138861] active:scale-[0.98] md:w-48 ${
+                    isRejected
+                      ? "opacity-50 cursor-not-allowed hover:scale-100 hover:bg-[#107050]"
+                      : ""
+                  }`}
+                >
+                  SUBMIT
+                </button>
+
+                {submitted && (
+                  <span className="font-pixeboy text-lg text-emerald-900 drop-shadow-[1px_1px_0_#fff]">
+                    SUBMISSION SAVED
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
         </form>
       </section>
     </main>
