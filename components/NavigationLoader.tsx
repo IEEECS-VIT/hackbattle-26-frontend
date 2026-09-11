@@ -64,6 +64,14 @@ export function LoadingLink({ onNavigate, ...props }: ComponentProps<typeof Next
     onNavigate?.({ preventDefault: () => { cancelled = true; event.preventDefault(); } });
     if (cancelled || typeof props.href !== "string") return;
     const url = new URL(props.href, window.location.href);
+    // Same pathname + search but different (or added) hash → pure anchor scroll.
+    // Let the browser handle it natively so smooth-scroll CSS works.
+    const isAnchorOnly =
+      url.pathname === window.location.pathname &&
+      url.search === window.location.search &&
+      url.hash !== "";
+    if (isAnchorOnly) return;
+    // Same path AND same hash → no navigation needed at all.
     if (url.pathname === window.location.pathname && url.search === window.location.search) return;
     event.preventDefault();
     navigate(props.href, props.replace, { scroll: props.scroll });

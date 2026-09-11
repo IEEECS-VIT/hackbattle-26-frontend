@@ -14,22 +14,16 @@ type Player = {
   name: string;
 };
 
-function SlotButton({
-  label,
-  onClick,
-}: {
-  label: string;
-  onClick?: () => void;
-}) {
+function SlotButton({ label }: { label: string }) {
   return (
     <button
       type="button"
-      onClick={onClick}
       className="
         team-slot-btn
         flex
         h-full
         w-full
+        cursor-default
         items-center
         justify-center
         rounded-[5px]
@@ -38,10 +32,6 @@ function SlotButton({
         bg-white
         px-2
         shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-        transition-all
-        hover:brightness-95
-        active:translate-y-[1px]
-        active:shadow-[2px_2px_0_rgba(0,0,0,0.85)]
       "
     >
       <span className="font-pixeboy whitespace-nowrap leading-none text-black text-[clamp(11px,3.2vw,16px)]">
@@ -55,6 +45,7 @@ export type TeamScreenProps = {
   mode?: "build" | "join";
   teamCode?: string | null;
   teamData?: GetTeamResponse | null;
+  // Kept so TeamPage doesn't throw a type error, but unused in the UI now
   onFetchTeam?: () => Promise<void>;
   isLoading?: boolean;
 };
@@ -63,8 +54,6 @@ export default function TeamScreen({
   mode = "build",
   teamCode = null,
   teamData = null,
-  onFetchTeam,
-  isLoading = false,
 }: TeamScreenProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -151,7 +140,7 @@ export default function TeamScreen({
       } else if (isSubmitted) {
         showToast("You can't leave the team after submitting.", "error");
       } else if (status === 403) {
-        showToast("YOU ARE NOT IN A TEAM", "error");
+        showToast("YOUR TEAM HAS ALREADY SUBMITTED, YOU CANNOT LEAVE", "error");
       } else if (status === 404) {
         showToast("TEAM NOT FOUND", "error");
       } else {
@@ -172,7 +161,17 @@ export default function TeamScreen({
     }
   };
 
-  const displayHeading = teamData?.name ? `TEAM: ${teamData.name}` : "MY TEAM";
+  const displayHeading = teamData?.name || "MY TEAM";
+
+  // Base class to ensure uniform button heights and padding across the header
+  const navBtnBase = `
+    inline-flex h-8 sm:h-10 items-center justify-center
+    rounded-[5px] border-2 border-black
+    px-3 sm:px-5
+    text-sm sm:text-lg font-pixeboy leading-none
+    shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
+    transition-all hover:brightness-95 active:translate-y-[1px]
+  `;
 
   return (
     <div className="team-page-outer relative w-full overflow-hidden">
@@ -198,104 +197,59 @@ export default function TeamScreen({
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="
-                  team-nav-btn
-                  inline-flex items-center
-                  rounded-[5px] border-2 border-black
-                  bg-white px-2.5 py-1 text-xs sm:px-4 sm:py-1.5 sm:text-base
-                  font-pixeboy leading-none text-black
-                  shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                  transition-all hover:brightness-95 active:translate-y-[1px]
-                "
+                className={`${navBtnBase} bg-white text-black`}
               >
                 BACK
               </Link>
-
-              {/* REFRESH TEAM BUTTON */}
-              {onFetchTeam && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    void onFetchTeam();
-                  }}
-                  disabled={isLoading}
-                  className="
-                    team-nav-btn
-                    inline-flex items-center
-                    rounded-[5px] border-2 border-black
-                    bg-cyan-400 px-2.5 py-1 text-xs sm:px-4 sm:py-1.5 sm:text-base
-                    font-pixeboy leading-none text-black
-                    shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                    transition-all hover:brightness-95 active:translate-y-[1px]
-                    disabled:opacity-60
-                  "
-                >
-                  {isLoading ? "REFRESHING..." : "REFRESH TEAM"}
-                </button>
-              )}
 
               {isLeader && (
                 <Link
                   href="/submission"
                   onClick={handleSubmissionClick}
-                  className="
-                    team-nav-btn
-                    inline-flex items-center
-                    rounded-[5px] border-2 border-black
-                    bg-yellow-400 px-2.5 py-1 text-xs sm:px-4 sm:py-1.5 sm:text-base
-                    font-pixeboy leading-none text-black
-                    shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                    transition-all hover:brightness-95 active:translate-y-[1px]
-                  "
+                  className={`${navBtnBase} bg-yellow-400 text-black`}
                 >
-                  <span>SUBMIT</span>
+                  SUBMISSION
                 </Link>
               )}
             </div>
 
-            {/* TEAM CODE */}
-            {mode === "build" && (
-              <div className="flex items-center gap-1.5 rounded-[5px] border-2 border-black bg-white/95 px-2 py-1 shadow-[2px_2px_0_rgba(0,0,0,0.85)]">
-                <span className="font-pixeboy text-sm sm:text-lg leading-none tracking-wider text-black">
-                  {activeTeamCode || "----"}
-                </span>
-                <button
-                  type="button"
-                  aria-label="Copy team code"
-                  onClick={handleCopyTeamCode}
-                  disabled={!activeTeamCode}
-                  className="grid h-5 w-5 sm:h-6 sm:w-6 shrink-0 place-items-center rounded bg-black text-white hover:bg-black/80 disabled:opacity-40"
-                >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
+            <div className="flex items-center gap-2">
+              {/* TEAM CODE */}
+              {mode === "build" && (
+                <div className="flex h-8 sm:h-10 items-center gap-1.5 rounded-[5px] border-2 border-black bg-white/95 px-2 shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]">
+                  <span className="font-pixeboy text-sm sm:text-lg leading-none tracking-wider text-black pt-[2px]">
+                    {activeTeamCode || "----"}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Copy team code"
+                    onClick={handleCopyTeamCode}
+                    disabled={!activeTeamCode}
+                    className="grid h-5 w-5 sm:h-6 sm:w-6 shrink-0 place-items-center rounded bg-black text-white hover:bg-black/80 disabled:opacity-40"
                   >
-                    <rect x="9" y="9" width="13" height="13" rx="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
-                </button>
-              </div>
-            )}
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  </button>
+                </div>
+              )}
 
-            <button
-              type="button"
-              onClick={handleLeaveTeam}
-              className="
-                team-nav-btn
-                inline-flex items-center
-                rounded-[5px] border-2 border-black
-                bg-red-800 px-2.5 py-1 text-xs sm:px-4 sm:py-1.5 sm:text-base
-                font-pixeboy leading-none text-white
-                shadow-[2px_2px_0_rgba(0,0,0,0.85)] sm:shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                transition-all hover:brightness-95 active:translate-y-[1px]
-              "
-            >
-              LEAVE
-            </button>
+              <button
+                type="button"
+                onClick={handleLeaveTeam}
+                className={`${navBtnBase} bg-red-800 text-white`}
+              >
+                LEAVE
+              </button>
+            </div>
           </div>
         </div>
 
@@ -359,12 +313,7 @@ export default function TeamScreen({
                     )}
                   </div>
                 ) : (
-                  <SlotButton
-                    label={String(player.id)}
-                    onClick={() => {
-                      if (onFetchTeam) void onFetchTeam();
-                    }}
-                  />
+                  <SlotButton label={String(player.id)} />
                 )}
               </div>
             ))}
