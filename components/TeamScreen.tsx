@@ -194,7 +194,7 @@ export default function TeamScreen({
                 BACK
               </Link>
 
-              {/* 
+            
 {isLeader && (
   <Link
     href="/submission"
@@ -204,7 +204,7 @@ export default function TeamScreen({
     SUBMISSION
   </Link>
 )} 
-*/}
+
             </div>
 
             <div className="flex items-center gap-2">
@@ -235,14 +235,6 @@ export default function TeamScreen({
                   </button>
                 </div>
               )}
-
-              <button
-                type="button"
-                onClick={handleLeaveTeam}
-                className={`${navBtnBase} bg-red-800 text-white`}
-              >
-                LEAVE
-              </button>
             </div>
           </div>
         </div>
