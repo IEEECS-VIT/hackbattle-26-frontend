@@ -273,21 +273,27 @@ export default function Submission() {
 
   return (
     <main className="w-full min-h-screen bg-black p-0">
-      <section className="relative mx-auto w-full min-h-screen overflow-hidden bg-black">
-        {/* BACKGROUND VIDEO */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
-        >
-          <source src="/submission/video/pikachu_motion.mp4" type="video/mp4" />
-        </video>
+      <section className="relative mx-auto w-full min-h-screen bg-black">
+        {/* video wrapper owns the clipping, not the whole page */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+            className="h-full w-full object-cover object-center"
+          >
+            <source
+              src="/submission/video/pikachu_motion.mp4"
+              type="video/mp4"
+            />
+          </video>
+        </div>
 
         <div className="absolute inset-0 z-[1] bg-white/[0.06]" />
+       
 
         {/* LOGOS */}
         <img
